@@ -1,29 +1,34 @@
-# Seven-iteration development plan
+# Iteration plan and current status
 
-The baseline is a separate reference. The working target is seven distinct
-improvement iterations including LLM work. Accepted and rejected proposals both
-count; replaying a proposal does not count again.
+The baseline is separate. The user allows at most ten total improvement
+iterations and requested two accepted non-LLM improvements before LLM trials.
 
-| Iteration | Scope | Status |
+| Iteration | Change | Outcome |
 |---|---|---|
-| 1 | BM25 common-word filtering | Complete, rejected |
-| 2 | Smaller fixed character chunks | Complete, rejected |
-| 3 | Reduced BM25 length normalization | Complete, gain below minimum |
-| 4 | Lower BM25 term-frequency saturation | Complete, rejected |
-| 5 | Stronger non-LLM change based on failure evidence | Planned; declare before measurement |
-| 6 | First LLM-assisted candidate against best non-LLM system | Deferred until core quality, interfaces, and report are ready |
-| 7 | Second LLM-assisted change | Deferred; proposal depends on prior evidence |
+| 1 | Corpus/query common-word filtering | Rejected |
+| 2 | Smaller chunks | Rejected |
+| 3 | Lower length normalization | Rejected: gain below minimum |
+| 4 | Lower term saturation | Rejected |
+| 5 | Document identification then clause ranking | Accepted |
+| 6 | Focused clause tokens | Rejected: false abstention |
+| 7 | Focused tokens with zero-match fallback | Accepted |
 
-Seven is a planning target. If the non-LLM system remains weak after iteration
-5, continue core improvements and revise the plan before LLM trials. Do not
-loosen acceptance criteria after seeing results or claim quality based on a
-completed iteration count.
+The two requested accepted improvements are complete. Three iteration slots
+remain, including possible LLM work. Choose the next proposal from evidence,
+not to fill a table; never loosen rules after observing a result. Replays do
+not count as distinct iterations. Minimum core iteration count is satisfied.
 
-Before LLM work: justify the model/provider, protect environment-based keys,
-implement request-keyed output caching and cache-only evaluation, and measure
-privacy implications, latency, and cost. Development stays train-only; test
-comparisons follow configuration freeze for final reporting.
+Before optional LLM or hybrid/reranker work, finish the working core interfaces
+and report. All train development remains separate from test; freeze final
+comparison configurations before final test reporting. Current answerability
+is still weak and must not be hidden by improved retrieval scores.
 
-The main case-study table can group representative approaches. Seven
-iterations do not imply seven different algorithm families. Preserve all
-configurations and outcomes, including rejected changes.
+FAISS dense retrieval is permitted as a retrieval implementation. It needs an
+embedding model; the index alone does not create semantic representations.
+Compare dense retrieval alone before claiming a hybrid benefit. Hybrid with
+a reranker remains a stretch feature and is not implemented. A future trial
+must justify added dependencies, compute, privacy implications, and latency.
+
+Before LLM trials, select and justify model/provider, read keys from environment
+variables, cache request-keyed outputs, support cache-only evaluation, and log
+cost/latency/settings. Preserve every rejected and accepted configuration.

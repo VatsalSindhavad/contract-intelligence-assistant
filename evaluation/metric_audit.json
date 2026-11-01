@@ -128,6 +128,216 @@
           "benchmark_recall": 0.09358868965962372
         }
       ]
+    },
+    {
+      "approach": "bm25_b_030",
+      "prediction_source": "results/iteration_03/20261101T023005238322Z/candidate.json",
+      "metrics": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394565,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005642857142857143,
+          "benchmark_recall": 0.017213463111394565
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.013158477527608788,
+          "recall": 0.07061219288495035,
+          "hit": 0.12142857142857143,
+          "benchmark_precision": 0.013987036039392987,
+          "benchmark_recall": 0.08139197581261418
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.017915733345875175,
+          "recall": 0.18820221391889613,
+          "hit": 0.2714285714285714,
+          "benchmark_precision": 0.018035495486888556,
+          "benchmark_recall": 0.19898199684655996
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018152717525045693,
+          "recall": 0.3302807805668159,
+          "hit": 0.45714285714285713,
+          "benchmark_precision": 0.018624780431005118,
+          "benchmark_recall": 0.3626652441169667
+        }
+      ]
+    },
+    {
+      "approach": "bm25_k1_080",
+      "prediction_source": "results/iteration_04/20261101T023349599839Z/candidate.json",
+      "metrics": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394565,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005642857142857143,
+          "benchmark_recall": 0.017213463111394565
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.012990483427313805,
+          "recall": 0.06967133266989659,
+          "hit": 0.11428571428571428,
+          "benchmark_precision": 0.013819041939098001,
+          "benchmark_recall": 0.0804511155975604
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.015726293166107092,
+          "recall": 0.16161664737157735,
+          "hit": 0.24285714285714285,
+          "benchmark_precision": 0.016032070297040565,
+          "benchmark_recall": 0.17239643029924112
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018103303602500027,
+          "recall": 0.31709964341185115,
+          "hit": 0.4357142857142857,
+          "benchmark_precision": 0.018616604043855345,
+          "benchmark_recall": 0.3484120259695033
+        }
+      ]
+    },
+    {
+      "approach": "bm25_document_then_clause",
+      "prediction_source": "results/iteration_05/20261101T023835366015Z/candidate.json",
+      "metrics": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.09157142857142857,
+          "recall": 0.23839645477795018,
+          "hit": 0.30714285714285716,
+          "benchmark_precision": 0.09157142857142857,
+          "benchmark_recall": 0.23839645477795018
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.06320018187085559,
+          "recall": 0.38626822559815005,
+          "hit": 0.4642857142857143,
+          "benchmark_precision": 0.06548777253733813,
+          "benchmark_recall": 0.4194309268566156
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.05152465761767607,
+          "recall": 0.47121020686429743,
+          "hit": 0.5571428571428572,
+          "benchmark_precision": 0.053679677299242896,
+          "benchmark_recall": 0.5210662259421468
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.038816704394512375,
+          "recall": 0.668379180900243,
+          "hit": 0.7571428571428571,
+          "benchmark_precision": 0.04078580080320892,
+          "benchmark_recall": 0.7636089956860862
+        }
+      ]
+    },
+    {
+      "approach": "bm25_focused_clause",
+      "prediction_source": "results/iteration_06/20261101T023940566109Z/candidate.json",
+      "metrics": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.1098,
+          "recall": 0.2655790074432562,
+          "hit": 0.3357142857142857,
+          "benchmark_precision": 0.1098,
+          "benchmark_recall": 0.2655790074432562
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.07510040272677408,
+          "recall": 0.42786693919036123,
+          "hit": 0.5071428571428571,
+          "benchmark_precision": 0.07640064052222598,
+          "benchmark_recall": 0.4585112733564357
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.05811606993279005,
+          "recall": 0.5071642430779163,
+          "hit": 0.6,
+          "benchmark_precision": 0.06066455054793572,
+          "benchmark_recall": 0.5626909039604239
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.04378052271057932,
+          "recall": 0.5811805712208997,
+          "hit": 0.6571428571428571,
+          "benchmark_precision": 0.0463562627720964,
+          "benchmark_recall": 0.6703100328849825
+        }
+      ]
+    },
+    {
+      "approach": "bm25_focused_clause_fallback",
+      "prediction_source": "results/iteration_07/20261101T024041386096Z/candidate.json",
+      "metrics": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.1098,
+          "recall": 0.2655790074432562,
+          "hit": 0.3357142857142857,
+          "benchmark_precision": 0.1098,
+          "benchmark_recall": 0.2655790074432562
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.07806706939344074,
+          "recall": 0.4423224954491962,
+          "hit": 0.5285714285714286,
+          "benchmark_precision": 0.07936730718889264,
+          "benchmark_recall": 0.47296682961527076
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.0627819602019412,
+          "recall": 0.5350211094907149,
+          "hit": 0.6428571428571429,
+          "benchmark_precision": 0.06507026483365001,
+          "benchmark_recall": 0.5915681785364877
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.047773759075664494,
+          "recall": 0.6262646192201456,
+          "hit": 0.7214285714285714,
+          "benchmark_precision": 0.05008746459440804,
+          "benchmark_recall": 0.7164144890474936
+        }
+      ]
     }
   ]
 }

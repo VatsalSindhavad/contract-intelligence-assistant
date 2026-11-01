@@ -1,4 +1,5 @@
 from copy import deepcopy
+import json
 
 import pytest
 
@@ -73,3 +74,18 @@ def test_proposal_requires_matching_current_mode():
     assert choose_proposal(BASE, {}, proposals, set(), set()) == (None, None)
     proposal, _ = choose_proposal(dict(BASE, query_mode='document_then_clause'), {}, proposals, set(), set())
     assert proposal['id'] == 'cleanup'
+
+
+def test_iteration_limit_stops_before_reading_train_data(tmp_path, monkeypatch):
+    import improve
+    (tmp_path / 'configs').mkdir()
+    (tmp_path / 'experiments').mkdir()
+    (tmp_path / 'configs/bm25_baseline.json').write_text(json.dumps(BASE), encoding='utf-8')
+    (tmp_path / 'experiments/limits.json').write_text(json.dumps(dict(max_iterations=10)), encoding='utf-8')
+    first = dict(iteration=10, candidate=dict(BASE, b=0.3), selected_config=BASE)
+    (tmp_path / 'experiments/log.jsonl').write_text(json.dumps(first), encoding='utf-8')
+    monkeypatch.setattr(improve, 'verify_freeze', lambda root: None)
+    def fail_if_read(root):
+        raise AssertionError('No data should be read beyond the iteration budget.')
+    monkeypatch.setattr(improve, 'load_inputs', fail_if_read)
+    assert improve.run_step(tmp_path) is None

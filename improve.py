@@ -81,6 +81,9 @@ def run_step(root):
     historical = read_log(root / 'experiments/log.jsonl')
     history = read_log(root / 'experiments/loop_log.jsonl')
     current, tried_ids, tried_configs, iteration = resume_state(baseline_config, historical, history)
+    limits_path = root / 'experiments/limits.json'
+    if limits_path.exists() and iteration > read_json(limits_path)['max_iterations']:
+        return None
     objective = read_json(root / 'experiments/objective.json')
     if history and objective != history[-1]['objective']:
         raise ValueError('Objective changed during the loop; document a new experiment phase first.')
@@ -141,7 +144,7 @@ def main():
         for _ in range(args.steps):
             log = run_step(root)
             if log is None:
-                print('No untried proposals remain. No iteration recorded.')
+                print('Iteration limit reached or no untried proposals remain. No iteration recorded.')
                 break
             print(f"Iteration {log['iteration']}: {log['proposal']['id']}")
             print('Accepted:', log['decision']['accepted'])

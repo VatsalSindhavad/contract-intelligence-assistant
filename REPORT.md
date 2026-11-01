@@ -2,48 +2,58 @@
 
 ## Current status
 
-The current system is a local BM25 passage retriever. Four attempted improvements were rejected; the original baseline remains selected. This report contains train results only. Final model selection, required interfaces, final test evaluation, and the final case-study comparison are not complete. Test evaluation runs so far: **0**. No headline test result is available.
+Seven distinct non-LLM improvement trials are recorded: five rejected and two accepted. The currently selected model is focused BM25 clause search with zero-match fallback. Final interfaces, final test evaluation, and the full case-study report remain incomplete. Test evaluation runs so far: **0**.
 
 ## System design
 
-Contracts are read as UTF-8 text with universal newline conversion. The baseline creates 1,000-character windows with 200-character overlap, tokenizes lowercase word sequences, and uses BM25Okapi (k1=1.5, b=0.75). Search ranks all indexed passages and returns exact original text, file paths, and half-open character offsets. Only positive scores are returned; this threshold has not been calibrated. No answer labels or gold document filters enter inference.
+The original baseline uses lowercase word tokenization, BM25Okapi (k1=1.5, b=0.75), 1,000-character windows with 200 overlap, and a positive-score rule. It searches all 29 contracts and returns exact text, paths, and half-open offsets.
+
+Accepted iteration 5 uses the highest full-query BM25 passage to infer a document, then ranks that document's passages using the question after the semicolon in `Consider ...; question`. Accepted iteration 7 filters common words and generic contract-question scaffolding from that clause query, falling back to the unfiltered clause query if no focused match exceeds the threshold. Indexed text, document routing, and chunk settings are unchanged. No gold source ID, answer span, or negative label enters inference. Plain unformatted questions retain baseline global search; format dependence is a limitation.
 
 ## LLM use
 
-No LLM is part of this pipeline. We first establish measurable local retrieval. A later LLM comparison is planned only after the core works, with cached outputs, protected credentials, and explicit cost/latency/privacy analysis.
+No LLM is part of retrieval yet. Two accepted non-LLM improvements now provide a comparison reference. Before later LLM work: finish the working core, choose/justify the model, protect environment-based keys, cache request-keyed outputs, enable cache-only evaluation, and measure cost, latency, and privacy implications. FAISS/dense and hybrid retrieval are not implemented or assumed to improve quality.
 
 ## Evaluation setup
 
-The prescribed mini selection contains 194 CUAD questions over 29 contracts, with 272 validated answer spans. The fixed split yields 140 answerable train and 54 answerable test questions. The separately frozen synthetic negative set has 23 train and 7 test questions. It was committed at `52fc955` before improvement experiments. All tuning and diagnostics use train. Shared corpus documents can occur across query splits under this setup; the held-out unit is the question, not the contract.
+The prescribed mini subset has 194 CUAD queries over 29 contracts, with 272 exact answer spans verified. Fixed splits contain 140/54 answerable and 23/7 unanswerable train/test questions. The synthetic negative set was frozen at commit `52fc955` before improvement. Queries, not documents, are held out; the indexed corpus is shared as prescribed. Development is train-only.
 
-We report character metrics at k=1,3,5,10 and both abstention directions. The development objective uses union-of-intervals character coverage. The authors' reference scorer sums pairwise passage overlaps; overlapping chunks can inflate its recall beyond one. Both are retained explicitly in `evaluation/metric_audit.json`; see `evaluation/metrics.md`. Earlier decisions remain based on the original declared unique-character objective. These metrics do not measure legal reasoning or answer generation.
+Character metrics are macro means at k=1,3,5,10. Our declared objective uses unique-character interval coverage; the authors' reference scorer sums pairwise passage overlaps. The latter can count repeated coverage more than once. Both are retained in results and `evaluation/metric_audit.json`. See `evaluation/metrics.md`. They are not answer-generation accuracy or legal correctness.
 
 ## Train comparison
 
-All rows below use the same 140 answerable train questions. Precision and recall are macro means. These are model configurations, not three different algorithm families.
+All quality rows use 140 answerable train questions. The following are BM25 pipeline variants, not separate algorithm families.
 
 | Configuration | Unique precision@5 | Unique recall@5 | Reference precision@5 | Reference recall@5 | Decision |
 |---|---:|---:|---:|---:|---|
-| baseline | 1.74% | 18.16% | 1.76% | 19.24% | Selected baseline |
+| Baseline | 1.74% | 18.16% | 1.76% | 19.24% | Original reference |
 | stopwords | 1.61% | 15.89% | 1.66% | 17.37% | Rejected |
 | smaller_chunks | 0.78% | 4.09% | 0.71% | 4.09% | Rejected |
-| lower_length_normalization | 1.79% | 18.82% | 1.80% | 19.90% | Rejected: gain below minimum |
-| lower_term_saturation | 1.57% | 16.16% | 1.60% | 17.24% | Rejected |
+| Length normalization | 1.79% | 18.82% | 1.80% | 19.90% | Rejected |
+| Term saturation | 1.57% | 16.16% | 1.60% | 17.24% | Rejected |
+| Document then clause | 5.15% | 47.12% | 5.37% | 52.11% | Accepted |
+| Focused clause without fallback | 5.81% | 50.72% | 6.07% | 56.27% | Rejected |
+| Focused clause with fallback | 6.28% | 53.50% | 6.51% | 59.16% | Accepted |
 
-All five configurations falsely returned passages for all 23 train negatives (0/23 correct abstentions). All returned passages for all 140 answerable train questions (0/140 false abstentions). Returning something therefore cannot be interpreted as knowing an answer exists.
+## Abstention and speed
 
-## Iteration history
+The baseline, accepted iteration 5, and accepted iteration 7 all have 0/140 false abstentions on answerable train queries, but also 0/23 correct abstentions on train negatives. The intermediate iteration 6 attained 1/23 correct negative abstentions but wrongly abstained on 12/140 answerable questions and was rejected. Fallback recovers answerable-query coverage at the cost of that one negative success. Passing a guardrail relative to a weak reference does not solve answerability.
 
-The primary objective is at least a 1 percentage-point gain in unique-character recall@5. Guardrails retain at least 95% of reference precision, limit answerable false-abstention increase to 2 points, negative correct-abstention loss to 5 points, and p95 latency to max(50 ms, twice the reference). The baseline's zero negative success makes that guardrail initially weak. These are engineering tolerances, not validated production criteria.
+In the iteration-7 run, baseline/current/candidate p95 search latency was approximately 8.77/13.27/10.52 ms on this machine. Local timing excludes index construction and evaluation and is not a production load benchmark. No model API fees are incurred; local compute and maintenance still have costs.
 
-1. **Common-word filtering:** Codex proposed removing a fixed function-word list after observing wrong-section retrieval. Recall@5 fell from 18.16% to 15.89%; precision also fell. Rejected.
-2. **Smaller chunks:** the diagnostic rule selected 500-character windows, retaining 200 overlap and other baseline parameters. Recall@5 fell to 4.09%; precision also fell. Rejected.
+## Iteration history and acceptance
 
-`python improve.py` evaluates the current configuration, diagnoses errors, chooses an untried catalog proposal based on failure counts, evaluates it, accepts/rejects it, and persists the selection for the next command. It runs one step by default. The full history spans `experiments/log.jsonl` and `experiments/loop_log.jsonl`. One further iteration meets the required minimum. The working user target is seven including later LLM trials, subject to a sound core first.
+Primary objective: gain at least 1 percentage point of unique-character recall@5 over the current accepted reference. Guardrails retain 95% of reference precision, allow at most 2 points more answerable false abstention and 5 points less negative correct abstention, and cap p95 at max(50 ms, twice reference p95). These engineering tolerances were declared before trials and have not been loosened.
 
-3. **Less length normalization:** the loop selected b=0.30 with all other baseline settings unchanged. Unique recall@5 improved to 18.82% and precision@5 to 1.79%. The 0.66-point recall gain missed the predeclared 1-point minimum, so the candidate was rejected despite the small gain.
+1. Common-word filtering: rejected; recall and precision declined.
+2. Smaller fixed chunks: rejected; recall and precision declined.
+3. Lower length normalization: rejected; recall gain of 0.66 points missed the minimum.
+4. Lower term saturation: rejected; recall and precision declined.
+5. Separate document identification and clause ranking: accepted; recall@5 18.16% to 47.12%.
+6. Focused clause terms: rejected despite 50.72% recall; 12 false answerable abstentions broke the guardrail.
+7. Focused terms with zero-match fallback: accepted against iteration 5; recall@5 47.12% to 53.50%, with guardrails met.
 
-4. **Lower term-frequency saturation:** k1=0.8 reduced recall@5 to 16.16% and precision@5 to 1.57%. Rejected. Four parameter/chunking proposals have not yielded a qualifying gain; investigate the underlying wrong-section ranking problem before LLM work.
+The loop evaluates, diagnoses, selects an untried catalog proposal, measures it, accepts/rejects it, and persists the selection. The catalog was amended before iterations 5–7 with explicit proposal documents and prerequisite checks. Both historical logs are retained. The minimum five iterations is met; the user now allows at most ten total. Do not count replays as new iterations or manufacture accepted outcomes.
 
 ## Ten concrete train failures
 
@@ -151,25 +161,24 @@ Diagnosis: the named contract exists but does not establish the technology-speci
 
 ## Business interpretation
 
-The first two changes reduced clause coverage. The third improved it modestly but failed the declared minimum gain. The fourth change also reduced coverage. None met the adoption criteria, so the baseline remains selected. All current approaches run locally without per-query model API fees; compute and maintenance are still costs. Local retrieval avoids sending query/contract text to a hosted inference provider, but that alone does not establish enterprise privacy compliance. Current false returns and low recall make this a development prototype, unsuitable for autonomous legal decisions. A final comparison must include measured quality, abstention, representative latency, deployment/privacy implications, and cost assumptions.
+Document naming terms helped locate contracts but could distract passage ranking. Separating the tasks and focusing the clause wording increased relevant clause coverage under the same five-passage budget. The second accepted change improves both recall and precision over the first accepted reference. These measured train gains justify keeping the candidates for comparison, not deploying them as autonomous legal decision makers.
+
+Privacy benefits are limited to local inference: queries and text are not sent to an external model provider. This alone is not enterprise privacy compliance. Compare later dense/LLM approaches using fixed query counts, both abstention directions, latency, cost assumptions, and data-transfer implications.
 
 ## Limitations and remaining work
 
-- Complete at least one further distinct improvement iteration for the minimum; target seven total including later LLM trials, with additional core work if quality remains weak and improve answerability.
-- Add and verify the shared web app and user-facing search CLI.
-- Freeze final configurations before test evaluation; append an actual run record for every test execution and report the count.
-- Report baseline versus final train/test results with query counts and discuss the gap.
-- Refresh error analysis for the final configuration and include at least ten concrete failures.
-- The negative set is synthetic, topic-repetitive, and not legally expert-labeled; seven test negatives provide a very imprecise estimate. Do not edit the frozen set to suit outcomes.
-- Cross-references, definitions, redactions, and missing external schedules can change interpretation and remain unresolved.
-- Reproduce setup in a clean environment, verify commands and timings, and finalize README instructions.
-- No final 4–5-approach business comparison is claimed yet. Two parameter changes are not proof of distinct retrieval methods.
+- Build the required shared web app and user-facing search CLI; the experiment command is not the search CLI.
+- Improve or clearly disclose weak answerability; current selected model returns text for every train negative.
+- Structured-query parsing and single inferred-document routing can fail on other phrasing or an incorrect source match.
+- Freeze comparison configurations before final test evaluation and persist a real test-run counter. Report train/test gaps and counts.
+- Refresh this baseline error analysis for the final selected model and include at least ten diagnosed failures.
+- Negative labels are synthetic, repetitive, and not expert legal annotations; seven test negatives give an imprecise estimate. Do not edit the frozen set.
+- Definitions, cross-references, redactions, and missing schedules remain unresolved.
+- Verify a clean setup and final timings; finish README run instructions and private submission checks.
+- Use the remaining budget only for explicit measured proposals; later LLM outputs require caching and secret protection.
 
-## Reproduction sources
+## Reproduction
 
-- Baseline: `results/bm25_baseline/20261101T020109139330Z`.
-- Abstention: `results/bm25_abstention/20261101T020853204883Z`.
-- Iteration outputs: `results/iteration_01/`, `results/iteration_02/`, `results/iteration_03/`, and `results/iteration_04/`.
-- Reference-metric supplement: `evaluation/metric_audit.json` (scores saved train predictions; no model calls).
-- Tests: `python -m pytest -q`. Setup and notebook order are in README.
-- Final test reproduction commands and measured final-run timings: pending; no test execution has occurred.
+Run notebooks 01–03 to prepare/measure the baseline. Historical trial notebooks replay or review earlier work; `python improve.py` advances one new trial. Notebook 08 reviews trials 5–7 and runs any preserved BM25 configuration without advancing the loop. Accepted config files are in `configs/` and every accepted/rejected snapshot remains under its result directory.
+
+Results: `results/bm25_baseline/`, `results/bm25_abstention/`, and `results/iteration_01/` through `results/iteration_07/`. Complete logs: `experiments/log.jsonl` and `experiments/loop_log.jsonl`. Tests: `python -m pytest -q`. Final test reproduction commands are pending; zero test executions have occurred.

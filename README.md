@@ -7,9 +7,9 @@ and metrics. At least five improvement iterations will be logged, including
 rejected changes. The eventual 4–5 approach comparison will explain retrieval
 quality, abstention, latency, cost, privacy, and operational tradeoffs.
 
-The current target is seven distinct improvement iterations beyond baseline,
-including later LLM experiments. See `experiments/PLAN.md`. Core quality takes
-priority over the planned count; LLMs remain deferred until the core works.
+The current budget is at most ten improvement iterations beyond baseline.
+Seven non-LLM trials are recorded, with two accepted changes. See
+`experiments/PLAN.md`. LLMs remain deferred until the core works.
 
 ## First step
 
@@ -143,3 +143,13 @@ when those interfaces and the final evaluator exist.
 Notebook 06 reviews the saved third iteration (BM25 length normalization) and
 provides an editable question cell for either configuration without advancing
 the loop. Its measured findings are recorded in REPORT.md.
+
+## Accepted non-LLM approaches
+
+Notebook 08 reviews saved trials 5–7 and provides an editable question cell.
+Load `configs/bm25_document_then_clause.json` or
+`configs/bm25_focused_clause_fallback.json` into `BM25Retriever`; the baseline
+and rejected `configs/bm25_focused_clause.json` also remain runnable.
+Routing activates for `Consider document description; clause question`.
+Plain questions fall back to full-query search. These format assumptions
+must be considered when comparing approaches and using the future interfaces.
