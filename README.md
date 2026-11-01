@@ -176,3 +176,39 @@ See `DEMO.md` for the walkthrough, expected example, no-match check, and known
 limitations. Model loading/index building occurs before displayed search timing.
 Streamlit caches each model until the config/manifest fingerprint changes or
 the server restarts. Restart after changing corpus files or retrieval code.
+
+## Choose a saved version
+
+Run these commands from the project folder after installing requirements and
+running data preparation notebook 01. Configuration names omit `.json`.
+
+| CLI configuration | Version | Experiment outcome |
+|---|---|---|
+| `bm25_baseline` | Original full-query BM25 | Baseline reference |
+| `bm25_stopwords` | Common-word filtering | Rejected, iteration 1 |
+| `bm25_chunks_500` | Smaller chunks | Rejected, iteration 2 |
+| `bm25_b_030` | Lower length normalization | Rejected, iteration 3 |
+| `bm25_k1_080` | Lower term saturation | Rejected, iteration 4 |
+| `bm25_document_then_clause` | Document identification then clause search | Accepted, iteration 5 |
+| `bm25_focused_clause` | Focused clause terms without fallback | Rejected, iteration 6 |
+| `bm25_focused_clause_fallback` | Focused terms with fallback | Accepted, iteration 7 |
+| `bm25_focused_stemmed` | Accepted pipeline plus stemming | Accepted, iteration 8; default |
+
+```powershell
+python cli.py --list-configs
+$question = "Consider the Wireless Content License Agreement between Fox Mobile Entertainment and Glu Mobile; What is the expiration date of this contract?"
+python cli.py $question --config bm25_baseline --k 5
+python cli.py $question --config bm25_document_then_clause --k 5
+python cli.py $question --config bm25_focused_clause_fallback --k 5
+python cli.py $question --config bm25_focused_stemmed --k 5 --json
+```
+
+Replace the name after `--config` with any table entry to run that version,
+including rejected experiments. `--k` returns up to 1–20 positive-score
+passages. Omitting `--config` selects `bm25_focused_stemmed`. `--json` changes
+the output format only. These commands search a question; they do not rerun
+benchmark evaluation or advance the improvement loop. Outcomes describe train
+experiment decisions, not whether a configuration can execute.
+
+The same versions are selectable in the web app. Start it using the command
+above, select a configuration, and click Search to apply that choice.

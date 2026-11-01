@@ -203,3 +203,37 @@ No model inference/API integration is implemented yet. Planned hosted/local
 experiments must use the same retrieval-assistance task; see
 `experiments/LLM_PLAN.md`. No new benchmark iteration was consumed by interface
 work, and no test performance was measured.
+
+## Runnable versions and comparison procedure
+
+All nine versions are preserved as configuration files and can be selected in
+both interfaces. Rejected means the train experiment failed our acceptance
+criteria; it does not mean the implementation is unavailable.
+
+| Configuration name | Trial | Status |
+|---|---:|---|
+| `bm25_baseline` | Baseline | Original comparison reference |
+| `bm25_stopwords` | 1 | Rejected |
+| `bm25_chunks_500` | 2 | Rejected |
+| `bm25_b_030` | 3 | Rejected |
+| `bm25_k1_080` | 4 | Rejected |
+| `bm25_document_then_clause` | 5 | Accepted |
+| `bm25_focused_clause` | 6 | Rejected |
+| `bm25_focused_clause_fallback` | 7 | Accepted |
+| `bm25_focused_stemmed` | 8 | Accepted; current default |
+
+From the project folder, use the same question and k to inspect versions:
+
+```powershell
+python cli.py --list-configs
+$question = "Consider the Wireless Content License Agreement between Fox Mobile Entertainment and Glu Mobile; What is the expiration date of this contract?"
+python cli.py $question --config bm25_baseline --k 5 --json
+python cli.py $question --config bm25_focused_stemmed --k 5 --json
+```
+
+Substitute any configuration name from the table. For the web interface, run
+`python -m streamlit run app.py`, select the same configuration/question/k, and
+click Search. Full setup and command options are in README.md and DEMO.md.
+The nine-configuration source-offset smoke check is recorded in
+`results/interface_smoke.json`. Single-question inspection is a walkthrough,
+not a replacement for the aggregate evaluation above and not a new iteration.
