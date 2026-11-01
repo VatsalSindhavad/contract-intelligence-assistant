@@ -60,3 +60,17 @@ notebooks, outputs, or commits. Local environment and secrets files are ignored.
 LLM integration must persist request-keyed outputs, model identifiers and
 settings, and support cache-only evaluation with no model calls. Measure cost
 and latency separately for cache creation and replay. No LLM is used yet.
+
+## First improvement iteration
+
+Read `experiments/OBJECTIVE.md`, then run
+`notebooks/04_bm25_first_improvement.ipynb` or `python run_experiment.py`.
+Both entry points evaluate the baseline and one common-word filtering candidate
+on train, diagnose errors, apply the declared policy, and save every result.
+The notebook also provides a question cell to try either approach.
+
+Candidate settings live in `configs/bm25_stopwords.json`. The baseline defaults
+remain unchanged. `experiments/log.jsonl` records accepted and rejected runs;
+`results/iteration_01/` contains predictions, metrics, decisions, and code hashes.
+Only one distinct proposal is implemented in this checkpoint. Rerunning it
+does not count as a new improvement iteration.
