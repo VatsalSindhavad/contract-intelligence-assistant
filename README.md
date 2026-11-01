@@ -71,6 +71,16 @@ python cli.py "$question" --config bm25_baseline --k 5
 python cli.py --list-configs --all-configs
 ```
 
+Try a second cached question with all three configurations (or paste its exact
+text into the web app):
+
+```powershell
+$question = "Consider the Service Agreement between BicycleTX Ltd and Nigel Crockett for Chief Business Officer Position; What is the expiration date of this contract?"
+python cli.py "$question" --config bm25_baseline --k 5
+python cli.py "$question" --config llm_hybrid_gemini_broad10 --k 5
+python cli.py "$question" --config llm_hybrid_gemini_recovery20_31 --k 5
+```
+
 The default question is cached. The interfaces do not call hosted models,
 load a secret for replay, or spend API quota. An unknown LLM request fails with
 a cache-missing message. The original baseline can retrieve arbitrary questions
