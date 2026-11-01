@@ -199,12 +199,10 @@ Gemini and local Phi-3 were used in the explicitly recorded inference
 experiments; these are pretrained models, not models fine-tuned on this data.
 All decisions and failures must be explainable and editable during review.
 The original assignment PDF, credentials, personal notes, downloaded weights,
-data and temporary runtime files are excluded from Git. Prior local history
-must be audited before the private GitHub submission is created/published.
+data and temporary runtime files are excluded from Git. Excluded local material is absent from the published source and history.
 
-Verification checkpoint: [deliverables and checks](docs/DELIVERABLES_CHECK.md).
-The private repository was created under VatsalSindhavad. Publication excludes
-credentials, the source assignment PDF, personal guides, downloaded weights
-and data; reproducible downloads and cached outputs are provided.
+Private publication excludes credentials, the source assignment PDF, personal
+guides, downloaded weights and data. Reproducible downloads and cached outputs
+are provided.
 
 Publication history was filtered only to remove excluded personal/credential/PDF paths; chronological experiment proof and frozen negatives remain. Historical commit-ID mapping is under experiments/source_snapshots/.
