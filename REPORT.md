@@ -2,7 +2,7 @@
 
 ## Current status
 
-Eight distinct non-LLM improvement trials are recorded: five rejected and three accepted. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. The shared CLI and Streamlit app are implemented and verified. Final test evaluation and the complete case-study report remain pending. Test evaluation runs so far: **0**.
+Eight non-LLM trials and hosted LLM iteration 9 are recorded. Three non-LLM improvements are accepted; Gemini improves retrieval but fails the first-use latency guardrail. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. The shared CLI and Streamlit app are implemented and verified. Final test evaluation and the complete case-study report remain pending. Test evaluation runs so far: **0**.
 
 ## System design
 
@@ -14,7 +14,7 @@ Iteration 8 additionally stems indexed and query tokens with NLTK English Snowba
 
 ## LLM use
 
-No LLM is part of retrieval yet. Three accepted non-LLM improvements now provide a comparison reference. Before later LLM work: finish the working core, choose/justify the model, protect environment-based keys, cache request-keyed outputs, enable cache-only evaluation, and measure cost, latency, and privacy implications. FAISS/dense and hybrid retrieval are not implemented or assumed to improve quality.
+Gemini query expansion is implemented, cached, and scored in iteration 9. Three accepted non-LLM improvements now provide a comparison reference. Before later LLM work: finish the working core, choose/justify the model, protect environment-based keys, cache request-keyed outputs, enable cache-only evaluation, and measure cost, latency, and privacy implications. FAISS/dense and hybrid retrieval are not implemented or assumed to improve quality.
 
 ## Evaluation setup
 
@@ -37,12 +37,13 @@ All quality rows use 140 answerable train questions. The following are BM25 pipe
 | Focused clause without fallback | 5.81% | 50.72% | 6.07% | 56.27% | Rejected |
 | Focused clause with fallback | 6.28% | 53.50% | 6.51% | 59.16% | Accepted |
 | Combined pipeline plus stemming | 7.88% | 67.01% | 8.38% | 76.60% | Accepted |
+| Gemini query expansion + best BM25 | 8.47% | 79.10% | 8.93% | 89.58% | Quality/replay checks pass; first-use latency fails |
 
 ## Abstention and speed
 
 The baseline, accepted iteration 5, and accepted iteration 7 all have 0/140 false abstentions on answerable train queries, but also 0/23 correct abstentions on train negatives. The intermediate iteration 6 attained 1/23 correct negative abstentions but wrongly abstained on 12/140 answerable questions and was rejected. Fallback recovers answerable-query coverage at the cost of that one negative success. Passing a guardrail relative to a weak reference does not solve answerability.
 
-In the iteration-7 run, baseline/current/candidate p95 search latency was approximately 8.77/13.27/10.52 ms on this machine. Local timing excludes index construction and evaluation and is not a production load benchmark. No model API fees are incurred; local compute and maintenance still have costs.
+In the iteration-7 run, baseline/current/candidate p95 search latency was approximately 8.77/13.27/10.52 ms on this machine. Local timing excludes index construction and evaluation and is not a production load benchmark. These non-LLM measurements involve no model API calls; hosted usage is reported separately below.
 
 ## Iteration history and acceptance
 
@@ -199,8 +200,8 @@ and no-match paths were tested. A local HTTP health check and nine-configuration
 smoke test are saved in `results/interface_smoke.json`. Zero-match behavior
 must not be mistaken for calibrated abstention on realistic negative questions.
 
-No model inference/API integration is implemented yet. Planned hosted/local
-experiments must use the same retrieval-assistance task; see
+Hosted model integration is implemented and cached; local Phi-3 remains pending.
+Both use the same retrieval-assistance task; see
 `experiments/LLM_PLAN.md`. No new benchmark iteration was consumed by interface
 work, and no test performance was measured.
 
@@ -243,3 +244,32 @@ acceptance checks; held-out test performance remains unmeasured. The CLI list
 and web selector use the same label. Small gains or candidates failing a
 guardrail retain explanatory labels instead. Configuration command names are
 unchanged; omit the display labels when passing `--config`.
+
+## Hosted LLM iteration 9
+
+Gemini 3.5 Flash-Lite received 53 unique train clause questions with the fixed
+query-expansion prompt. Contract descriptions, parties, original document text,
+gold spans, and the private assignment PDF were not sent. These inputs were
+explicitly reviewed and approved before external transmission. This is input
+minimization by query structure, not general-purpose name redaction.
+
+All 53 outputs passed schema/length/numeric checks. The first batch hit HTTP
+429; spacing and retry preserved the failed attempt and reused valid caches.
+Successful unique responses consumed 8,257 input and 1,284 output tokens
+(9,541 total). Actual charge is account-dependent and not inferred here.
+
+On 140 answerable train queries, unique-character recall@5 improved from
+67.01% to 79.10%, precision from 7.88% to 8.47%, and complete coverage from
+82 to 95 questions. Correct negative abstention remains 0/23 and answerable
+false abstention remains 0/140. Estimated first-use p95 is 2.58 seconds;
+cache/retrieval p95 is 15.95 ms. The 50-ms-floor operational latency guardrail
+fails on first use; all quality/replay checks pass. No threshold was relaxed
+and the accepted non-LLM model remains selected. These are train results, not
+proof of generalization or legal answer quality.
+
+`notebooks/10_gemini_bm25.ipynb` and the `llm_gemini_rewrite` interface option
+are cache-only. The presentation path was checked with network and credential
+access disabled. See `LLM_PRESENTATION.md` and `CACHED_QUESTIONS.md`.
+Complete results: `results/iteration_09/`; decisions and latency modes:
+`experiments/llm_log.jsonl`. Replays remain the same proposal, not new iterations.
+Phi-3 has not run and test evaluation count remains zero.

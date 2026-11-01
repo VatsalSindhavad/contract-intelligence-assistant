@@ -13,9 +13,10 @@ iterations and requested two accepted non-LLM improvements before LLM trials.
 | 6 | Focused clause tokens | Rejected: false abstention |
 | 7 | Focused tokens with zero-match fallback | Accepted |
 | 8 | Combined accepted pipeline plus English stemming | Accepted |
+| 9 | Gemini query expansion + best BM25 | Retrieval gain; fails first-use latency |
 
-The two requested improvements and one further combined improvement are complete. Two iteration slots
-remain, including possible LLM work. Choose the next proposal from evidence,
+The two requested improvements and one further combined improvement are complete. One iteration slot
+remains, including possible LLM work. Choose the next proposal from evidence,
 not to fill a table; never loosen rules after observing a result. Replays do
 not count as distinct iterations. Minimum core iteration count is satisfied.
 

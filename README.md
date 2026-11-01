@@ -31,8 +31,7 @@ from version control.
 
 Codex helped inspect requirements, write and run notebooks, implement retrieval
 and evaluation, create synthetic negative questions, build the rule-based
-experiment loop, write tests, and maintain documentation. No LLM API is part
-of retrieval yet. Review and understand each component before presenting it.
+experiment loop, write tests, and maintain documentation. Gemini-assisted query expansion has since been added and cached. Review and understand each component before presenting it.
 
 ## BM25 baseline
 
@@ -66,7 +65,7 @@ Read credentials from environment variables; never put keys in source,
 notebooks, outputs, or commits. Local environment and secrets files are ignored.
 LLM integration must persist request-keyed outputs, model identifiers and
 settings, and support cache-only evaluation with no model calls. Measure cost
-and latency separately for cache creation and replay. No LLM is used yet.
+and latency separately for cache creation and replay. Gemini rewrites are cached; local Phi-3 is pending.
 
 ## First improvement iteration
 
@@ -228,4 +227,12 @@ calls. The shared prompt is in `prompts/retrieval_rewrite_v1.txt`; model and
 generation settings live in `llm_configs/`, separate from runnable BM25 configs.
 `llm_rewrite.py` validates and caches outputs and refuses cache-only misses.
 The adapter retains the original question for routing and supplements only the
-clause query. The scored LLM experiments are not yet complete.
+clause query. Hosted iteration 9 is scored; local Phi-3 iteration 10 is pending.
+
+`llm_gemini_rewrite` is available in the CLI and web selector in cache-only mode.
+See `LLM_PRESENTATION.md` for exact offline demo commands and supported inputs.
+The API key is not needed for those cached examples. Missing cache entries fail
+clearly without calling a provider. The non-LLM model remains the default.
+
+The implementation uses plain Python, rank-bm25, NLTK, and direct provider HTTP
+requests. LangChain is not used; orchestration and caching are explicit.

@@ -43,4 +43,4 @@ one request before filling the train cache. Local second: installed Phi-3 Mini
 via Ollama, with exact inspected digest in `llm_configs/local_phi3.json`.
 The shared cache/schema/fallback infrastructure is implemented and tested.
 There are 53 unique clause questions among the 163 train records, allowing
-reuse without repeat model calls. No provider or local generation has occurred.
+reuse without repeat model calls. Hosted generation and iteration 9 are complete; local generation has not occurred.

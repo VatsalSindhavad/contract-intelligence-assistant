@@ -107,3 +107,21 @@ def test_web_search_and_empty_state():
     app.text_area[0].set_value(' ')
     app.button[0].click().run()
     assert app.error[0].value == 'Enter a question.'
+
+
+@pytest.mark.skipif(not (ROOT/'cache/llm_rewrites').exists(), reason='Populate approved Gemini cache first.')
+def test_gemini_demo_requires_neither_network_nor_api_key(monkeypatch):
+    import llm_rewrite
+    import requests
+    def deny(*args, **kwargs):
+        raise AssertionError('Presentation must not access network or credentials.')
+    monkeypatch.setattr(requests,'post',deny)
+    monkeypatch.setattr(llm_rewrite,'load_gemini_key',deny)
+    model=build_model('llm_gemini_rewrite')
+    assert search(model,EXAMPLE_QUERY,3)['hits']
+    from streamlit.testing.v1 import AppTest
+    app=AppTest.from_file(ROOT/'app.py',default_timeout=60).run()
+    app.selectbox[0].select('llm_gemini_rewrite').run()
+    app.button[0].click().run()
+    assert not app.exception
+    assert len(app.expander)>0
