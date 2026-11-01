@@ -88,6 +88,10 @@ class BM25Retriever:
             scores = self.index.get_scores(question_tokens)
             scores = np.array([score if chunk['file_path'] == source else -np.inf
                                for score, chunk in zip(scores, self.chunks)])
+            if self.config.get('clause_cleanup_fallback', False) and not np.any(scores > self.config['min_score']):
+                fallback = self.index.get_scores(tokenize(question, self.remove_stopwords))
+                scores = np.array([score if chunk['file_path'] == source else -np.inf
+                                   for score, chunk in zip(fallback, self.chunks)])
         order = np.argsort(-scores, kind='stable')[:k]
         return [dict(self.chunks[i], score=float(scores[i])) for i in order
                 if scores[i] > self.config['min_score']]

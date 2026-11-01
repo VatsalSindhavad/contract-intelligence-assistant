@@ -45,3 +45,20 @@ def test_cleanup_removes_scaffold_and_preserves_legal_negation():
 
 def test_cleanup_never_silently_discards_all_terms():
     assert clause_tokens('the contract', True) == ['the', 'contract']
+
+
+def test_focused_zero_match_can_fall_back_without_changing_document():
+    retriever = stub_retriever('document_then_clause')
+    retriever.config.update(clause_query_cleanup=True, clause_cleanup_fallback=True)
+    class Index:
+        def get_scores(self, tokens):
+            if 'consider' in tokens:
+                return np.array([10., 2., 1.])
+            if tokens == ['unseen']:
+                return np.zeros(3)
+            return np.array([1., 8., 20.])
+    retriever.index = Index()
+    assert retriever.search('Consider A; does this contract include unseen?')[0]['file_path'] == 'a'
+    assert retriever.search('Consider A; does this contract include unseen?')[0]['text'] == 'term'
+    retriever.config['clause_cleanup_fallback'] = False
+    assert retriever.search('Consider A; does this contract include unseen?') == []

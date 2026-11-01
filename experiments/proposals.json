@@ -1,5 +1,13 @@
 [
   {
+    "id": "focused_clause_with_fallback",
+    "name": "bm25_focused_clause_fallback",
+    "trigger": "right_document_wrong_section",
+    "requires": {"query_mode": "document_then_clause"},
+    "changes": {"clause_query_cleanup": true, "clause_cleanup_fallback": true},
+    "reason": "Use focused clause terms when they produce matches; recover the accepted clause ranking when lexical filtering would otherwise return nothing."
+  },
+  {
     "id": "clause_query_cleanup",
     "name": "bm25_focused_clause",
     "trigger": "right_document_wrong_section",
