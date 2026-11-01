@@ -34,3 +34,13 @@ before model integration. Do not call the project complete until final config
 freeze, held-out evaluation, actual test-run counts, final failure analysis,
 REPORT.md, and clean-environment reproduction checks are complete. FAISS,
 hybrid retrieval, and other deferred extensions are not part of this checkpoint.
+
+## Selected setup
+
+Hosted first: Gemini through Google AI Studio's API key, with the proposed
+model/config in `llm_configs/gemini.json`. Confirm actual account access with
+one request before filling the train cache. Local second: installed Phi-3 Mini
+via Ollama, with exact inspected digest in `llm_configs/local_phi3.json`.
+The shared cache/schema/fallback infrastructure is implemented and tested.
+There are 53 unique clause questions among the 163 train records, allowing
+reuse without repeat model calls. No provider or local generation has occurred.

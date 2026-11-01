@@ -218,3 +218,14 @@ acceptance checks; held-out test performance remains unmeasured. The CLI list
 and web selector use the same label. Small gains or candidates failing a
 guardrail retain explanatory labels instead. Configuration command names are
 unchanged; omit the display labels when passing `--config`.
+
+## Hosted/local LLM preparation
+
+Gemini API is first; the already installed Phi-3 Mini model is second.
+See `LLM_SETUP.md` for local key setup and the one-request check.
+`python prepare_llm.py --config gemini` reports cache readiness with no model
+calls. The shared prompt is in `prompts/retrieval_rewrite_v1.txt`; model and
+generation settings live in `llm_configs/`, separate from runnable BM25 configs.
+`llm_rewrite.py` validates and caches outputs and refuses cache-only misses.
+The adapter retains the original question for routing and supplements only the
+clause query. The scored LLM experiments are not yet complete.

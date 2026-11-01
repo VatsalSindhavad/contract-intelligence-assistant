@@ -84,7 +84,7 @@ class BM25Retriever:
         stemmer = getattr(self, 'stemmer', None)
         return [stemmer.stem(token) for token in tokens] if stemmer else tokens
 
-    def search(self, query, k=5):
+    def search(self, query, k=5, clause_override=None):
         if k < 1:
             raise ValueError('k must be positive.')
         tokens = self.normalize(tokenize(query, self.remove_stopwords))
@@ -92,6 +92,10 @@ class BM25Retriever:
             return []
         scores = self.index.get_scores(tokens)
         question = clause_question(query)
+        if question and clause_override is not None:
+            question = clause_override
+        elif not question and clause_override is not None:
+            scores = self.index.get_scores(self.normalize(tokenize(clause_override, self.remove_stopwords)))
         if self.config.get('query_mode', 'full') == 'document_then_clause' and question:
             best = int(np.argmax(scores))
             if scores[best] <= 0:
