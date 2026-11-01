@@ -2,7 +2,7 @@
 
 ## Current status
 
-Seven distinct non-LLM improvement trials are recorded: five rejected and two accepted. The currently selected model is focused BM25 clause search with zero-match fallback. Final interfaces, final test evaluation, and the full case-study report remain incomplete. Test evaluation runs so far: **0**.
+Eight distinct non-LLM improvement trials are recorded: five rejected and three accepted. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. Final interfaces, final test evaluation, and the full case-study report remain incomplete. Test evaluation runs so far: **0**.
 
 ## System design
 
@@ -10,9 +10,11 @@ The original baseline uses lowercase word tokenization, BM25Okapi (k1=1.5, b=0.7
 
 Accepted iteration 5 uses the highest full-query BM25 passage to infer a document, then ranks that document's passages using the question after the semicolon in `Consider ...; question`. Accepted iteration 7 filters common words and generic contract-question scaffolding from that clause query, falling back to the unfiltered clause query if no focused match exceeds the threshold. Indexed text, document routing, and chunk settings are unchanged. No gold source ID, answer span, or negative label enters inference. Plain unformatted questions retain baseline global search; format dependence is a limitation.
 
+Iteration 8 additionally stems indexed and query tokens with NLTK English Snowball, after clause cleanup. Stored evidence remains exact. This normalizes inflections without resolving all semantic synonyms.
+
 ## LLM use
 
-No LLM is part of retrieval yet. Two accepted non-LLM improvements now provide a comparison reference. Before later LLM work: finish the working core, choose/justify the model, protect environment-based keys, cache request-keyed outputs, enable cache-only evaluation, and measure cost, latency, and privacy implications. FAISS/dense and hybrid retrieval are not implemented or assumed to improve quality.
+No LLM is part of retrieval yet. Three accepted non-LLM improvements now provide a comparison reference. Before later LLM work: finish the working core, choose/justify the model, protect environment-based keys, cache request-keyed outputs, enable cache-only evaluation, and measure cost, latency, and privacy implications. FAISS/dense and hybrid retrieval are not implemented or assumed to improve quality.
 
 ## Evaluation setup
 
@@ -34,6 +36,7 @@ All quality rows use 140 answerable train questions. The following are BM25 pipe
 | Document then clause | 5.15% | 47.12% | 5.37% | 52.11% | Accepted |
 | Focused clause without fallback | 5.81% | 50.72% | 6.07% | 56.27% | Rejected |
 | Focused clause with fallback | 6.28% | 53.50% | 6.51% | 59.16% | Accepted |
+| Combined pipeline plus stemming | 7.88% | 67.01% | 8.38% | 76.60% | Accepted |
 
 ## Abstention and speed
 
@@ -53,7 +56,9 @@ Primary objective: gain at least 1 percentage point of unique-character recall@5
 6. Focused clause terms: rejected despite 50.72% recall; 12 false answerable abstentions broke the guardrail.
 7. Focused terms with zero-match fallback: accepted against iteration 5; recall@5 47.12% to 53.50%, with guardrails met.
 
-The loop evaluates, diagnoses, selects an untried catalog proposal, measures it, accepts/rejects it, and persists the selection. The catalog was amended before iterations 5–7 with explicit proposal documents and prerequisite checks. Both historical logs are retained. The minimum five iterations is met; the user now allows at most ten total. Do not count replays as new iterations or manufacture accepted outcomes.
+The loop evaluates, diagnoses, selects an untried catalog proposal, measures it, accepts/rejects it, and persists the selection. The catalog was amended before iterations 5–7 with explicit proposal documents and prerequisite checks. Both historical logs are retained. The minimum five iterations is met; eight are complete and the user allows at most ten total. Do not count replays as new iterations or manufacture accepted outcomes.
+
+8. English stemming on the combined accepted pipeline: accepted; unique recall@5 rose from 53.50% to 67.01%, precision@5 from 6.28% to 7.88%. Complete gold coverage rose from 57 to 82 questions. In this run candidate p95 was about 10.50 ms; both abstention rates remain unchanged.
 
 ## Ten concrete train failures
 
@@ -179,6 +184,6 @@ Privacy benefits are limited to local inference: queries and text are not sent t
 
 ## Reproduction
 
-Run notebooks 01–03 to prepare/measure the baseline. Historical trial notebooks replay or review earlier work; `python improve.py` advances one new trial. Notebook 08 reviews trials 5–7 and runs any preserved BM25 configuration without advancing the loop. Accepted config files are in `configs/` and every accepted/rejected snapshot remains under its result directory.
+Run notebooks 01–03 to prepare/measure the baseline. Historical trial notebooks replay or review earlier work; `python improve.py` advances one new trial. Notebook 08 reviews trials 5–7; notebook 09 reviews the combined stemmed model. Both run saved configurations without advancing the loop. Accepted config files are in `configs/` and every accepted/rejected snapshot remains under its result directory.
 
-Results: `results/bm25_baseline/`, `results/bm25_abstention/`, and `results/iteration_01/` through `results/iteration_07/`. Complete logs: `experiments/log.jsonl` and `experiments/loop_log.jsonl`. Tests: `python -m pytest -q`. Final test reproduction commands are pending; zero test executions have occurred.
+Results: `results/bm25_baseline/`, `results/bm25_abstention/`, and `results/iteration_01/` through `results/iteration_08/`. Complete logs: `experiments/log.jsonl` and `experiments/loop_log.jsonl`. Tests: `python -m pytest -q`. Final test reproduction commands are pending; zero test executions have occurred.

@@ -8,7 +8,7 @@ rejected changes. The eventual 4–5 approach comparison will explain retrieval
 quality, abstention, latency, cost, privacy, and operational tradeoffs.
 
 The current budget is at most ten improvement iterations beyond baseline.
-Seven non-LLM trials are recorded, with two accepted changes. See
+Eight non-LLM trials are recorded, with three accepted changes. See
 `experiments/PLAN.md`. LLMs remain deferred until the core works.
 
 ## First step
@@ -153,3 +153,7 @@ and rejected `configs/bm25_focused_clause.json` also remain runnable.
 Routing activates for `Consider document description; clause question`.
 Plain questions fall back to full-query search. These format assumptions
 must be considered when comparing approaches and using the future interfaces.
+
+Notebook 09 reviews the accepted combined pipeline plus English stemming.
+Its configuration is `configs/bm25_focused_stemmed.json`; NLTK Snowball needs
+no separate corpus download. Earlier configurations remain available.

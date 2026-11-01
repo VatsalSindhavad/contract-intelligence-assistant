@@ -12,8 +12,9 @@ iterations and requested two accepted non-LLM improvements before LLM trials.
 | 5 | Document identification then clause ranking | Accepted |
 | 6 | Focused clause tokens | Rejected: false abstention |
 | 7 | Focused tokens with zero-match fallback | Accepted |
+| 8 | Combined accepted pipeline plus English stemming | Accepted |
 
-The two requested accepted improvements are complete. Three iteration slots
+The two requested improvements and one further combined improvement are complete. Two iteration slots
 remain, including possible LLM work. Choose the next proposal from evidence,
 not to fill a table; never loosen rules after observing a result. Replays do
 not count as distinct iterations. Minimum core iteration count is satisfied.
