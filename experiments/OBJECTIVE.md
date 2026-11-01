@@ -34,3 +34,28 @@ The proposal is authored by Codex from the train failure summary. This step
 implements one iteration only. The remaining required iterations will follow
 one at a time, with the same objective unless a justified amendment is recorded
 before running further candidates. No test results are inspected.
+
+## Loop continuation declared before iteration 2
+
+`python improve.py` runs one new iteration and resumes from the last selected
+configuration. The numerical acceptance policy above is unchanged. From
+iteration 2 onward the reference is the current accepted configuration, with
+the original baseline also reported in every result.
+
+The finite catalog in `proposals.json` is fixed before candidate measurement.
+Choose the untried proposal whose trigger has the largest current failure
+count; catalog order breaks ties. Skip previously tried proposal IDs,
+previously evaluated equivalent configurations, and invalid/no-op changes.
+The selected change is a hypothesis, not a guaranteed remedy. When no
+proposals remain, stop without recording another iteration.
+
+The original iteration-1 log remains intact. New loop entries live in
+`loop_log.jsonl`; together they form the iteration history. Each entry records
+the diagnosis, proposal, reason, changed settings, acceptance checks, baseline
+and candidate metrics, selected configuration, and reproducibility hashes.
+The frozen negative set must still match committed Git bytes before each run.
+
+The default is one step so each outcome can be reviewed. `--steps N` repeats
+the same state transition, up to five steps per invocation. A single-writer
+lock prevents concurrent command runs from choosing the same iteration.
+No LLM, web interface, test evaluation, or optional feature is introduced.

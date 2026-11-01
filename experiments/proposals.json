@@ -1,0 +1,37 @@
+[
+  {
+    "id": "smaller_chunks",
+    "name": "bm25_chunks_500",
+    "trigger": "right_document_wrong_section",
+    "changes": {"chunk_size": 500},
+    "reason": "Shorter passages may separate relevant clauses from nearby distracting text."
+  },
+  {
+    "id": "larger_chunks",
+    "name": "bm25_chunks_1500",
+    "trigger": "partial_coverage",
+    "changes": {"chunk_size": 1500},
+    "reason": "Longer passages may cover answer spans split across chunk boundaries."
+  },
+  {
+    "id": "less_length_normalization",
+    "name": "bm25_b_030",
+    "trigger": "right_document_wrong_section",
+    "changes": {"b": 0.3},
+    "reason": "Less length normalization may reduce ranking bias toward short fragments."
+  },
+  {
+    "id": "lower_term_saturation",
+    "name": "bm25_k1_080",
+    "trigger": "right_document_wrong_section",
+    "changes": {"k1": 0.8},
+    "reason": "Earlier term-frequency saturation may reduce the influence of repeated words."
+  },
+  {
+    "id": "positive_score_threshold",
+    "name": "bm25_threshold_50",
+    "trigger": "false_returns",
+    "changes": {"min_score": 50.0},
+    "reason": "A higher score threshold may reduce false returns, subject to recall and false-abstention guardrails."
+  }
+]

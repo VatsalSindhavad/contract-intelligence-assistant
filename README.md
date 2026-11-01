@@ -74,3 +74,20 @@ remain unchanged. `experiments/log.jsonl` records accepted and rejected runs;
 `results/iteration_01/` contains predictions, metrics, decisions, and code hashes.
 Only one distinct proposal is implemented in this checkpoint. Rerunning it
 does not count as a new improvement iteration.
+
+## Diagnostic-driven improvement loop
+
+Run `python improve.py` for **one new iteration**, then inspect its result.
+The command diagnoses the selected configuration on train, chooses an untried
+change from `experiments/proposals.json`, evaluates it, and accepts or rejects
+it using the existing guardrails. It resumes from `experiments/loop_log.jsonl`.
+The original iteration is preserved in `experiments/log.jsonl`. Consider both
+logs when counting distinct iterations. New results also compare the original
+baseline. When the catalog is exhausted, the command stops without a new entry.
+
+`python improve.py --steps 3` runs three successive steps when desired.
+Use one step while reviewing results. Do not run `run_experiment.py` to advance
+the loop: that script replays only the historical first proposal.
+Recorded configurations under each result folder can be loaded into
+`BM25Retriever` to rerun accepted or rejected approaches. Notebook 05 reviews
+saved loop results without starting another experiment when run again.
