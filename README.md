@@ -1,5 +1,10 @@
 # Contract retrieval experiments
 
+See `APPROACH.md` for the current study structure: completed BM25 experiments,
+three planned dense comparisons, final submission checks, then deferred hybrid
+extensions. The semantic phase extends the former ten-trial cap to thirteen;
+it does not erase the completed history. No semantic results are claimed yet.
+
 Work proceeds one notebook at a time: data validation, a simple baseline,
 measured improvements, a working core application, then LLM experiments.
 Each approach will retain its configuration, run instructions, predictions,
