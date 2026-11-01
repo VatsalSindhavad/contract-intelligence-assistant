@@ -8,6 +8,7 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 
 STOPWORDS = frozenset('a an and are as at be been being by do does for from had has have how i if in into is it its of on or that the their them there these they this those to was were what when where which who will with would'.split())
+QUESTION_SCAFFOLD = frozenset('contract agreement include includes included contain contains containing any provision provisions clause clauses'.split())
 
 def load_inputs(root):
     root = Path(root)
@@ -48,6 +49,14 @@ def clause_question(query):
     return match.group(1).strip() if match else None
 
 
+def clause_tokens(question, cleanup=False, remove_stopwords=False):
+    tokens = tokenize(question, remove_stopwords)
+    if cleanup:
+        focused = [t for t in tokens if t not in STOPWORDS and t not in QUESTION_SCAFFOLD]
+        return focused or tokens
+    return tokens
+
+
 class BM25Retriever:
     def __init__(self, documents, config):
         self.config = dict(config)
@@ -73,7 +82,7 @@ class BM25Retriever:
             if scores[best] <= 0:
                 return []
             source = self.chunks[best]['file_path']
-            question_tokens = tokenize(question, self.remove_stopwords)
+            question_tokens = clause_tokens(question, self.config.get('clause_query_cleanup', False), self.remove_stopwords)
             if not question_tokens:
                 return []
             scores = self.index.get_scores(question_tokens)

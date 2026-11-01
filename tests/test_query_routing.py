@@ -1,6 +1,6 @@
 import numpy as np
 
-from retrieval import BM25Retriever, clause_question
+from retrieval import BM25Retriever, clause_question, clause_tokens
 
 
 def test_question_parser_preserves_plain_query_and_semicolons():
@@ -36,3 +36,12 @@ def test_plain_query_uses_original_global_search():
 
 def test_baseline_does_not_apply_routing():
     assert stub_retriever('full').search('Consider A; term')[0]['text'] == 'intro'
+
+
+def test_cleanup_removes_scaffold_and_preserves_legal_negation():
+    assert clause_tokens('Does this contract include sublicensing without consent?', True) == ['sublicensing', 'without', 'consent']
+    assert clause_tokens('Is assignment not allowed?', True) == ['assignment', 'not', 'allowed']
+
+
+def test_cleanup_never_silently_discards_all_terms():
+    assert clause_tokens('the contract', True) == ['the', 'contract']

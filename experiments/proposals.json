@@ -1,5 +1,13 @@
 [
   {
+    "id": "clause_query_cleanup",
+    "name": "bm25_focused_clause",
+    "trigger": "right_document_wrong_section",
+    "requires": {"query_mode": "document_then_clause"},
+    "changes": {"clause_query_cleanup": true},
+    "reason": "Remove function words and generic contract-question scaffolding from the clause query while preserving negation and keeping document routing unchanged."
+  },
+  {
     "id": "document_then_clause",
     "name": "bm25_document_then_clause",
     "trigger": "right_document_wrong_section",

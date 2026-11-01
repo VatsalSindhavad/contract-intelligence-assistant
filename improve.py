@@ -48,6 +48,8 @@ def resume_state(baseline, historical, loop_history):
 def choose_proposal(current, diagnosis, proposals, tried_ids, tried_configs):
     ranked = sorted(enumerate(proposals), key=lambda pair: (-diagnosis.get(pair[1]['trigger'], 0), pair[0]))
     for _, proposal in ranked:
+        if any(current.get(k) != v for k, v in proposal.get('requires', {}).items()):
+            continue
         candidate = dict(current, **proposal['changes'], name=proposal['name'])
         if proposal['id'] in tried_ids or config_key(candidate) in tried_configs or config_key(candidate) == config_key(current):
             continue

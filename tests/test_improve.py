@@ -65,3 +65,11 @@ def test_invalid_overlap_candidate_is_skipped():
     proposals[0]['changes']['chunk_size'] = 100
     selected, _ = choose_proposal(BASE, dict(wrong_section=10), proposals, set(), set())
     assert selected['id'] == 'large'
+
+
+def test_proposal_requires_matching_current_mode():
+    proposals = [dict(id='cleanup', name='cleanup', trigger='wrong_section',
+                      requires=dict(query_mode='document_then_clause'), changes=dict(clause_query_cleanup=True))]
+    assert choose_proposal(BASE, {}, proposals, set(), set()) == (None, None)
+    proposal, _ = choose_proposal(dict(BASE, query_mode='document_then_clause'), {}, proposals, set(), set())
+    assert proposal['id'] == 'cleanup'
