@@ -85,7 +85,7 @@ def run_step(root):
     if llm_history:
         raise ValueError('The loop has entered the hosted/local comparison phase. Replay existing results; do not start another core proposal.')
     limits_path = root / 'experiments/limits.json'
-    if limits_path.exists() and iteration > read_json(limits_path)['max_iterations']:
+    if limits_path.exists() and read_json(limits_path)['max_iterations'] is not None and iteration > read_json(limits_path)['max_iterations']:
         return None
     objective = read_json(root / 'experiments/objective.json')
     if history and objective != history[-1]['objective']:

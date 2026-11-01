@@ -1,0 +1,14 @@
+{
+  "phase": "local exact-excerpt precision pilot",
+  "primary_metric": "unique_character_precision_at_5",
+  "minimum_precision_gain_absolute": 0.01,
+  "maximum_recall_drop_absolute": 0.02,
+  "maximum_false_abstention_increase_absolute": 0.02,
+  "maximum_correct_abstention_drop_absolute": 0.0,
+  "latency_p95_floor_ms": 50.0,
+  "latency_p95_multiplier": 2.0,
+  "scope": "fixed 10 answerable and 5 negative train records; pilot only",
+  "selection": "ascending SHA-256 of stripped query, independent of scores and labels beyond answerable/negative strata",
+  "output": "at most one exact source excerpt; k is maximum result count, fixed candidate pool of five",
+  "decision": "quality gate controls expansion; operational latency decision is reported separately"
+}
