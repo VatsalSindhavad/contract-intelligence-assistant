@@ -1,5 +1,7 @@
 # Contract Intelligence Assistant
 
+Private repository: https://github.com/VatsalSindhavad/contract-intelligence-assistant
+
 Search a fixed contract corpus, inspect ranked source passages and character
 offsets, and return no evidence when support is insufficient. The default demo
 compares Run 1, Run 2 and the original BM25 baseline. All previous attempts,
@@ -201,7 +203,8 @@ data and temporary runtime files are excluded from Git. Prior local history
 must be audited before the private GitHub submission is created/published.
 
 Verification checkpoint: [deliverables and checks](docs/DELIVERABLES_CHECK.md).
-The working files are ready for review; no GitHub repository has been created
-or uploaded, and clean publication finalisation is paused for that review.
+The private repository was created under VatsalSindhavad. Publication excludes
+credentials, the source assignment PDF, personal guides, downloaded weights
+and data; reproducible downloads and cached outputs are provided.
 
 Publication history was filtered only to remove excluded personal/credential/PDF paths; chronological experiment proof and frozen negatives remain. Historical commit-ID mapping is under experiments/source_snapshots/.
