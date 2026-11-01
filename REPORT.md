@@ -356,3 +356,60 @@ a Windows PyTorch DLL initialization issue; the standalone train benchmark
 used the same pinned CPU encoder directly. The verified presentation query
 replays saved vectors with no model loading or external calls. This runtime
 fix does not constitute another model experiment.
+
+## Local precision pilot (trial 12; separate cohort)
+
+Semantic work was paused at the user's request. This is a new post-retrieval
+candidate on top of the preserved local Phi-3 query-expansion/BM25 pipeline,
+not a change to any earlier model. The exact instruction-only prompt is in
+prompts/extract_answer_v1.txt; no worked example was included. The request
+contains only the question and retrieved passages. Gold labels/answers/offsets
+are used only after inference for scoring.
+
+Ten answerable and five negative train records were fixed by query-hash order
+before generation. This small pilot is not directly comparable to the 140/23
+full-train tables. It intentionally tests the user's concise one-line answer
+idea while requiring an exact source quote so retrieval offsets remain valid.
+
+| Same pilot cohort | Reference local rewrite + BM25 | Exact-excerpt candidate |
+|---|---:|---:|
+| Answerable queries | 10 | 10 |
+| Unique precision@5 | 3.06% | 6.00% |
+| Unique recall@5 | 45.88% | 35.40% |
+| Reference precision@5 | 3.38% | 6.17% |
+| Reference recall@5 | 54.57% | 39.09% |
+| Correct negative abstentions | 0/5 | 2/5 |
+| False answerable abstentions | 0/10 | 0/10 |
+
+The new phase's policy was declared before measurement: at least a one-point
+precision gain, at most a two-point recall loss, and protected abstention.
+Precision rose 2.94 points, but recall fell 10.48 points, so the quality gate
+failed. The existing operational latency check also failed. First-use timing
+includes both the upstream local rewrite and extraction; a cached replay was
+rerun to correct timing accounting, with identical quality scores. Both saved
+run records remain the same proposal, not two new experiments.
+
+Nine of fifteen outputs passed source/schema validation, including two explicit
+no-answer responses. Six were invalid: five quotes were not exact substrings
+of the cited passage, and one JSON string was truncated/unparseable. Invalid
+outputs retain the original candidates rather than removing difficult queries.
+Every returned excerpt was checked against the original document slice.
+Validity does not mean the quote necessarily answers the question correctly.
+
+Returned characters averaged 2,638 versus 4,980.8 input characters on the ten
+answerable queries; fallback passages explain why not every result is short.
+Four zero-overlap reference failures became six after extraction. A concise
+fact can omit required clause evidence or select the wrong text; shorter output
+alone is not successful retrieval. The exact-copy constraint also exposed the
+small model's quoting/format-following limitations.
+
+The candidate is not adopted. There is no full-train expansion, Gemini
+extraction, or semantic continuation yet. Stop and review possible output/
+prompt redesign rather than spend API quota. Possible future hypotheses are
+selecting source sentence IDs instead of copying or asking for the complete
+answering clause with qualifiers; these are suggestions, not measured trials.
+
+All 15 local request/response records are cached in cache/local_extractions/.
+See notebook 13, experiments/precision_log.jsonl, and
+results/iteration_12_precision_pilot/. The original pipelines, prompts, and
+caches remain available. Test performance remains unmeasured.

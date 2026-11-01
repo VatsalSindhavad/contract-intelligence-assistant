@@ -1,20 +1,22 @@
 # Contract retrieval experiments
 
-See `experiments/PLAN.md` for the current study structure: completed BM25 experiments,
-three planned dense comparisons, final submission checks, then deferred hybrid
-extensions. The semantic phase extends the former ten-trial cap to thirteen;
-it does not erase the completed history. No semantic results are claimed yet.
+See `experiments/PLAN.md` for current scope. BM25/LLM trials 1–10 and the
+basic MiniLM/FAISS trial 11 are preserved. Semantic work is paused while an
+instruction-only local Phi-3 extraction pilot tests precision with recall
+protection. Every attempt is logged; ten representative versions will be
+selected for presentation later. No previous model or result is overwritten.
 
 Work proceeds one notebook at a time: data validation, a simple baseline,
 measured improvements, a working core application, then LLM experiments.
 Each approach will retain its configuration, run instructions, predictions,
 and metrics. At least five improvement iterations will be logged, including
-rejected changes. The eventual 4–5 approach comparison will explain retrieval
+rejected changes. The eventual ten-version presentation comparison will explain retrieval
 quality, abstention, latency, cost, privacy, and operational tradeoffs.
 
-The current budget is at most ten improvement iterations beyond baseline.
-Eight non-LLM trials are recorded, with three accepted changes. See
-`experiments/PLAN.md`. LLMs remain deferred until the core works.
+There is no current fixed total-trial cap. Preserve every attempt and later
+select ten representative presentation versions with the full rejected history
+retained. The new precision pilot has its own scope and stop rule; semantic
+work remains paused.
 
 ## First step
 
@@ -251,12 +253,11 @@ app. Neither presentation mode needs an API key or running model service for
 cached questions. `python evaluate_llm.py --config local_phi3` replays local
 train evaluation from cache. Notebook 11 presents the comparison.
 
-Notebook 05 reviews the required improvement process and all ten iteration
-IDs; it is not the engine. The engine is `improve.py` for core development,
-with `evaluate_llm.py` for the controlled LLM comparisons. The current ten-trial
-budget is complete, so the core command blocks new proposals in this phase.
-Running a review notebook does not start another proposal or make model calls.
-Final held-out evaluation and reproduction checks are still pending.
+Notebook 05 reviews all phase logs, including pilots. The original core loop
+engine is `improve.py`, and controlled LLM comparisons use `evaluate_llm.py`.
+The old core-proposal sequence is closed; the precision phase uses its separate
+runner and declared policy. The current pilot failed its recall gate and is
+stopped for review. Final held-out evaluation/reproduction remain pending.
 
 ## Pure semantic baseline
 
@@ -287,3 +288,19 @@ On this Windows environment, notebook/web embedding of previously unseen
 queries uses an isolated local Python worker to avoid a PyTorch DLL loading
 issue in those runtimes. The model/settings are unchanged; known vectors load
 without the worker. Diagnostic worker logs are ignored by Git.
+
+## Local precision pilot
+
+The new extraction candidate is separate from all prior pipelines. Its exact
+instruction-only prompt is prompts/extract_answer_v1.txt; no example is used.
+`python run_precision_pilot.py --fill --max-new 1` permits one local generation
+for the fixed pilot. `python run_precision_pilot.py` evaluates completed caches
+only. The pilot uses ten answerable and five negative train questions selected
+independently of outcomes, not the whole train set. Its results must not be
+compared directly to the full-train summary numbers.
+
+The model sees only the question and retrieved passages. It must return one
+exact source quote; offsets are computed and validated. Invalid output falls
+back to the original candidates; explicit no-answer is measured as abstention.
+See experiments/precision_objective.json for the predeclared quality gates.
+If those fail, pause rather than automatically proceed to Gemini or semantics.

@@ -36,6 +36,8 @@ def validate_extraction(raw,candidates):
     if not 1<=identifier<=len(candidates) or not answer.strip():
         raise ValueError('Invalid passage ID or empty answer.')
     passage=candidates[identifier-1]
+    if passage['end']-passage['start']!=len(passage['text']):
+        raise ValueError('Candidate source offsets do not match its text length.')
     position=passage['text'].find(answer)
     if position<0:
         raise ValueError('Answer is not an exact substring of the cited passage.')
@@ -112,9 +114,12 @@ class ExtractiveRetriever:
     def search(self,query,k=5):
         started=perf_counter()
         candidates=self.base.search(query,k=self.config['candidate_k'])
+        upstream=getattr(self.base,'events',[])
+        upstream_ms=upstream[-1].get('original_model_call_ms',0) if upstream else 0
         entry,_=extract_cached(self.root,self.config,query,candidates,cache_only=True)
         self.events.append(dict(cache_key=entry['cache_key'],status=entry['status'],
                                 validation_error=entry['validation_error'],model_call_ms=entry['model_call_ms'],
+                                upstream_rewrite_model_call_ms=upstream_ms,
                                 replay_ms=(perf_counter()-started)*1000,
                                 input_characters=sum(len(h['text']) for h in candidates),
                                 output_characters=sum(len(h['text']) for h in entry['hits']),

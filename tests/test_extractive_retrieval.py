@@ -7,7 +7,8 @@ from run_precision_pilot import precision_decision,select_pilot
 
 
 def candidates():
-    return [dict(file_path='a',start=100,end=143,text='The license ends on 31 December 2027 unless extended.',score=3.0)]
+    text='The license ends on 31 December 2027 unless extended.'
+    return [dict(file_path='a',start=100,end=100+len(text),text=text,score=3.0)]
 
 
 @pytest.fixture
@@ -29,7 +30,7 @@ def test_exact_quote_maps_to_original_source_positions():
 def test_paraphrase_and_ambiguous_quote_are_rejected():
     with pytest.raises(ValueError,match='exact substring'):
         validate_extraction('{"passage_id":1,"answer":"It expires next year"}',candidates())
-    repeated=[dict(candidates()[0],text='license license')]
+    repeated=[dict(candidates()[0],text='license license',end=115)]
     with pytest.raises(ValueError,match='ambiguous'):
         validate_extraction('{"passage_id":1,"answer":"license"}',repeated)
 

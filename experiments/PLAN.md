@@ -1,5 +1,21 @@
 # Iteration plan and current status
 
+## Current phase revision
+
+Semantic work is paused after trial 11. Trial 12 is an instruction-only local
+Phi-3 exact-excerpt pilot on 10 answerable and 5 negative train questions. Its
+new precision objective and recall/abstention gates were declared before
+measurement. No Gemini extraction or Kanon experiment is authorized to start
+automatically. If the pilot fails, stop and review; if it passes, full train
+validation remains necessary. All prior approaches remain intact.
+
+There is no current fixed total-trial cap; retain every attempt and later
+select ten representative versions for presentation, with complete history
+including failures preserved. Earlier numerical caps and semantic plans below
+are historical. Kanon and dense-plus-Gemini remain unrun future work.
+
+## Earlier phase history
+
 The user has now authorized a separate semantic phase after the completed
 BM25 study. The current plan is: trial 11 local dense baseline,
 12 Kanon dense baseline, and 13 selected dense retrieval with Gemini. The
@@ -49,3 +65,8 @@ freeze, held-out evaluation and reporting, not new proposal generation.
 Semantic iteration 11 is complete: pure MiniLM + exact FAISS, retained as a
 comparison but rejected against tuned BM25. Iterations 12 (Kanon) and 13
 (selected dense + Gemini) remain planned. See REPORT.md for measured outcomes.
+
+Trial 12 pilot outcome: precision improved on the same ten answerable queries,
+but recall loss exceeded the declared guardrail. The candidate is not adopted.
+All fifteen inputs/outputs are cached. Stop for review; do not proceed to
+Gemini extraction, full-train expansion, or semantics automatically.

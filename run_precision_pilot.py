@@ -82,15 +82,22 @@ def evaluate(root):
     policy=read_json(root/'experiments/precision_objective.json')
     for record in positives+negatives:
         extract_cached(root,config,record['query'],base.search(record['query'],config['candidate_k']),cache_only=True)
+    reference_start=len(base.events)
     reference=dict(answerable=evaluate_train(base,positives,[1,3,5,10]),
                    negative=evaluate_negative_train(base,negatives))
+    reference_events=base.events[reference_start:reference_start+len(positives)]
+    reference_first=[e['original_model_call_ms']+p['latency_ms'] for e,p in zip(reference_events,reference['answerable']['predictions'])]
     model=ExtractiveRetriever(base,root,config)
     answerable=evaluate_train(model,positives,[1,3,5,10])
     answer_events=list(model.events)
     negative=evaluate_negative_train(model,negatives)
+    for prediction in answerable['predictions']+negative['predictions']:
+        for hit in prediction['hits']:
+            if documents[hit['file_path']][hit['start']:hit['end']]!=hit['text']:
+                raise ValueError('Returned excerpt does not match its source offsets.')
     candidate=dict(answerable=answerable,negative=negative)
     decision=precision_decision(reference,candidate,policy)
-    first=[e['model_call_ms']+e['replay_ms'] for e in answer_events]
+    first=[e['model_call_ms']+e['upstream_rewrite_model_call_ms']+e['replay_ms'] for e in answer_events]
     first_use=dict(median=float(np.median(first)),p95=float(np.percentile(first,95)))
     latency_pass=first_use['p95']<=max(policy['latency_p95_floor_ms'],reference['answerable']['latency_ms']['p95']*policy['latency_p95_multiplier'])
     run_id=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
@@ -101,6 +108,8 @@ def evaluate(root):
              model_config=config,policy=policy,quality_decision=decision,
              operational_accepted=decision['quality_pass'] and latency_pass,latency_pass=latency_pass,
              estimated_first_use_latency_ms=first_use,
+             reference_estimated_first_use_latency_ms=dict(median=float(np.median(reference_first)),p95=float(np.percentile(reference_first,95))),
+             timing_note='Candidate first-use estimate includes upstream rewrite and extraction generation plus replay retrieval; quality gates are unchanged.',
              metrics={label:compact(value) for label,value in [('reference',reference),('candidate',candidate)]},
              diagnosis_before=diagnose(positives,reference['answerable']['predictions']),
              diagnosis_after=diagnose(positives,answerable['predictions']),

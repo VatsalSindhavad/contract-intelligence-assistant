@@ -1,0 +1,205 @@
+{
+  "iteration": 12,
+  "scope": "pilot only; not comparable with full-train aggregates",
+  "run_id": "20261101T065208788511Z",
+  "proposer": "User instruction: exact one-line answer; local instruction-only prompt, no example",
+  "model_config": {
+    "name": "phi3_exact_excerpt_pilot",
+    "provider": "ollama",
+    "model": "phi3:mini",
+    "model_revision": "4f222292793889a9a40a020799cfd28d53f3e01af25d48e06c5e708610fc47e9",
+    "runtime": "ollama-0.40.13",
+    "prompt_file": "prompts/extract_answer_v1.txt",
+    "temperature": 0,
+    "seed": 42,
+    "max_output_tokens": 256,
+    "context_length": 8192,
+    "candidate_k": 5,
+    "retrieval_config": "llm_configs/local_phi3.json",
+    "pilot_answerable_count": 10,
+    "pilot_negative_count": 5,
+    "invalid_output_policy": "return_original_candidates"
+  },
+  "policy": {
+    "phase": "local exact-excerpt precision pilot",
+    "primary_metric": "unique_character_precision_at_5",
+    "minimum_precision_gain_absolute": 0.01,
+    "maximum_recall_drop_absolute": 0.02,
+    "maximum_false_abstention_increase_absolute": 0.02,
+    "maximum_correct_abstention_drop_absolute": 0.0,
+    "latency_p95_floor_ms": 50.0,
+    "latency_p95_multiplier": 2.0,
+    "scope": "fixed 10 answerable and 5 negative train records; pilot only",
+    "selection": "ascending SHA-256 of stripped query, independent of scores and labels beyond answerable/negative strata",
+    "output": "at most one exact source excerpt; k is maximum result count, fixed candidate pool of five",
+    "decision": "quality gate controls expansion; operational latency decision is reported separately"
+  },
+  "quality_decision": {
+    "quality_pass": false,
+    "checks": {
+      "precision_gain": true,
+      "recall": false,
+      "answerable_abstention": true,
+      "negative_abstention": true
+    }
+  },
+  "operational_accepted": false,
+  "latency_pass": false,
+  "estimated_first_use_latency_ms": {
+    "median": 7827.765549940523,
+    "p95": 11814.491960051237
+  },
+  "reference_estimated_first_use_latency_ms": {
+    "median": 710.2261999971233,
+    "p95": 3742.034465074539
+  },
+  "timing_note": "Candidate first-use estimate includes upstream rewrite and extraction generation plus replay retrieval; quality gates are unchanged.",
+  "metrics": {
+    "reference": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 10,
+          "precision": 0.0927,
+          "recall": 0.29778597785977856,
+          "hit": 0.3,
+          "benchmark_precision": 0.0927,
+          "benchmark_recall": 0.29778597785977856
+        },
+        {
+          "k": 3,
+          "n_queries": 10,
+          "precision": 0.03345952380952381,
+          "recall": 0.3047872340425532,
+          "hit": 0.4,
+          "benchmark_precision": 0.0421,
+          "benchmark_recall": 0.3916876030462433
+        },
+        {
+          "k": 5,
+          "n_queries": 10,
+          "precision": 0.030612840702854312,
+          "recall": 0.45876450676982594,
+          "hit": 0.6,
+          "benchmark_precision": 0.03376782029950083,
+          "benchmark_recall": 0.5456648757735161
+        },
+        {
+          "k": 10,
+          "n_queries": 10,
+          "precision": 0.03409826045318763,
+          "recall": 0.7839015151515152,
+          "hit": 0.8,
+          "benchmark_precision": 0.03982642740619902,
+          "benchmark_recall": 0.9690234616321017
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 5,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 11.873200011905283,
+        "p95": 15.01422997098416
+      }
+    },
+    "candidate": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 10,
+          "precision": 0.10752894736842107,
+          "recall": 0.29778597785977856,
+          "hit": 0.3,
+          "benchmark_precision": 0.10752894736842107,
+          "benchmark_recall": 0.29778597785977856
+        },
+        {
+          "k": 3,
+          "n_queries": 10,
+          "precision": 0.06275275689223057,
+          "recall": 0.3,
+          "hit": 0.3,
+          "benchmark_precision": 0.06812894736842105,
+          "benchmark_recall": 0.3369003690036901
+        },
+        {
+          "k": 5,
+          "n_queries": 10,
+          "precision": 0.0599644019138756,
+          "recall": 0.35397727272727275,
+          "hit": 0.4,
+          "benchmark_precision": 0.06170894736842105,
+          "benchmark_recall": 0.39087764173096284
+        },
+        {
+          "k": 10,
+          "n_queries": 10,
+          "precision": 0.0599644019138756,
+          "recall": 0.35397727272727275,
+          "hit": 0.4,
+          "benchmark_precision": 0.06170894736842105,
+          "benchmark_recall": 0.39087764173096284
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.4,
+      "negative_counts": {
+        "n": 5,
+        "correct": 2
+      },
+      "latency_ms": {
+        "median": 12.502200028393418,
+        "p95": 16.877815028419715
+      }
+    }
+  },
+  "diagnosis_before": {
+    "partial_coverage": 2,
+    "right_document_wrong_section": 4,
+    "complete_coverage": 4
+  },
+  "diagnosis_after": {
+    "right_document_wrong_section": 6,
+    "complete_coverage": 3,
+    "partial_coverage": 1
+  },
+  "pilot_ids": {
+    "answerable": [
+      "03c9e736ac51fbafac7409ac4e6fdeebea1c519d28cee8246470a6032140dc19",
+      "040ce0d95ce5519b5f4fd05dd9c77b002c3f82de10faed2b822382d76ad8036c",
+      "052e87c16150bfe9c2984cf0a886292bc6ca297bb6ab06da6308fa52e4e4343c",
+      "06ff2be08a69328adc07b0b61d43248fa8a7d1b53acccc200fb53b9d0419c838",
+      "08e0c1962813603549972308c04697ca7e5164d64225b152041731701c77196c",
+      "0c6983b7ccc55129f1bcd9cac977a3d7a6ce831fcd0891436be1e8181af53b2f",
+      "0e5058ee48a6b38ed74962572cfcb0e0ea9562f9cb73820402aa440b7713868a",
+      "0e5432257bd35634105a3c02df8ed8e419c202a6afbd4e113dc816b0fb846bfc",
+      "0e90f1a4165a86e4f462e95b05316f017f344f53c0c03891f7b66be54d1ea220",
+      "0f66b1e9435dbf2a6efc5e6b31fc742175ad11b796ca195be63dea7c3bd701a4"
+    ],
+    "negative": [
+      "3d3738dd48dcb13cc02cfe48288f6bed88aed76bf3e8e65e3410eaa95b32ecb7",
+      "3f3506fa586b599a33543ff4c9207f8dc0dcb104704e750ac9bc2175dc001f89",
+      "439a5a90540a24fd0f7bd4123caab8c688ed516f768385b7ccf5782c2b99ee06",
+      "446845f6921873c1ec8c4bf3a72699bf58775e7dad5ce3382725df439ba0aa4f",
+      "47e306e64c7c8012e4a0efb3334ed159ebedba593ac0b37e9e7dada2956a7030"
+    ]
+  },
+  "status_counts": {
+    "valid": 9,
+    "invalid_output": 6
+  },
+  "mean_input_characters": 4980.8,
+  "mean_output_characters": 2638.0,
+  "n_answerable_train": 10,
+  "n_negative_train": 5,
+  "test_evaluation_runs": 0,
+  "prompt_sha256": "92690d98a651f385174d82dc3aa6d73f1e7c03124fc14c18dbb61b0a69df580f",
+  "code_sha256": {
+    "extractive_retrieval.py": "035f707172aefc46f1ba0b0629a2fb9c6268b1ff366acf9d4d71ff8a592391cb",
+    "run_precision_pilot.py": "121af4ec953791f1854227f3cfd98b5e0c45a89ab0fa4f26bec7a7678682cf1d"
+  },
+  "result_directory": "results/iteration_12_precision_pilot/20261101T065208788511Z"
+}
