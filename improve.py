@@ -81,6 +81,9 @@ def run_step(root):
     historical = read_log(root / 'experiments/log.jsonl')
     history = read_log(root / 'experiments/loop_log.jsonl')
     current, tried_ids, tried_configs, iteration = resume_state(baseline_config, historical, history)
+    llm_history = read_log(root / 'experiments/llm_log.jsonl')
+    if llm_history:
+        raise ValueError('The loop has entered the hosted/local comparison phase. Replay existing results; do not start another core proposal.')
     limits_path = root / 'experiments/limits.json'
     if limits_path.exists() and iteration > read_json(limits_path)['max_iterations']:
         return None

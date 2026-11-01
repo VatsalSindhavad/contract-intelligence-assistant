@@ -89,3 +89,14 @@ def test_iteration_limit_stops_before_reading_train_data(tmp_path, monkeypatch):
         raise AssertionError('No data should be read beyond the iteration budget.')
     monkeypatch.setattr(improve, 'load_inputs', fail_if_read)
     assert improve.run_step(tmp_path) is None
+
+
+def test_core_loop_cannot_reuse_an_llm_iteration_number(tmp_path, monkeypatch):
+    import improve
+    (tmp_path/'configs').mkdir()
+    (tmp_path/'experiments').mkdir()
+    (tmp_path/'configs/bm25_baseline.json').write_text(json.dumps(BASE),encoding='utf-8')
+    (tmp_path/'experiments/llm_log.jsonl').write_text(json.dumps(dict(iteration=9)),encoding='utf-8')
+    monkeypatch.setattr(improve,'verify_freeze',lambda root:None)
+    with pytest.raises(ValueError,match='comparison phase'):
+        improve.run_step(tmp_path)
