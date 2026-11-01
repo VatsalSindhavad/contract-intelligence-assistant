@@ -3,7 +3,7 @@
 The hosted experiment will use a Gemini API key created in Google AI Studio.
 The model identifier is configured in `llm_configs/gemini.json`. Current model
 availability was checked against Google's model documentation; access and quota
-still depend on the account. No API calls have been made yet.
+still depend on the account. One approved connection-check request has succeeded; no retrieval evaluation has been performed.
 
 ## Set the key locally
 
@@ -47,8 +47,8 @@ requested hosted-first sequence. Enable it only after the hosted checkpoint.
 
 ## What is not complete yet
 
-Credential/access verification, full cache population, and scored iteration 9
-are pending. Iteration 10 follows with Phi-3. The existing numerical acceptance
+Credential/access verification passed for one approved question. The remaining
+52 question requests, full cache population, and scored iteration 9 are pending. Iteration 10 follows with Phi-3. The existing numerical acceptance
 rules remain unchanged. Report model-generation latency separately from cache
 replay and retrieval; never treat replay speed as first-run inference speed.
 Final held-out evaluation, cost/privacy analysis, report, and reproduction
