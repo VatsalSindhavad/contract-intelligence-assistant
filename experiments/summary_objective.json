@@ -1,0 +1,15 @@
+{
+  "phase": "full-train local one-shot summary with exact evidence",
+  "primary_metric": "unique_character_precision_at_5",
+  "minimum_precision_gain_absolute": 0.01,
+  "maximum_recall_drop_absolute": 0.02,
+  "maximum_false_abstention_increase_absolute": 0.02,
+  "maximum_correct_abstention_drop_absolute": 0.0,
+  "latency_p95_floor_ms": 50.0,
+  "latency_p95_multiplier": 2.0,
+  "scope": "all 140 answerable and 23 negative train queries",
+  "output": "one or two summary lines for reading; score up to three exact source evidence quotes",
+  "candidate_budget": 5,
+  "summary_scored_as_retrieval": false,
+  "decision": "quality and operational latency decisions reported separately"
+}
