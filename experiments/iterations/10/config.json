@@ -1,0 +1,13 @@
+{
+  "name": "llm_local_phi3_rewrite",
+  "provider": "ollama",
+  "model": "phi3:mini",
+  "model_revision": "4f222292793889a9a40a020799cfd28d53f3e01af25d48e06c5e708610fc47e9",
+  "runtime": "ollama-0.40.13",
+  "prompt_file": "prompts/retrieval_rewrite_v1.txt",
+  "temperature": 0,
+  "seed": 42,
+  "max_output_tokens": 256,
+  "context_length": 2048,
+  "baseline_config": "configs/bm25_focused_stemmed.json"
+}

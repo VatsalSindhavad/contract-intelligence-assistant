@@ -1,10 +1,11 @@
 import hashlib
 import json
 
+import bootstrap
 import streamlit as st
 
 from llm_rewrite import CacheMissError
-from search_service import DEFAULT_CONFIG, EXAMPLE_QUERY, ROOT, available_configs, build_model, config_label, search
+from search_service import DEMO_DEFAULT_CONFIG, EXAMPLE_QUERY, ROOT, demo_configs, build_model, config_label, search
 
 
 st.set_page_config(page_title='Contract clause search', page_icon='📄', layout='wide')
@@ -12,15 +13,15 @@ st.title('Contract clause search')
 st.write('Find relevant passages and check the original contract evidence.')
 st.caption('Development demo: matching passages do not establish that a question is answerable.')
 
-configs = available_configs()
+configs = demo_configs()
 if not configs:
     st.error('No saved configurations found.')
     st.stop()
 names = list(configs)
-selected = st.selectbox('Retrieval configuration', names, index=names.index(DEFAULT_CONFIG) if DEFAULT_CONFIG in names else 0, format_func=config_label)
+selected = st.selectbox('Retrieval configuration', names, index=names.index(DEMO_DEFAULT_CONFIG) if DEMO_DEFAULT_CONFIG in names else 0, format_func=config_label)
 st.caption('“Better than baseline” marks accepted train improvements. Held-out test performance is not yet measured.')
 if selected.startswith('llm_'):
-    st.info('This LLM comparison replays cached rewrites only. An uncached question produces an error and makes no API call.')
+    st.info('This LLM comparison replays cached outputs only. An uncached question produces an error and makes no API call.')
 with st.form('search_form'):
     question = st.text_area('Question', value=EXAMPLE_QUERY, height=110,
                             help='For a named contract, use: Consider contract description; your question. Plain questions search the whole corpus.')
@@ -52,6 +53,13 @@ if submitted:
 result = st.session_state.get('search_result')
 if result:
     st.caption(f"Results for: {result['query']} | {result['configuration']} | {result['latency_ms']:.1f} ms")
+    if 'summary' in result:
+        if result['summary']:
+            st.subheader('Summary')
+            st.text(result['summary'])
+            st.caption('Generated summary for reading; the source quotes below are the evidence scored in evaluation.')
+        else:
+            st.info('Summary output failed validation. Original retrieved passages are shown instead.')
     if not result['hits']:
         st.info(result['message'])
     for rank, hit in enumerate(result['hits'], 1):

@@ -1,0 +1,1618 @@
+[
+  {
+    "model": "broad10",
+    "config_path": "llm_configs/hybrid_gemini_broad10.json",
+    "test_metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 54,
+          "precision": 0.5356234479089073,
+          "recall": 0.4515519525634566,
+          "hit": 0.5925925925925926,
+          "benchmark_precision": 0.5356234479089073,
+          "benchmark_recall": 0.4515519525634566
+        },
+        {
+          "k": 3,
+          "n_queries": 54,
+          "precision": 0.5810498942323369,
+          "recall": 0.5453374370047971,
+          "hit": 0.7222222222222222,
+          "benchmark_precision": 0.582304772070548,
+          "benchmark_recall": 0.5621005803160605
+        },
+        {
+          "k": 5,
+          "n_queries": 54,
+          "precision": 0.5814464422165454,
+          "recall": 0.5693757347321472,
+          "hit": 0.7407407407407407,
+          "benchmark_precision": 0.5821111822515673,
+          "benchmark_recall": 0.5861388780434107
+        },
+        {
+          "k": 10,
+          "n_queries": 54,
+          "precision": 0.5799528089157483,
+          "recall": 0.5878942532506658,
+          "hit": 0.7592592592592593,
+          "benchmark_precision": 0.5804563177054968,
+          "benchmark_recall": 0.6115912710757124
+        }
+      ],
+      "false_abstention": 0.07407407407407407,
+      "correct_abstention": 0.7142857142857143,
+      "negative_counts": {
+        "n": 7,
+        "correct": 5
+      },
+      "latency_ms": {
+        "median": 13.026750064454973,
+        "p95": 16.56721496256068
+      }
+    },
+    "config": {
+      "name": "llm_hybrid_gemini_broad10",
+      "provider": "gemini",
+      "task": "hybrid_recall_recovery",
+      "model": "gemini-3.5-flash-lite",
+      "model_revision": "API alias; actual modelVersion recorded per response",
+      "runtime": "gemini-rest-v1beta",
+      "prompt_file": "prompts/summarise_complete_clauses_v2.txt",
+      "temperature": 0,
+      "seed": null,
+      "max_output_tokens": 3072,
+      "context_length": 1048576,
+      "thinking_level": "minimal",
+      "candidate_k": 10,
+      "retrieval_config": "configs/hybrid_recall_broad10.json",
+      "max_evidence_quotes": 5,
+      "max_summary_words": 45,
+      "invalid_output_policy": "return_original_candidates",
+      "expose_in_demo": true,
+      "stage": "broad10"
+    },
+    "events": [
+      {
+        "query": "Consider the Service Agreement between BicycleTX Ltd and Nigel Crockett for Chief Business Officer Position; What is the expiration date of this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2445.7510999636725,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.668900075368583,
+        "cache_key": "9737d4b41c0437b3de695303776e13cf017eae04ce0e16848902f320a831d723"
+      },
+      {
+        "query": "Consider the Cooperation Agreement between HPIL ENERGYTECH Inc. and GINARES GROUP AG for Renewable Energy Projects; Can this contract be terminated for convenience, and under what conditions?",
+        "status": "valid",
+        "summary": "The contract permits early termination of performance of related obligations within thirty days of receiving a written termination notice.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 1949.5244999416173,
+        "first_stage_cache_key": null,
+        "replay_ms": 15.534100006334484,
+        "cache_key": "075a56d7ce0edcb504e2940b9bab58171040eaf0beea4a53754fbb40e7ec76bf"
+      },
+      {
+        "query": "Consider the Service Agreement between Theravance Biopharma UK Limited and Brett Haumann; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "This Agreement and any related disputes or claims are governed by and construed in accordance with the law of England.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 4150.277999928221,
+        "first_stage_cache_key": null,
+        "replay_ms": 10.585299925878644,
+        "cache_key": "81e1c9439b8f765ff37500b3c96aed51b83a747b3d0214b93cbc255cc56f8dc8"
+      },
+      {
+        "query": "Consider the Service Agreement between Theravance Biopharma UK Limited and Brett Haumann; Does this contract provide for joint intellectual property ownership?",
+        "status": "valid",
+        "summary": "No, the contract does not provide for joint intellectual property ownership; all intellectual property rights created by the executive automatically vest in the company absolutely.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2908.002100070007,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.385099962353706,
+        "cache_key": "c8784212d7c277276a47b301d5277c9b0c77301888fb7e94cc54db8a92ccbba7"
+      },
+      {
+        "query": "Consider the Sponsorship Agreement between R. C. Boyd Enterprises, LLC and Cano Petroleum, Inc. for 'Honey Hole'; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "The agreement is governed by the laws of the State of Texas.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2401.885199942626,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.208799947984517,
+        "cache_key": "58bee367f376a3a04542bc0f2962a958d5ea603e466bb3296096e65e3b755d34"
+      },
+      {
+        "query": "Consider the Sponsorship Agreement between R. C. Boyd Enterprises, LLC and Cano Petroleum, Inc. for 'Honey Hole'; Is there a minimum commitment required under this contract?",
+        "status": "valid",
+        "summary": "Yes, under the contract the Company is required to produce no less than forty original episodes of the Show per year.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 4882.019900018349,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.686699909158051,
+        "cache_key": "b5dcd0882914da084679a6497823a7a1fa191a58e60b19588933d1fe38874f4e"
+      },
+      {
+        "query": "Consider the Sponsorship Agreement between Excite, Inc. and Vitamin Shoppe Industries Inc. for Promotion on WebCrawler Channels; Is there uncapped liability under this contract?",
+        "status": "valid",
+        "summary": "Yes, liability is limited except for specific sections, meaning certain claims under Sections 13(a) and 13(b) are excluded from the general damage cap.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2261.729500023648,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.705600005574524,
+        "cache_key": "d2faa81cd8ec9883ceded29ab0b4b342e78a082e6ee6d79e9f8b18a85904faf4"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there a non-compete clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract contains a non-competition clause set out in Section 7, which restricts both Rubicon and ISA during the Non-Competition Period.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2464.2714000074193,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.655200039967895,
+        "cache_key": "66d75eda82dc23e78af7c72514f43e5c7edea1177590779760605e3a00c3f46d"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract contains an anti-assignment clause prohibiting either party from transferring, assigning, or ceding rights or delegating obligations without prior written consent, with an exception for mergers, sales, or transfers of substantially all assets or stock.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 3672.020199941471,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.733100051060319,
+        "cache_key": "b1bbb2af3271e012358740a222b1fe45dc22f771b54d0a448e12794bfd17a8be"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Does this contract include any revenue or profit-sharing arrangements?",
+        "status": "valid",
+        "summary": "Yes, the contract includes profit-sharing, requiring ISA to pay Rubicon 30% of its profits on projects where Rubicon provided Contract Services, after recouping start-up costs.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2896.9719000160694,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.416199944913387,
+        "cache_key": "0952c2cd4d28d3cc4d594433b5ff12e130a9760b6db357f09a591281c3fef104"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Are there any services to be provided after the termination of this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2458.2894999766722,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.41589999012649,
+        "cache_key": "046005291d7e3337d8c1aa600d281c2f974532f1ea85af080fdd4bcb1281dc38"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there uncapped liability under this contract?",
+        "status": "valid",
+        "summary": "The contract caps liability for damages at \u00a3200,000, except in connection with a breach of Section 8 or for claims of monies due.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 1651.532500050962,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.811799951829016,
+        "cache_key": "cd2233cf00c2fa3f334dae2bf860aa76a3b0b0f076fda75dd8d6ca17ea9fbd38"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there a cap on liability under this contract?",
+        "status": "valid",
+        "summary": "Yes, each party's liability for damages hereunder shall not exceed \u00a3200,000, except in connection with a breach of Section 8 or for claims of monies due.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 4135.846699937247,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.014700030907989,
+        "cache_key": "c734835edd2164cfcfe4b40aeee0a9223ed7b153c7753c928ebb62c219803179"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there a covenant not to sue included in this contract?",
+        "status": "valid",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 1691.8463000329211,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.794699985533953,
+        "cache_key": "d81f6b58c22c06a571694905ed2ef5438837a407d0590d045381778f466b87eb"
+      },
+      {
+        "query": "Consider the Supply Agreement between Florida Chemical Company, LLC and Flotek Chemistry, LLC for Terpene Products; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, Section 23 restricts FCC from assigning or delegating its rights or obligations under the Agreement.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 1641.4611000800505,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.668799958191812,
+        "cache_key": "2bed5c026893a8011f77e1b1f97495fc56911f016371cf44a65ef5f188eabfa6"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); Does this contract include an exclusivity agreement?",
+        "status": "valid",
+        "summary": "Yes, the contract includes exclusivity provisions, such as Purolator tendering all sameday requests to Dynamex, Dynamex tendering all overnight requests to Purolator, and restrictions on soliciting certain types of freight or providing services to other competing providers.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 3438.6312999995425,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.622699908912182,
+        "cache_key": "556096bd70208a1ece68267e2c1f696bbf3fe66e25816d3e8150e33361695012"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); Can this contract be terminated for convenience, and under what conditions?",
+        "status": "valid",
+        "summary": "The contract can be terminated without cause by either party providing two years' written notice.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 7613.265700056218,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.726100092753768,
+        "cache_key": "46fa578bef4b72277038f1d75fb0fd1c3d064fc0a566e5a33f97ff136e9eec3b"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); What happens in the event of a change of control of one of the parties in this contract?",
+        "status": "valid",
+        "summary": "In the event of a change in control of one party, the other party has the right to terminate the agreement upon prior written notice.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 5393.64210003987,
+        "first_stage_cache_key": null,
+        "replay_ms": 16.934099956415594,
+        "cache_key": "d202ad636025cf072b3c575eab772dd80c4d448a036c8788390126b6ae9a0ca0"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract includes an anti-assignment clause prohibiting either party from selling, assigning, or transferring the agreement without prior written consent.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 4521.124699967913,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.114899978972971,
+        "cache_key": "118ba9c347acfd46bd84df181f1fd863a8e5383da588b9cba6121738fe8a5758"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); What are the insurance requirements under this contract?",
+        "status": "valid",
+        "summary": "Parties must maintain cargo liability ($100,000 per occurrence) and comprehensive auto/general liability ($2,000,000 inclusive), name each other as additional insureds with cross liability clauses, deliver annual certificates, include subrogation waivers, and ensure subcontractors carry adequate coverage.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 3565.8228000393137,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.36259993351996,
+        "cache_key": "d73769c66ddc14ce0660a16d710ddcbac6cabf0d70423b9065ec1a5426629a42"
+      },
+      {
+        "query": "Consider the Co-Branding Agreement between PC Quote, Inc. and A.B. Watley, Inc. for Market Data Software; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract includes an anti-assignment clause stating that the agreement, rights, or obligations cannot be assigned by ABW without prior written consent from PCQ.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2522.547500091605,
+        "first_stage_cache_key": null,
+        "replay_ms": 15.31689998228103,
+        "cache_key": "864146ae9d9c178e553ad81a667050b7c2bc7ad43025a61fc73cd266cf579752"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Is there a non-compete clause in this contract?",
+        "status": "valid",
+        "summary": "The supplied passages discuss potential non-compete obligations for inclusion in a definitive Combination Product License agreement.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2154.688799986616,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.478400000371039,
+        "cache_key": "f6170df5955cc238a2867a95984c5f4d7ffadbd3cce61281d4bc7eb2eca1e5bf"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Does this contract include any right of first refusal, right of first offer, or right of first negotiation?",
+        "status": "valid",
+        "summary": "The contract includes a Right of First Negotiation concerning the divestment of product rights or combination products, but does not include a right of first refusal or right of first offer.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 5308.0688000191,
+        "first_stage_cache_key": null,
+        "replay_ms": 19.29790002759546,
+        "cache_key": "5fb3c9fdc8619815d50271319c201b8d70614acd28a4d52b0d30e45658a99535"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Is there a minimum commitment required under this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract requires minimum commitments including a PDE Minimum and a Minimum Sales Force Level.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 7963.4958000388,
+        "first_stage_cache_key": null,
+        "replay_ms": 15.816199942491949,
+        "cache_key": "1b17c5ba6d3cd481d21f3dc2bdae304c2f4de6b8538e2b3ce6c5ccb7bf75a927"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Are there any services to be provided after the termination of this contract?",
+        "status": "valid",
+        "summary": "Upon expiration or termination, King must transfer and return Proprietary Information and provide all Promotional Materials to Depomed at King's out-of-pocket cost.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 11399.147000047378,
+        "first_stage_cache_key": null,
+        "replay_ms": 15.297100064344704,
+        "cache_key": "4f667653f452758c7dcb2878e87c9671152b1746f6155d6c5658c2e7cf01c6b9"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Is there a covenant not to sue included in this contract?",
+        "status": "valid",
+        "summary": "Yes, covenants not to sue are mentioned in the contract concerning intellectual property rights related to the AcuForm technology and related patent licenses.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 10523.585699964315,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.141200062818825,
+        "cache_key": "bcef7d1c80427025e15a2fcdb25765a25bc9dff436de13500388e7c4bf2d840c"
+      },
+      {
+        "query": "Consider the Gas Transportation Agreement between PennTex North Louisiana Operating, LLC and MRD Operating LLC; What is the renewal term for this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 4050.342000089586,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.588700046762824,
+        "cache_key": "cddb4f42223ccb25baae4a9fba6ce67d3b6dbbd1acc93fb4b1f6e617ad106232"
+      },
+      {
+        "query": "Consider the Gas Transportation Agreement between PennTex North Louisiana Operating, LLC and MRD Operating LLC; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract contains a restrictions on assignment clause prohibiting the transfer of the agreement by either party without prior written consent, subject to certain exceptions.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 4086.158400052227,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.415000004693866,
+        "cache_key": "b2eeff0957a9a13a8f81a82ce4f3d4584a97cfe308d60d2f38e994e7da8487d7"
+      },
+      {
+        "query": "Consider the Gas Transportation Agreement between PennTex North Louisiana Operating, LLC and MRD Operating LLC; Is there a covenant not to sue included in this contract?",
+        "status": "valid",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 4592.873600078747,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.231299981474876,
+        "cache_key": "078b67ff80026d43526c5c6b7a55e270b69204f4c7202d06590a8b91d40b9eaf"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; What is the expiration date of this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 11123.944899998605,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.502799927257001,
+        "cache_key": "682ce8f2227a00ea5e9d016a956ece1c2b0f4fffb357ac674aa3d1132ba7efab"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; Is there a non-disparagement clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract includes a confidentiality and non-disparagement clause prohibiting both parties from making derogatory comments during the term and for one year thereafter.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2506.393799907528,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.82299992069602,
+        "cache_key": "d9b603beb750089f059c80b806dfa439d7e02a3389613da085f9ddb677b21e7c"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; Does this contract include any volume restrictions?",
+        "status": "valid",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 3447.669700020924,
+        "first_stage_cache_key": null,
+        "replay_ms": 10.773899964988232,
+        "cache_key": "70f4da4c8cf9de592640ee6bee3c40352cf75c3f25c21696c2bca1caf231b6d6"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; What licenses are granted under this contract?",
+        "status": "valid",
+        "summary": "ABG grants Papa John's a non-transferrable, non-assignable, non-sublicensable, indivisible right and license to use the Celebrity Endorsement during the term within the territory. Papa John's also grants ABG and Celebrity a reverse license to utilize the Materials.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 6753.3648000098765,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.381500051356852,
+        "cache_key": "e60f9ca36131a9773fa36d4029b7ae007d3f94054d4f9084308920f839ce6d14"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; Are there any services to be provided after the termination of this contract?",
+        "status": "valid",
+        "summary": "Services are not provided after the contract term, but if Papa John's engages Celebrity's performance or service subject to a union's jurisdiction after the term, Papa John's must pay required union fees and minimum payments.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2458.5021000821143,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.920099987648427,
+        "cache_key": "21744cfd48e81349227fdc5b9ea3f4f4e1b175a9491fa32baf7dbdbb0a10b2b8"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between Holiday RV Superstores, Inc. and Affinity Group, Inc. for Good Sam Branding; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "The agreement is governed by the laws of the State of California without regard to principles of conflicts of laws.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 6414.88960001152,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.293900013901293,
+        "cache_key": "b4194b30f0c7847351b81a23d8a40dab5bbad0a9b3578f26448ae87c34abfb1b"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between Holiday RV Superstores, Inc. and Affinity Group, Inc. for Good Sam Branding; Can this contract be terminated for convenience, and under what conditions?",
+        "status": "valid",
+        "summary": "The contract can be terminated early by the Company for convenience if it provides AGI with at least 60 days prior written notice.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 10937.814200064167,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.497599913738668,
+        "cache_key": "8f3ab83a3493acb12311154102eaae237b59e59707af17d34cbe94c7785b9e1d"
+      },
+      {
+        "query": "Consider the Business Affiliate Agreement between Dr. George D. Green and UNION DENTAL CORP.; What are the audit rights under this contract?",
+        "status": "valid",
+        "summary": "The contract requires each party to make available all records, books, agreements, policies, and procedures relating to Confidential Information during normal business hours within ten days of a written request to verify compliance.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 17605.623799958266,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.620500008575618,
+        "cache_key": "112e6dd2b1634b353543a73ade083a3da5fe8e4a975503cdd31739ad69b7a61d"
+      },
+      {
+        "query": "Consider the Support and Maintenance Agreement between On2 Technologies, Inc. and Wildform, Inc.; How is intellectual property ownership assigned in this contract?",
+        "status": "valid",
+        "summary": "Incorporated Technology Works are the sole property of On2 as works made for hire, while Wildform retains rights to its Licensed Assets and certain Deliverables.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 8852.929700049572,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.392500066198409,
+        "cache_key": "80f53c72f5dcb4b7cebfb21de37cbb5b6ec315f4235e9b2ca1d61a8c8077543e"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; What is the notice period required to terminate the renewal?",
+        "status": "valid",
+        "summary": "Following the initial term, either party may terminate the agreement without cause upon written notice of at least 3 months.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 16117.930800071917,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.181500020436943,
+        "cache_key": "ffd7570c18a5f1cfa65431ee88d6f2854dccce0f60ea4d361b6957e5cb7cfb97"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "The contract is governed by the laws of the State of New York.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 13803.421199903823,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.730900034308434,
+        "cache_key": "2511e40887ae656f8dded06c5da413a49ff75bd817414d4bb60644416df4978b"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; Can this contract be terminated for convenience, and under what conditions?",
+        "status": "valid",
+        "summary": "Yes, the contract can be terminated for convenience following the initial term by either party providing written notice of at least 3 months.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 10596.6110000154,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.965000001713634,
+        "cache_key": "46fb6ddae9ef7fc62185f50ba211599909988012d27815e0ef5043722dc4456a"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; What licenses are granted under this contract?",
+        "status": "valid",
+        "summary": "The supplier grants the reseller a non-transferable, revocable, limited right to resell, market, promote, stimulate interest in, and solicit orders for the products and provide related services in the territory.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 8950.788700021803,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.208700063638389,
+        "cache_key": "25bd78bfd04b7ff1ef0bc2d26d1d050b20e982d8a9c212246caa8e78a7dbfdeb"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; Are there any services to be provided after the termination of this contract?",
+        "status": "valid",
+        "summary": "Upon termination, certain obligations survive, including the transfer of data and reports, fulfillment or refund of paid undelivered products, and specific provisions remaining in effect as necessary.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 12370.220100041479,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.39690007828176,
+        "cache_key": "112f992261f902a215450e0732a1f71449a34169faabdf1aeeab9a0d19f4c680"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between MJ Syndicated, Inc. and Simply Herbals for Manufacturing and Selling Health-Related Products; What is the expiration date of this contract?",
+        "status": "valid",
+        "summary": "The Joint Venture is a fixed term agreement beginning on November 27, 2018, and ending on November 30th, 2019.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 14390.473100007512,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.166800024919212,
+        "cache_key": "d7e6b1b72c0fe93aa7ddd21c42afc537d0a81e6d402a339425bb264f76d2b85f"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between MJ Syndicated, Inc. and Simply Herbals for Manufacturing and Selling Health-Related Products; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "The contract forbids participants from permitting the assignment of authority to a third party that is not a participant in the joint venture.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 8241.64409993682,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.144499971531332,
+        "cache_key": "cebb3aa699551a3d9dbad94ddf93755ba5a643e3d3ce7d2aa5bcc59cf433608f"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between MJ Syndicated, Inc. and Simply Herbals for Manufacturing and Selling Health-Related Products; Is there a cap on liability under this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 8943.915599957108,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.91799992416054,
+        "cache_key": "84a3baf85ad7fe3cc4c82c5dd5caadbfcf94fc4e71504c4f94be6d4300f994bf"
+      },
+      {
+        "query": "Consider the Non-Competition Agreement and Right of First Offer between Glamis Gold Ltd. and Western Copper Corporation; What is the governing law for this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 7520.026299986057,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.088000006973743,
+        "cache_key": "a7279a9a65e0674c0eaaa63cf1cdd6cfdbece6c8a86caf016a9bec155544ac0a"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between Tate & Lyle Fermentation Products Ltd. and Igene Biotechnology, Inc. for Astaxanthin Production; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "This Agreement is governed and construed in accordance with the laws of the State of Delaware.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 6005.764600005932,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.32390000950545,
+        "cache_key": "728f25515be48030fff70c01102613a5b27c1232511cfc464505132b1c497b43"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between Tate & Lyle Fermentation Products Ltd. and Igene Biotechnology, Inc. for Astaxanthin Production; Does this contract include any right of first refusal, right of first offer, or right of first negotiation?",
+        "status": "valid",
+        "summary": "Yes, the contract includes a right of first refusal, which is detailed alongside tag-along rights in Article 12.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 1984.4280000543222,
+        "first_stage_cache_key": null,
+        "replay_ms": 16.993599943816662,
+        "cache_key": "40aacdddd83276cea041481540509e456b34f0a18b1299e988a7d611bc2c70cd"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between Tate & Lyle Fermentation Products Ltd. and Igene Biotechnology, Inc. for Astaxanthin Production; What are the audit rights under this contract?",
+        "status": "valid",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 1557.152200024575,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.604600051417947,
+        "cache_key": "697beb5a08e251848bc55af5ef5b2e249d1820d8fb957a4d8b57441f5bd85015"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Sucampo Pharmaceuticals, Inc., Sucampo Pharma, LLC, and R-Tech Ueno, Ltd.; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "The construction, validity, and performance of the agreement are governed by the laws of Japan.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 3525.0605000182986,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.051700032316148,
+        "cache_key": "ef7be888e239e9a9cdd1fe20468c14e4fea3c074376caf1b1c957e87a157b356"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Sucampo Pharmaceuticals, Inc., Sucampo Pharma, LLC, and R-Tech Ueno, Ltd.; Is there an anti-assignment clause in this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2243.881499976851,
+        "first_stage_cache_key": null,
+        "replay_ms": 13.018299941904843,
+        "cache_key": "f271c1121b5824b780167fd79a9fe9c94dd80e3869055ebb30c8f3eb92c26182"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Sucampo Pharmaceuticals, Inc., Sucampo Pharma, LLC, and R-Tech Ueno, Ltd.; Are there any third-party beneficiaries designated in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract designates the Lenders as third-party beneficiaries of specific sections.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2148.5026000300422,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.774900046177208,
+        "cache_key": "0c00774f639a845c6ad992901d37411044a5e6ce7e55f2fc6234ee7d715d5cef"
+      },
+      {
+        "query": "Consider the Marketing Agreement between Loop Industries, Inc. and Indorama Loop Technologies, LLC for Product Supply and Development; Is there a clause preventing the solicitation of customers in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract includes the \"Marketing and Sale Restriction,\" which restricts marketing or selling products to anyone other than authorized customers under a transferred contract.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2682.0018000435084,
+        "first_stage_cache_key": null,
+        "replay_ms": 16.352699953131378,
+        "cache_key": "eee7c269efe9c5c09a3d464771c59800c4eb56844237ff9ec4b0efbee1bf412c"
+      },
+      {
+        "query": "Consider the content license between AsterVale Studios and SilverBirch Streaming; Which territories does the agreement authorize for streaming?",
+        "status": "valid",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2501.7187000485137,
+        "first_stage_cache_key": null,
+        "replay_ms": 10.398700018413365,
+        "cache_key": "df9c6712bb16f3935e4d24b1174dfbb89ecb0a569183ca89757dc045a2fbef62"
+      },
+      {
+        "query": "Consider the broadcasting agreement between QuartzMeadow Pictures and WillowVista Networks; What is the renewal deadline?",
+        "status": "upstream_abstention",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "upstream_abstention",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": null,
+        "replay_ms": 8.77559999935329
+      },
+      {
+        "query": "Consider the music synchronization license between NimbleCove Media and CedarOrbit Films; Which party must indemnify the other for copyright claims?",
+        "status": "upstream_abstention",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "upstream_abstention",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.455999920144677
+      },
+      {
+        "query": "Consider the Bon-Ton agency agreement; What deadline does the agreement impose specifically for reporting a ransomware attack?",
+        "status": "upstream_abstention",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "upstream_abstention",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": null,
+        "replay_ms": 11.525199981406331
+      },
+      {
+        "query": "Consider the transportation services agreement between Purolator and Dynamex; Which clause specifies a bitcoin exchange rate for transportation invoices?",
+        "status": "valid",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 1956.64620003663,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.672999990172684,
+        "cache_key": "90e973786a0c98769465ee8c41b6ed562c5e740a7d8a716c85bdc0f66dc2a8b8"
+      },
+      {
+        "query": "Consider the Jacksonville Jaguars sponsorship agreement with The ARC Group; How many spectators actually attended sponsored events in September 2026?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2364.673399948515,
+        "first_stage_cache_key": null,
+        "replay_ms": 14.484100043773651,
+        "cache_key": "99f5055d17d63211e84d8ea5873aa07236f7f7b0313a7736a25ec3cc7cf9efad"
+      },
+      {
+        "query": "Consider the supply agreement between Florida Chemical Company and Flotek Chemistry; How many units were actually shipped in September 2026?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "first_stage",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 2011.3093999680132,
+        "first_stage_cache_key": null,
+        "replay_ms": 12.922799913212657,
+        "cache_key": "4cbdea8561df57d1d756df28df5d99c04d86034ede4c79c98fae1de3ad3e6e44"
+      }
+    ],
+    "evaluation_attempts": 1,
+    "estimated_first_use_latency_ms": {
+      "median": 4123.717400012538,
+      "p95": 14021.122829971133
+    },
+    "unique_api_responses": 58,
+    "status_counts": {
+      "invalid_output": 9,
+      "valid": 49,
+      "upstream_abstention": 3
+    },
+    "model_versions": {
+      "gemini-3.5-flash-lite": 58
+    },
+    "api_usage": {
+      "promptTokenCount": 162110,
+      "candidatesTokenCount": 7310,
+      "totalTokenCount": 169420
+    },
+    "freeze_sha256": "03217df87d489536e035e0ec9ef039efe1b51fde695f44fc1aae4dd3961d351f"
+  },
+  {
+    "model": "recovery20",
+    "config_path": "llm_configs/hybrid_gemini_recovery20_31.json",
+    "test_metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 54,
+          "precision": 0.6163498387595036,
+          "recall": 0.5131154183113658,
+          "hit": 0.6666666666666666,
+          "benchmark_precision": 0.6163498387595036,
+          "benchmark_recall": 0.5131154183113658
+        },
+        {
+          "k": 3,
+          "n_queries": 54,
+          "precision": 0.6577167405541636,
+          "recall": 0.6058630704342157,
+          "hit": 0.7777777777777778,
+          "benchmark_precision": 0.6575750072874305,
+          "benchmark_recall": 0.6137695309757528
+        },
+        {
+          "k": 5,
+          "n_queries": 54,
+          "precision": 0.6586843254801855,
+          "recall": 0.6299013681615659,
+          "hit": 0.7962962962962963,
+          "benchmark_precision": 0.6586135597702812,
+          "benchmark_recall": 0.6378078287031032
+        },
+        {
+          "k": 10,
+          "n_queries": 54,
+          "precision": 0.6574691597272428,
+          "recall": 0.6514758983567858,
+          "hit": 0.8333333333333334,
+          "benchmark_precision": 0.6576382467360204,
+          "benchmark_recall": 0.6663162334121062
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.2857142857142857,
+      "negative_counts": {
+        "n": 7,
+        "correct": 2
+      },
+      "latency_ms": {
+        "median": 13.581449980847538,
+        "p95": 28.28287002048455
+      }
+    },
+    "config": {
+      "name": "llm_hybrid_gemini_recovery20_31",
+      "provider": "gemini",
+      "task": "hybrid_recall_recovery",
+      "model": "gemini-3.1-flash-lite",
+      "model_revision": "API alias; actual modelVersion recorded per response",
+      "runtime": "gemini-rest-v1beta",
+      "prompt_file": "prompts/summarise_complete_clauses_v2.txt",
+      "temperature": 0,
+      "seed": null,
+      "max_output_tokens": 3072,
+      "context_length": 1048576,
+      "thinking_level": "minimal",
+      "candidate_k": 20,
+      "retrieval_config": "configs/hybrid_recall_recovery20.json",
+      "max_evidence_quotes": 5,
+      "max_summary_words": 45,
+      "invalid_output_policy": "return_original_candidates",
+      "expose_in_demo": true,
+      "stage": "recovery20_31",
+      "previous_config": "llm_configs/hybrid_gemini_broad10.json"
+    },
+    "events": [
+      {
+        "query": "Consider the Service Agreement between BicycleTX Ltd and Nigel Crockett for Chief Business Officer Position; What is the expiration date of this contract?",
+        "status": "valid",
+        "summary": "The contract does not have a fixed expiration date; it commenced on 26 September 2019 and continues indefinitely until terminated by either party in accordance with the notice provisions.",
+        "decision": "recovery",
+        "first_stage_model_ms": 2445.7510999636725,
+        "additional_model_ms": 2154.281200026162,
+        "first_stage_cache_key": "9737d4b41c0437b3de695303776e13cf017eae04ce0e16848902f320a831d723",
+        "replay_ms": 32.892600051127374,
+        "cache_key": "c2804a1e31f206d9b883a7c788178577f31e08357ca689f053d943a070278a65"
+      },
+      {
+        "query": "Consider the Cooperation Agreement between HPIL ENERGYTECH Inc. and GINARES GROUP AG for Renewable Energy Projects; Can this contract be terminated for convenience, and under what conditions?",
+        "status": "valid",
+        "summary": "The contract permits early termination of performance of related obligations within thirty days of receiving a written termination notice.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 1949.5244999416173,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "075a56d7ce0edcb504e2940b9bab58171040eaf0beea4a53754fbb40e7ec76bf",
+        "replay_ms": 18.729700008407235,
+        "cache_key": "075a56d7ce0edcb504e2940b9bab58171040eaf0beea4a53754fbb40e7ec76bf"
+      },
+      {
+        "query": "Consider the Service Agreement between Theravance Biopharma UK Limited and Brett Haumann; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "This Agreement and any related disputes or claims are governed by and construed in accordance with the law of England.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 4150.277999928221,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "81e1c9439b8f765ff37500b3c96aed51b83a747b3d0214b93cbc255cc56f8dc8",
+        "replay_ms": 11.696600005961955,
+        "cache_key": "81e1c9439b8f765ff37500b3c96aed51b83a747b3d0214b93cbc255cc56f8dc8"
+      },
+      {
+        "query": "Consider the Service Agreement between Theravance Biopharma UK Limited and Brett Haumann; Does this contract provide for joint intellectual property ownership?",
+        "status": "valid",
+        "summary": "No, the contract does not provide for joint intellectual property ownership; all intellectual property rights created by the executive automatically vest in the company absolutely.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2908.002100070007,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "c8784212d7c277276a47b301d5277c9b0c77301888fb7e94cc54db8a92ccbba7",
+        "replay_ms": 11.73750008456409,
+        "cache_key": "c8784212d7c277276a47b301d5277c9b0c77301888fb7e94cc54db8a92ccbba7"
+      },
+      {
+        "query": "Consider the Sponsorship Agreement between R. C. Boyd Enterprises, LLC and Cano Petroleum, Inc. for 'Honey Hole'; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "The agreement is governed by the laws of the State of Texas.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2401.885199942626,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "58bee367f376a3a04542bc0f2962a958d5ea603e466bb3296096e65e3b755d34",
+        "replay_ms": 12.523300014436245,
+        "cache_key": "58bee367f376a3a04542bc0f2962a958d5ea603e466bb3296096e65e3b755d34"
+      },
+      {
+        "query": "Consider the Sponsorship Agreement between R. C. Boyd Enterprises, LLC and Cano Petroleum, Inc. for 'Honey Hole'; Is there a minimum commitment required under this contract?",
+        "status": "valid",
+        "summary": "Yes, under the contract the Company is required to produce no less than forty original episodes of the Show per year.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 4882.019900018349,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "b5dcd0882914da084679a6497823a7a1fa191a58e60b19588933d1fe38874f4e",
+        "replay_ms": 13.67969997227192,
+        "cache_key": "b5dcd0882914da084679a6497823a7a1fa191a58e60b19588933d1fe38874f4e"
+      },
+      {
+        "query": "Consider the Sponsorship Agreement between Excite, Inc. and Vitamin Shoppe Industries Inc. for Promotion on WebCrawler Channels; Is there uncapped liability under this contract?",
+        "status": "valid",
+        "summary": "Yes, liability is limited except for specific sections, meaning certain claims under Sections 13(a) and 13(b) are excluded from the general damage cap.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2261.729500023648,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "d2faa81cd8ec9883ceded29ab0b4b342e78a082e6ee6d79e9f8b18a85904faf4",
+        "replay_ms": 12.676100013777614,
+        "cache_key": "d2faa81cd8ec9883ceded29ab0b4b342e78a082e6ee6d79e9f8b18a85904faf4"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there a non-compete clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract contains a non-competition clause set out in Section 7, which restricts both Rubicon and ISA during the Non-Competition Period.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2464.2714000074193,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "66d75eda82dc23e78af7c72514f43e5c7edea1177590779760605e3a00c3f46d",
+        "replay_ms": 12.451699934899807,
+        "cache_key": "66d75eda82dc23e78af7c72514f43e5c7edea1177590779760605e3a00c3f46d"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract contains an anti-assignment clause prohibiting either party from transferring, assigning, or ceding rights or delegating obligations without prior written consent, with an exception for mergers, sales, or transfers of substantially all assets or stock.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 3672.020199941471,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "b1bbb2af3271e012358740a222b1fe45dc22f771b54d0a448e12794bfd17a8be",
+        "replay_ms": 12.283100048080087,
+        "cache_key": "b1bbb2af3271e012358740a222b1fe45dc22f771b54d0a448e12794bfd17a8be"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Does this contract include any revenue or profit-sharing arrangements?",
+        "status": "valid",
+        "summary": "Yes, the contract includes profit-sharing, requiring ISA to pay Rubicon 30% of its profits on projects where Rubicon provided Contract Services, after recouping start-up costs.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2896.9719000160694,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "0952c2cd4d28d3cc4d594433b5ff12e130a9760b6db357f09a591281c3fef104",
+        "replay_ms": 13.725999975576997,
+        "cache_key": "0952c2cd4d28d3cc4d594433b5ff12e130a9760b6db357f09a591281c3fef104"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Are there any services to be provided after the termination of this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 2458.2894999766722,
+        "additional_model_ms": 2400.3648000070825,
+        "first_stage_cache_key": "046005291d7e3337d8c1aa600d281c2f974532f1ea85af080fdd4bcb1281dc38",
+        "replay_ms": 29.973300057463348,
+        "cache_key": "f5d90be0340245b8b8fcd5317ee03195b3c32f302bd56960ca0a478106865594"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there uncapped liability under this contract?",
+        "status": "valid",
+        "summary": "The contract caps liability for damages at \u00a3200,000, except in connection with a breach of Section 8 or for claims of monies due.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 1651.532500050962,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "cd2233cf00c2fa3f334dae2bf860aa76a3b0b0f076fda75dd8d6ca17ea9fbd38",
+        "replay_ms": 11.89279998652637,
+        "cache_key": "cd2233cf00c2fa3f334dae2bf860aa76a3b0b0f076fda75dd8d6ca17ea9fbd38"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there a cap on liability under this contract?",
+        "status": "valid",
+        "summary": "Yes, each party's liability for damages hereunder shall not exceed \u00a3200,000, except in connection with a breach of Section 8 or for claims of monies due.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 4135.846699937247,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "c734835edd2164cfcfe4b40aeee0a9223ed7b153c7753c928ebb62c219803179",
+        "replay_ms": 11.647599982097745,
+        "cache_key": "c734835edd2164cfcfe4b40aeee0a9223ed7b153c7753c928ebb62c219803179"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Is there a covenant not to sue included in this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 1691.8463000329211,
+        "additional_model_ms": 1782.0647000335157,
+        "first_stage_cache_key": "d81f6b58c22c06a571694905ed2ef5438837a407d0590d045381778f466b87eb",
+        "replay_ms": 26.644599973224103,
+        "cache_key": "751add651a0d22e8df92f95dc50697a8e84ddea2c2a8e51353f910e26f6e4c35"
+      },
+      {
+        "query": "Consider the Supply Agreement between Florida Chemical Company, LLC and Flotek Chemistry, LLC for Terpene Products; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, Section 23 restricts FCC from assigning or delegating its rights or obligations under the Agreement.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 1641.4611000800505,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "2bed5c026893a8011f77e1b1f97495fc56911f016371cf44a65ef5f188eabfa6",
+        "replay_ms": 13.000800041481853,
+        "cache_key": "2bed5c026893a8011f77e1b1f97495fc56911f016371cf44a65ef5f188eabfa6"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); Does this contract include an exclusivity agreement?",
+        "status": "valid",
+        "summary": "Yes, the contract includes exclusivity provisions, such as Purolator tendering all sameday requests to Dynamex, Dynamex tendering all overnight requests to Purolator, and restrictions on soliciting certain types of freight or providing services to other competing providers.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 3438.6312999995425,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "556096bd70208a1ece68267e2c1f696bbf3fe66e25816d3e8150e33361695012",
+        "replay_ms": 13.265499961562455,
+        "cache_key": "556096bd70208a1ece68267e2c1f696bbf3fe66e25816d3e8150e33361695012"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); Can this contract be terminated for convenience, and under what conditions?",
+        "status": "valid",
+        "summary": "The contract can be terminated without cause by either party providing two years' written notice.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 7613.265700056218,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "46fa578bef4b72277038f1d75fb0fd1c3d064fc0a566e5a33f97ff136e9eec3b",
+        "replay_ms": 14.225899940356612,
+        "cache_key": "46fa578bef4b72277038f1d75fb0fd1c3d064fc0a566e5a33f97ff136e9eec3b"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); What happens in the event of a change of control of one of the parties in this contract?",
+        "status": "valid",
+        "summary": "In the event of a change in control of one party, the other party has the right to terminate the agreement upon prior written notice.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 5393.64210003987,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "d202ad636025cf072b3c575eab772dd80c4d448a036c8788390126b6ae9a0ca0",
+        "replay_ms": 16.560800024308264,
+        "cache_key": "d202ad636025cf072b3c575eab772dd80c4d448a036c8788390126b6ae9a0ca0"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract includes an anti-assignment clause prohibiting either party from selling, assigning, or transferring the agreement without prior written consent.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 4521.124699967913,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "118ba9c347acfd46bd84df181f1fd863a8e5383da588b9cba6121738fe8a5758",
+        "replay_ms": 12.8927999176085,
+        "cache_key": "118ba9c347acfd46bd84df181f1fd863a8e5383da588b9cba6121738fe8a5758"
+      },
+      {
+        "query": "Consider the Marketing and Transportation Services Agreement between Purolator Courier Ltd. and Parcelway Courier Systems Canada Ltd. (Dynamex Inc.); What are the insurance requirements under this contract?",
+        "status": "valid",
+        "summary": "Parties must maintain cargo liability ($100,000 per occurrence) and comprehensive auto/general liability ($2,000,000 inclusive), name each other as additional insureds with cross liability clauses, deliver annual certificates, include subrogation waivers, and ensure subcontractors carry adequate coverage.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 3565.8228000393137,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "d73769c66ddc14ce0660a16d710ddcbac6cabf0d70423b9065ec1a5426629a42",
+        "replay_ms": 12.810999993234873,
+        "cache_key": "d73769c66ddc14ce0660a16d710ddcbac6cabf0d70423b9065ec1a5426629a42"
+      },
+      {
+        "query": "Consider the Co-Branding Agreement between PC Quote, Inc. and A.B. Watley, Inc. for Market Data Software; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract includes an anti-assignment clause stating that the agreement, rights, or obligations cannot be assigned by ABW without prior written consent from PCQ.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2522.547500091605,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "864146ae9d9c178e553ad81a667050b7c2bc7ad43025a61fc73cd266cf579752",
+        "replay_ms": 12.63509993441403,
+        "cache_key": "864146ae9d9c178e553ad81a667050b7c2bc7ad43025a61fc73cd266cf579752"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Is there a non-compete clause in this contract?",
+        "status": "valid",
+        "summary": "The supplied passages discuss potential non-compete obligations for inclusion in a definitive Combination Product License agreement.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2154.688799986616,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "f6170df5955cc238a2867a95984c5f4d7ffadbd3cce61281d4bc7eb2eca1e5bf",
+        "replay_ms": 10.34889998845756,
+        "cache_key": "f6170df5955cc238a2867a95984c5f4d7ffadbd3cce61281d4bc7eb2eca1e5bf"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Does this contract include any right of first refusal, right of first offer, or right of first negotiation?",
+        "status": "valid",
+        "summary": "The contract includes a Right of First Negotiation concerning the divestment of product rights or combination products, but does not include a right of first refusal or right of first offer.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 5308.0688000191,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "5fb3c9fdc8619815d50271319c201b8d70614acd28a4d52b0d30e45658a99535",
+        "replay_ms": 15.907700057141483,
+        "cache_key": "5fb3c9fdc8619815d50271319c201b8d70614acd28a4d52b0d30e45658a99535"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Is there a minimum commitment required under this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract requires minimum commitments including a PDE Minimum and a Minimum Sales Force Level.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 7963.4958000388,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "1b17c5ba6d3cd481d21f3dc2bdae304c2f4de6b8538e2b3ce6c5ccb7bf75a927",
+        "replay_ms": 11.415999964810908,
+        "cache_key": "1b17c5ba6d3cd481d21f3dc2bdae304c2f4de6b8538e2b3ce6c5ccb7bf75a927"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Are there any services to be provided after the termination of this contract?",
+        "status": "valid",
+        "summary": "Upon expiration or termination, King must transfer and return Proprietary Information and provide all Promotional Materials to Depomed at King's out-of-pocket cost.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 11399.147000047378,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "4f667653f452758c7dcb2878e87c9671152b1746f6155d6c5658c2e7cf01c6b9",
+        "replay_ms": 13.85310001205653,
+        "cache_key": "4f667653f452758c7dcb2878e87c9671152b1746f6155d6c5658c2e7cf01c6b9"
+      },
+      {
+        "query": "Consider the Promotion Agreement between Depomed, Inc. and King Pharmaceuticals, Inc. for Glumetza; Is there a covenant not to sue included in this contract?",
+        "status": "valid",
+        "summary": "Yes, covenants not to sue are mentioned in the contract concerning intellectual property rights related to the AcuForm technology and related patent licenses.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 10523.585699964315,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "bcef7d1c80427025e15a2fcdb25765a25bc9dff436de13500388e7c4bf2d840c",
+        "replay_ms": 14.129800023511052,
+        "cache_key": "bcef7d1c80427025e15a2fcdb25765a25bc9dff436de13500388e7c4bf2d840c"
+      },
+      {
+        "query": "Consider the Gas Transportation Agreement between PennTex North Louisiana Operating, LLC and MRD Operating LLC; What is the renewal term for this contract?",
+        "status": "valid",
+        "summary": "The agreement remains in effect for an initial fifteen-year term and continues thereafter until terminated by either party with thirty days' prior written notice.",
+        "decision": "recovery",
+        "first_stage_model_ms": 4050.342000089586,
+        "additional_model_ms": 9691.808799980208,
+        "first_stage_cache_key": "cddb4f42223ccb25baae4a9fba6ce67d3b6dbbd1acc93fb4b1f6e617ad106232",
+        "replay_ms": 24.117400054819882,
+        "cache_key": "5537f18f909a4365f0516f84cd64212ddf771aae71b86857c8bebeb074c36df2"
+      },
+      {
+        "query": "Consider the Gas Transportation Agreement between PennTex North Louisiana Operating, LLC and MRD Operating LLC; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract contains a restrictions on assignment clause prohibiting the transfer of the agreement by either party without prior written consent, subject to certain exceptions.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 4086.158400052227,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "b2eeff0957a9a13a8f81a82ce4f3d4584a97cfe308d60d2f38e994e7da8487d7",
+        "replay_ms": 12.194799957796931,
+        "cache_key": "b2eeff0957a9a13a8f81a82ce4f3d4584a97cfe308d60d2f38e994e7da8487d7"
+      },
+      {
+        "query": "Consider the Gas Transportation Agreement between PennTex North Louisiana Operating, LLC and MRD Operating LLC; Is there a covenant not to sue included in this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 4592.873600078747,
+        "additional_model_ms": 1737.0332999853417,
+        "first_stage_cache_key": "078b67ff80026d43526c5c6b7a55e270b69204f4c7202d06590a8b91d40b9eaf",
+        "replay_ms": 28.034500079229474,
+        "cache_key": "44f6ac2ecf3ca96a7c063fe774856fcd2c19880e66b6d85509fd19134cee6656"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; What is the expiration date of this contract?",
+        "status": "valid",
+        "summary": "The initial term of the Endorsement Agreement expires on March 15, 2022, unless it is terminated earlier or extended by mutual written agreement.",
+        "decision": "recovery",
+        "first_stage_model_ms": 11123.944899998605,
+        "additional_model_ms": 1578.0204000184312,
+        "first_stage_cache_key": "682ce8f2227a00ea5e9d016a956ece1c2b0f4fffb357ac674aa3d1132ba7efab",
+        "replay_ms": 25.84520005621016,
+        "cache_key": "854c5f7f64bd0920e4b13d7131e58d96fdbcedac5a5bc77348cedc3e562c6d13"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; Is there a non-disparagement clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract includes a confidentiality and non-disparagement clause prohibiting both parties from making derogatory comments during the term and for one year thereafter.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2506.393799907528,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "d9b603beb750089f059c80b806dfa439d7e02a3389613da085f9ddb677b21e7c",
+        "replay_ms": 12.217600014992058,
+        "cache_key": "d9b603beb750089f059c80b806dfa439d7e02a3389613da085f9ddb677b21e7c"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; Does this contract include any volume restrictions?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 3447.669700020924,
+        "additional_model_ms": 1907.1321999654174,
+        "first_stage_cache_key": "70f4da4c8cf9de592640ee6bee3c40352cf75c3f25c21696c2bca1caf231b6d6",
+        "replay_ms": 22.077100002206862,
+        "cache_key": "27d1e8937e9256e80b96c3ffe1e48acdebc63b165c7a9389f58119bc0111a887"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; What licenses are granted under this contract?",
+        "status": "valid",
+        "summary": "ABG grants Papa John's a non-transferrable, non-assignable, non-sublicensable, indivisible right and license to use the Celebrity Endorsement during the term within the territory. Papa John's also grants ABG and Celebrity a reverse license to utilize the Materials.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 6753.3648000098765,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "e60f9ca36131a9773fa36d4029b7ae007d3f94054d4f9084308920f839ce6d14",
+        "replay_ms": 14.22960008494556,
+        "cache_key": "e60f9ca36131a9773fa36d4029b7ae007d3f94054d4f9084308920f839ce6d14"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between ABG-Shaq, LLC and Papa John's International, Inc.; Are there any services to be provided after the termination of this contract?",
+        "status": "valid",
+        "summary": "Services are not provided after the contract term, but if Papa John's engages Celebrity's performance or service subject to a union's jurisdiction after the term, Papa John's must pay required union fees and minimum payments.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2458.5021000821143,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "21744cfd48e81349227fdc5b9ea3f4f4e1b175a9491fa32baf7dbdbb0a10b2b8",
+        "replay_ms": 13.996299938298762,
+        "cache_key": "21744cfd48e81349227fdc5b9ea3f4f4e1b175a9491fa32baf7dbdbb0a10b2b8"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between Holiday RV Superstores, Inc. and Affinity Group, Inc. for Good Sam Branding; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "The agreement is governed by the laws of the State of California without regard to principles of conflicts of laws.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 6414.88960001152,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "b4194b30f0c7847351b81a23d8a40dab5bbad0a9b3578f26448ae87c34abfb1b",
+        "replay_ms": 12.11980008520186,
+        "cache_key": "b4194b30f0c7847351b81a23d8a40dab5bbad0a9b3578f26448ae87c34abfb1b"
+      },
+      {
+        "query": "Consider the Endorsement Agreement between Holiday RV Superstores, Inc. and Affinity Group, Inc. for Good Sam Branding; Can this contract be terminated for convenience, and under what conditions?",
+        "status": "valid",
+        "summary": "The contract can be terminated early by the Company for convenience if it provides AGI with at least 60 days prior written notice.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 10937.814200064167,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "8f3ab83a3493acb12311154102eaae237b59e59707af17d34cbe94c7785b9e1d",
+        "replay_ms": 12.628399999812245,
+        "cache_key": "8f3ab83a3493acb12311154102eaae237b59e59707af17d34cbe94c7785b9e1d"
+      },
+      {
+        "query": "Consider the Business Affiliate Agreement between Dr. George D. Green and UNION DENTAL CORP.; What are the audit rights under this contract?",
+        "status": "valid",
+        "summary": "The contract requires each party to make available all records, books, agreements, policies, and procedures relating to Confidential Information during normal business hours within ten days of a written request to verify compliance.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 17605.623799958266,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "112e6dd2b1634b353543a73ade083a3da5fe8e4a975503cdd31739ad69b7a61d",
+        "replay_ms": 11.382600059732795,
+        "cache_key": "112e6dd2b1634b353543a73ade083a3da5fe8e4a975503cdd31739ad69b7a61d"
+      },
+      {
+        "query": "Consider the Support and Maintenance Agreement between On2 Technologies, Inc. and Wildform, Inc.; How is intellectual property ownership assigned in this contract?",
+        "status": "valid",
+        "summary": "Incorporated Technology Works are the sole property of On2 as works made for hire, while Wildform retains rights to its Licensed Assets and certain Deliverables.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 8852.929700049572,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "80f53c72f5dcb4b7cebfb21de37cbb5b6ec315f4235e9b2ca1d61a8c8077543e",
+        "replay_ms": 12.020900030620396,
+        "cache_key": "80f53c72f5dcb4b7cebfb21de37cbb5b6ec315f4235e9b2ca1d61a8c8077543e"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; What is the notice period required to terminate the renewal?",
+        "status": "valid",
+        "summary": "Following the initial term, either party may terminate the agreement without cause upon written notice of at least 3 months.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 16117.930800071917,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "ffd7570c18a5f1cfa65431ee88d6f2854dccce0f60ea4d361b6957e5cb7cfb97",
+        "replay_ms": 13.060999917797744,
+        "cache_key": "ffd7570c18a5f1cfa65431ee88d6f2854dccce0f60ea4d361b6957e5cb7cfb97"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "The contract is governed by the laws of the State of New York.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 13803.421199903823,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "2511e40887ae656f8dded06c5da413a49ff75bd817414d4bb60644416df4978b",
+        "replay_ms": 11.386999976821244,
+        "cache_key": "2511e40887ae656f8dded06c5da413a49ff75bd817414d4bb60644416df4978b"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; Can this contract be terminated for convenience, and under what conditions?",
+        "status": "valid",
+        "summary": "Yes, the contract can be terminated for convenience following the initial term by either party providing written notice of at least 3 months.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 10596.6110000154,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "46fb6ddae9ef7fc62185f50ba211599909988012d27815e0ef5043722dc4456a",
+        "replay_ms": 12.2971999226138,
+        "cache_key": "46fb6ddae9ef7fc62185f50ba211599909988012d27815e0ef5043722dc4456a"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; What licenses are granted under this contract?",
+        "status": "valid",
+        "summary": "The supplier grants the reseller a non-transferable, revocable, limited right to resell, market, promote, stimulate interest in, and solicit orders for the products and provide related services in the territory.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 8950.788700021803,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "25bd78bfd04b7ff1ef0bc2d26d1d050b20e982d8a9c212246caa8e78a7dbfdeb",
+        "replay_ms": 10.303599992766976,
+        "cache_key": "25bd78bfd04b7ff1ef0bc2d26d1d050b20e982d8a9c212246caa8e78a7dbfdeb"
+      },
+      {
+        "query": "Consider the Walabot HOME Reseller Agreement between Vayyar Imaging Ltd. and Inde Living Holdings, Inc.; Are there any services to be provided after the termination of this contract?",
+        "status": "valid",
+        "summary": "Upon termination, certain obligations survive, including the transfer of data and reports, fulfillment or refund of paid undelivered products, and specific provisions remaining in effect as necessary.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 12370.220100041479,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "112f992261f902a215450e0732a1f71449a34169faabdf1aeeab9a0d19f4c680",
+        "replay_ms": 14.958100044168532,
+        "cache_key": "112f992261f902a215450e0732a1f71449a34169faabdf1aeeab9a0d19f4c680"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between MJ Syndicated, Inc. and Simply Herbals for Manufacturing and Selling Health-Related Products; What is the expiration date of this contract?",
+        "status": "valid",
+        "summary": "The Joint Venture is a fixed term agreement beginning on November 27, 2018, and ending on November 30th, 2019.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 14390.473100007512,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "d7e6b1b72c0fe93aa7ddd21c42afc537d0a81e6d402a339425bb264f76d2b85f",
+        "replay_ms": 12.036100029945374,
+        "cache_key": "d7e6b1b72c0fe93aa7ddd21c42afc537d0a81e6d402a339425bb264f76d2b85f"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between MJ Syndicated, Inc. and Simply Herbals for Manufacturing and Selling Health-Related Products; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "The contract forbids participants from permitting the assignment of authority to a third party that is not a participant in the joint venture.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 8241.64409993682,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "cebb3aa699551a3d9dbad94ddf93755ba5a643e3d3ce7d2aa5bcc59cf433608f",
+        "replay_ms": 13.508499949239194,
+        "cache_key": "cebb3aa699551a3d9dbad94ddf93755ba5a643e3d3ce7d2aa5bcc59cf433608f"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between MJ Syndicated, Inc. and Simply Herbals for Manufacturing and Selling Health-Related Products; Is there a cap on liability under this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 8943.915599957108,
+        "additional_model_ms": 3696.315100067295,
+        "first_stage_cache_key": "84a3baf85ad7fe3cc4c82c5dd5caadbfcf94fc4e71504c4f94be6d4300f994bf",
+        "replay_ms": 26.622000033967197,
+        "cache_key": "e93874398c43414c17e931c8e401fa1af588b8c3e239accc837de41b9db7eea5"
+      },
+      {
+        "query": "Consider the Non-Competition Agreement and Right of First Offer between Glamis Gold Ltd. and Western Copper Corporation; What is the governing law for this contract?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 7520.026299986057,
+        "additional_model_ms": 2077.519900049083,
+        "first_stage_cache_key": "a7279a9a65e0674c0eaaa63cf1cdd6cfdbece6c8a86caf016a9bec155544ac0a",
+        "replay_ms": 26.468100026249886,
+        "cache_key": "fdda932e1ef8ae8e302f7f613d3be12a7a18415d6186cedbff9f0bf97968239c"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between Tate & Lyle Fermentation Products Ltd. and Igene Biotechnology, Inc. for Astaxanthin Production; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "This Agreement is governed and construed in accordance with the laws of the State of Delaware.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 6005.764600005932,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "728f25515be48030fff70c01102613a5b27c1232511cfc464505132b1c497b43",
+        "replay_ms": 13.635599985718727,
+        "cache_key": "728f25515be48030fff70c01102613a5b27c1232511cfc464505132b1c497b43"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between Tate & Lyle Fermentation Products Ltd. and Igene Biotechnology, Inc. for Astaxanthin Production; Does this contract include any right of first refusal, right of first offer, or right of first negotiation?",
+        "status": "valid",
+        "summary": "Yes, the contract includes a right of first refusal, which is detailed alongside tag-along rights in Article 12.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 1984.4280000543222,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "40aacdddd83276cea041481540509e456b34f0a18b1299e988a7d611bc2c70cd",
+        "replay_ms": 17.664600047282875,
+        "cache_key": "40aacdddd83276cea041481540509e456b34f0a18b1299e988a7d611bc2c70cd"
+      },
+      {
+        "query": "Consider the Joint Venture Agreement between Tate & Lyle Fermentation Products Ltd. and Igene Biotechnology, Inc. for Astaxanthin Production; What are the audit rights under this contract?",
+        "status": "valid",
+        "summary": "The Parties will agree on independent auditors for the Joint Venture. Additionally, each Party has the right to have its own internal or external auditors review the Joint Venture's books and records at any time.",
+        "decision": "recovery",
+        "first_stage_model_ms": 1557.152200024575,
+        "additional_model_ms": 1785.8506999909878,
+        "first_stage_cache_key": "697beb5a08e251848bc55af5ef5b2e249d1820d8fb957a4d8b57441f5bd85015",
+        "replay_ms": 28.71179999783635,
+        "cache_key": "0d620bc5aae337d042e948713d36b15e109125f5ab4d6b0a6437dd2a9c076910"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Sucampo Pharmaceuticals, Inc., Sucampo Pharma, LLC, and R-Tech Ueno, Ltd.; What is the governing law for this contract?",
+        "status": "valid",
+        "summary": "The construction, validity, and performance of the agreement are governed by the laws of Japan.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 3525.0605000182986,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "ef7be888e239e9a9cdd1fe20468c14e4fea3c074376caf1b1c957e87a157b356",
+        "replay_ms": 14.15079995058477,
+        "cache_key": "ef7be888e239e9a9cdd1fe20468c14e4fea3c074376caf1b1c957e87a157b356"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Sucampo Pharmaceuticals, Inc., Sucampo Pharma, LLC, and R-Tech Ueno, Ltd.; Is there an anti-assignment clause in this contract?",
+        "status": "valid",
+        "summary": "Yes, the Strategic Alliance Agreement contains an anti-assignment clause prohibiting the assignment or transfer of rights, interests, or obligations without prior written consent, except for a specific exception allowing the Acquiror to assign the agreement as collateral to Lenders.",
+        "decision": "recovery",
+        "first_stage_model_ms": 2243.881499976851,
+        "additional_model_ms": 2437.754699960351,
+        "first_stage_cache_key": "f271c1121b5824b780167fd79a9fe9c94dd80e3869055ebb30c8f3eb92c26182",
+        "replay_ms": 27.823599986732006,
+        "cache_key": "71a34c1aa89939c15f2ffe91133adc63b51d727f28d307006f956f728474b646"
+      },
+      {
+        "query": "Consider the Strategic Alliance Agreement between Sucampo Pharmaceuticals, Inc., Sucampo Pharma, LLC, and R-Tech Ueno, Ltd.; Are there any third-party beneficiaries designated in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract designates the Lenders as third-party beneficiaries of specific sections.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2148.5026000300422,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "0c00774f639a845c6ad992901d37411044a5e6ce7e55f2fc6234ee7d715d5cef",
+        "replay_ms": 14.886899967677891,
+        "cache_key": "0c00774f639a845c6ad992901d37411044a5e6ce7e55f2fc6234ee7d715d5cef"
+      },
+      {
+        "query": "Consider the Marketing Agreement between Loop Industries, Inc. and Indorama Loop Technologies, LLC for Product Supply and Development; Is there a clause preventing the solicitation of customers in this contract?",
+        "status": "valid",
+        "summary": "Yes, the contract includes the \"Marketing and Sale Restriction,\" which restricts marketing or selling products to anyone other than authorized customers under a transferred contract.",
+        "decision": "reuse_supported_answer",
+        "first_stage_model_ms": 2682.0018000435084,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": "eee7c269efe9c5c09a3d464771c59800c4eb56844237ff9ec4b0efbee1bf412c",
+        "replay_ms": 14.394799945876002,
+        "cache_key": "eee7c269efe9c5c09a3d464771c59800c4eb56844237ff9ec4b0efbee1bf412c"
+      },
+      {
+        "query": "Consider the content license between AsterVale Studios and SilverBirch Streaming; Which territories does the agreement authorize for streaming?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 2501.7187000485137,
+        "additional_model_ms": 2034.6040000440553,
+        "first_stage_cache_key": "df9c6712bb16f3935e4d24b1174dfbb89ecb0a569183ca89757dc045a2fbef62",
+        "replay_ms": 21.83559990953654,
+        "cache_key": "c57c3e8973bded85193e9ca52c0c407e675e4a9ab1dc1556e1b4adbe6a6f373f"
+      },
+      {
+        "query": "Consider the broadcasting agreement between QuartzMeadow Pictures and WillowVista Networks; What is the renewal deadline?",
+        "status": "upstream_abstention",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "upstream_abstention",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": null,
+        "replay_ms": 16.848500003106892
+      },
+      {
+        "query": "Consider the music synchronization license between NimbleCove Media and CedarOrbit Films; Which party must indemnify the other for copyright claims?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 1769.3173999432474,
+        "first_stage_cache_key": null,
+        "replay_ms": 26.093599968589842,
+        "cache_key": "6d9a183acf5509a8c5fcde1e9d8d21ffa1007c44a715d790e429caf974c85c5d"
+      },
+      {
+        "query": "Consider the Bon-Ton agency agreement; What deadline does the agreement impose specifically for reporting a ransomware attack?",
+        "status": "upstream_abstention",
+        "summary": "The supplied passages do not answer the question.",
+        "decision": "upstream_abstention",
+        "first_stage_model_ms": 0,
+        "additional_model_ms": 0,
+        "first_stage_cache_key": null,
+        "replay_ms": 21.96449995972216
+      },
+      {
+        "query": "Consider the transportation services agreement between Purolator and Dynamex; Which clause specifies a bitcoin exchange rate for transportation invoices?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 1956.64620003663,
+        "additional_model_ms": 2960.7238998869434,
+        "first_stage_cache_key": "90e973786a0c98769465ee8c41b6ed562c5e740a7d8a716c85bdc0f66dc2a8b8",
+        "replay_ms": 22.8303000330925,
+        "cache_key": "5623174de19685b107234c798d090e607359042b2cc6fcce0862ec987038bd8f"
+      },
+      {
+        "query": "Consider the Jacksonville Jaguars sponsorship agreement with The ARC Group; How many spectators actually attended sponsored events in September 2026?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 2364.673399948515,
+        "additional_model_ms": 2481.204599956982,
+        "first_stage_cache_key": "99f5055d17d63211e84d8ea5873aa07236f7f7b0313a7736a25ec3cc7cf9efad",
+        "replay_ms": 25.729100103490055,
+        "cache_key": "2042b6d00c36adc8e54af39f6c231654f5c13f5d74b228b18fbb79797a6f4eeb"
+      },
+      {
+        "query": "Consider the supply agreement between Florida Chemical Company and Flotek Chemistry; How many units were actually shipped in September 2026?",
+        "status": "invalid_output",
+        "summary": null,
+        "decision": "recovery",
+        "first_stage_model_ms": 2011.3093999680132,
+        "additional_model_ms": 4623.103399993852,
+        "first_stage_cache_key": "4cbdea8561df57d1d756df28df5d99c04d86034ede4c79c98fae1de3ad3e6e44",
+        "replay_ms": 25.26249992661178,
+        "cache_key": "aad8b5d1d8658e96548bb3aed832dc256fe8b87436d7ea9e26a67a6c2b8dcd39"
+      }
+    ],
+    "evaluation_attempts": 1,
+    "estimated_first_use_latency_ms": {
+      "median": 4799.043699982576,
+      "p95": 14020.503549935525
+    },
+    "unique_api_responses": 74,
+    "status_counts": {
+      "valid": 48,
+      "invalid_output": 11,
+      "upstream_abstention": 2
+    },
+    "model_versions": {
+      "gemini-3.5-flash-lite": 58,
+      "gemini-3.1-flash-lite": 16
+    },
+    "api_usage": {
+      "promptTokenCount": 244786,
+      "candidatesTokenCount": 9079,
+      "totalTokenCount": 253865
+    },
+    "freeze_sha256": "03217df87d489536e035e0ec9ef039efe1b51fde695f44fc1aae4dd3961d351f"
+  },
+  {
+    "model": "baseline",
+    "config_path": "configs/bm25_baseline.json",
+    "test_metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 54,
+          "precision": 0.003074074074074074,
+          "recall": 0.018518518518518517,
+          "hit": 0.018518518518518517,
+          "benchmark_precision": 0.003074074074074074,
+          "benchmark_recall": 0.018518518518518517
+        },
+        {
+          "k": 3,
+          "n_queries": 54,
+          "precision": 0.007959946264860652,
+          "recall": 0.08071933454901246,
+          "hit": 0.1111111111111111,
+          "benchmark_precision": 0.0076261034065893685,
+          "benchmark_recall": 0.08071933454901246
+        },
+        {
+          "k": 5,
+          "n_queries": 54,
+          "precision": 0.008049584485300526,
+          "recall": 0.13868748300826908,
+          "hit": 0.18518518518518517,
+          "benchmark_precision": 0.007581435438931767,
+          "benchmark_recall": 0.13868748300826908
+        },
+        {
+          "k": 10,
+          "n_queries": 54,
+          "precision": 0.017400669267423632,
+          "recall": 0.27939073612379567,
+          "hit": 0.4074074074074074,
+          "benchmark_precision": 0.01788116634296386,
+          "benchmark_recall": 0.3039437805089296
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 7,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 6.526899989694357,
+        "p95": 8.166950015584007
+      }
+    },
+    "config": {
+      "name": "bm25_baseline",
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "k1": 1.5,
+      "b": 0.75,
+      "min_score": 0.0,
+      "k_values": [
+        1,
+        3,
+        5,
+        10
+      ]
+    },
+    "events": [],
+    "evaluation_attempts": 1,
+    "estimated_first_use_latency_ms": {
+      "median": 6.526899989694357,
+      "p95": 8.166950015584007
+    },
+    "unique_api_responses": 0,
+    "status_counts": {},
+    "model_versions": {},
+    "api_usage": {
+      "promptTokenCount": 0,
+      "candidatesTokenCount": 0,
+      "totalTokenCount": 0
+    },
+    "freeze_sha256": "03217df87d489536e035e0ec9ef039efe1b51fde695f44fc1aae4dd3961d351f"
+  }
+]

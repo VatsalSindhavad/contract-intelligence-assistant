@@ -1,415 +1,421 @@
-# Evaluation report — development draft
+# Evaluation report
 
-## Current status
+## Summary and recommendation
 
-The ten-trial BM25/LLM phase and pure-semantic iteration 11 are complete. Three non-LLM improvements are accepted; Both Gemini and Phi-3 improve retrieval but fail the first-use latency guardrail. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. The shared CLI and Streamlit app are implemented and verified. Final test evaluation and the complete case-study report remain pending. Test evaluation runs so far: **0**.
+This project searches the prescribed CUAD contract subset and returns source
+passages with character offsets. The study progressed from lexical BM25 to
+query expansion, source-grounded summaries, semantic retrieval, indexing
+changes, hybrid retrieval and conditional recovery. Every attempt is retained,
+including failures. The final held-out comparison is limited to the original
+baseline and two candidates selected using train data.
+
+Run 1 is the provisional recommendation because it rejects more unanswerable
+train questions and is simpler than Run 2. Run 2 improves train precision,
+recall and false answerable abstention. Neither satisfies the complete train
+guardrails; this is a measured prototype, not a production-ready legal system.
+The held-out comparison is complete: Run 1 achieved 58.14% precision and
+56.94% recall at k=5, rejecting 5/7 negatives and falsely rejecting 4/54
+answerable questions. Quota-amended Run 2 achieved 65.87%/62.99%, rejected
+2/7 negatives and falsely rejected 0/54. The baseline achieved 0.80%/13.87%.
+Each configuration was evaluated once; no tuning followed these outcomes.
+
+## Data and evaluation setup
+
+The prescribed mini selection yields 194 answerable CUAD questions over 29
+contracts. All 272 supplied answer spans were verified against Python UTF-8
+text slices before indexing. The deterministic question hash split produces
+140 train and 54 test answerable questions. Thirty authored unanswerable
+questions split into 23 train and seven test negatives. They were committed
+before improvements in commit 52fc955 and remain byte-identical to the frozen
+question/corpus manifest. The corpus includes contracts referenced by both
+splits, as required; labels never enter inference.
+
+Negative labels are supported by corpus-wide literal checks, document
+inspection and the historical time boundary. Absence searches are not a
+semantic proof; these authored negatives need broader human/legal review.
+Development and configuration selection use train only. Test questions are
+used only after selection and execution freeze. Only baseline, Run 1 and
+Run 2 receive final test evaluation; the other approaches remain train-only.
+A test ledger records complete and interrupted attempts per configuration.
+
+### Metrics and sample sizes
+
+Precision and recall are measured at k=1, 3, 5 and 10; k=5 is the declared main
+comparison. Each result is a macro-average across all answerable questions,
+including zero scores when the system abstains. Every character is identified
+by its original document and position; output offsets are checked again.
+
+- Unique-character precision = retrieved/gold intersecting characters divided
+  by unique retrieved characters. Recall uses unique gold characters as the
+  denominator. Overlapping source intervals are merged first.
+- Benchmark pairwise precision/recall sum overlaps for retrieved/gold pairs
+  and divide by passage/gold lengths. Overlapping retrieved passages can count
+  the same gold characters more than once, so pairwise recall may exceed 100%.
+  We retain this convention separately rather than clipping or relabelling it.
+- Correct abstention = negatives returning no passages divided by all negatives.
+  False abstention = answerable questions returning no passages divided by all
+  answerable questions. Both rates and exact counts are reported.
+- Hit rate records any gold character overlap. Median/p95 latency distinguishes
+  cached replay from first-use inference; startup, downloads and quota pacing
+  are stated separately. API tokens/calls are observed usage, not an invoice.
+
+Train denominators are 140 and 23; test denominators are 54 and seven. A single
+negative test question changes correct abstention by 14.29 percentage points,
+so those results need cautious interpretation. Generated summary words are
+not scored as retrieved evidence. Exact quote validity does not establish
+semantic summary correctness. See [metric definitions](evaluation/metrics.md)
+and the saved per-query scores for both conventions.
 
 ## System design
 
-The original baseline uses lowercase word tokenization, BM25Okapi (k1=1.5, b=0.75), 1,000-character windows with 200 overlap, and a positive-score rule. It searches all 29 contracts and returns exact text, paths, and half-open offsets.
-
-Accepted iteration 5 uses the highest full-query BM25 passage to infer a document, then ranks that document's passages using the question after the semicolon in `Consider ...; question`. Accepted iteration 7 filters common words and generic contract-question scaffolding from that clause query, falling back to the unfiltered clause query if no focused match exceeds the threshold. Indexed text, document routing, and chunk settings are unchanged. No gold source ID, answer span, or negative label enters inference. Plain unformatted questions retain baseline global search; format dependence is a limitation.
-
-Iteration 8 additionally stems indexed and query tokens with NLTK English Snowball, after clause cleanup. Stored evidence remains exact. This normalizes inflections without resolving all semantic synonyms.
-
-## LLM use
-
-Gemini query expansion is implemented, cached, and scored in iteration 9. Three accepted non-LLM improvements now provide a comparison reference. Before later LLM work: finish the working core, choose/justify the model, protect environment-based keys, cache request-keyed outputs, enable cache-only evaluation, and measure cost, latency, and privacy implications. FAISS/dense and hybrid retrieval are not implemented or assumed to improve quality.
-
-## Evaluation setup
-
-The prescribed mini subset has 194 CUAD queries over 29 contracts, with 272 exact answer spans verified. Fixed splits contain 140/54 answerable and 23/7 unanswerable train/test questions. The synthetic negative set was frozen at commit `52fc955` before improvement. Queries, not documents, are held out; the indexed corpus is shared as prescribed. Development is train-only.
-
-Character metrics are macro means at k=1,3,5,10. Our declared objective uses unique-character interval coverage; the authors' reference scorer sums pairwise passage overlaps. The latter can count repeated coverage more than once. Both are retained in results and `evaluation/metric_audit.json`. See `evaluation/metrics.md`. They are not answer-generation accuracy or legal correctness.
-
-## Train comparison
-
-All quality rows use 140 answerable train questions. The following are BM25 pipeline variants, not separate algorithm families.
-
-| Configuration | Unique precision@5 | Unique recall@5 | Reference precision@5 | Reference recall@5 | Decision |
-|---|---:|---:|---:|---:|---|
-| Baseline | 1.74% | 18.16% | 1.76% | 19.24% | Original reference |
-| stopwords | 1.61% | 15.89% | 1.66% | 17.37% | Rejected |
-| smaller_chunks | 0.78% | 4.09% | 0.71% | 4.09% | Rejected |
-| Length normalization | 1.79% | 18.82% | 1.80% | 19.90% | Rejected |
-| Term saturation | 1.57% | 16.16% | 1.60% | 17.24% | Rejected |
-| Document then clause | 5.15% | 47.12% | 5.37% | 52.11% | Accepted |
-| Focused clause without fallback | 5.81% | 50.72% | 6.07% | 56.27% | Rejected |
-| Focused clause with fallback | 6.28% | 53.50% | 6.51% | 59.16% | Accepted |
-| Combined pipeline plus stemming | 7.88% | 67.01% | 8.38% | 76.60% | Accepted |
-| Gemini query expansion + best BM25 | 8.47% | 79.10% | 8.93% | 89.58% | Quality/replay checks pass; first-use latency fails |
-| Local Phi-3 query expansion + best BM25 | 8.07% | 70.75% | 8.51% | 80.07% | Quality/replay checks pass; first-use latency fails |
-| Pure MiniLM + FAISS | 4.03% | 35.75% | 4.19% | 38.90% | Rejected against best BM25; beats original baseline |
-
-## Abstention and speed
-
-The baseline, accepted iteration 5, and accepted iteration 7 all have 0/140 false abstentions on answerable train queries, but also 0/23 correct abstentions on train negatives. The intermediate iteration 6 attained 1/23 correct negative abstentions but wrongly abstained on 12/140 answerable questions and was rejected. Fallback recovers answerable-query coverage at the cost of that one negative success. Passing a guardrail relative to a weak reference does not solve answerability.
-
-In the iteration-7 run, baseline/current/candidate p95 search latency was approximately 8.77/13.27/10.52 ms on this machine. Local timing excludes index construction and evaluation and is not a production load benchmark. These non-LLM measurements involve no model API calls; hosted usage is reported separately below.
-
-## Iteration history and acceptance
-
-Primary objective: gain at least 1 percentage point of unique-character recall@5 over the current accepted reference. Guardrails retain 95% of reference precision, allow at most 2 points more answerable false abstention and 5 points less negative correct abstention, and cap p95 at max(50 ms, twice reference p95). These engineering tolerances were declared before trials and have not been loosened.
-
-1. Common-word filtering: rejected; recall and precision declined.
-2. Smaller fixed chunks: rejected; recall and precision declined.
-3. Lower length normalization: rejected; recall gain of 0.66 points missed the minimum.
-4. Lower term saturation: rejected; recall and precision declined.
-5. Separate document identification and clause ranking: accepted; recall@5 18.16% to 47.12%.
-6. Focused clause terms: rejected despite 50.72% recall; 12 false answerable abstentions broke the guardrail.
-7. Focused terms with zero-match fallback: accepted against iteration 5; recall@5 47.12% to 53.50%, with guardrails met.
-
-The loop evaluates, diagnoses, selects an untried catalog proposal, measures it, accepts/rejects it, and persists the selection. The catalog was amended before iterations 5–7 with explicit proposal documents and prerequisite checks. Both historical logs are retained. The minimum five iterations is met; eight are complete and the user allows at most ten total. Do not count replays as new iterations or manufacture accepted outcomes.
-
-8. English stemming on the combined accepted pipeline: accepted; unique recall@5 rose from 53.50% to 67.01%, precision@5 from 6.28% to 7.88%. Complete gold coverage rose from 57 to 82 questions. In this run candidate p95 was about 10.50 ms; both abstention rates remain unchanged.
-
-## Ten concrete train failures
-
-These examples come from saved baseline top-5 predictions. Group labels describe observed coverage. Causal explanations are hypotheses unless directly supported by offsets. Query IDs locate the full predictions and annotations.
-
-### 1. Wrong section — `b5a0948cd3cf1a4070748a4899cab8bea0dde912b91f0f1e6cc422262c392fcb`
-
-Consider the Service Agreement between BicycleTX Ltd and Nigel Crockett for Chief Business Officer Position; What is the governing law for this contract?
-
-Gold source: `cuad/BICYCLETHERAPEUTICSPLC_03_10_2020-EX-10.11-SERVICE AGREEMENT.txt`. Gold ranges: [[53956, 54252]]. Retrieved ranges in that source: 0:1000, 56000:57000, 56800:57041. Unique recall@5: 0.00%.
-
-Top result excerpt: Exhibit 10.11  DATED 26 September 2019  BicycleTX Ltd  and  Nigel Crockett  ___________________________________________________  SERVICE AGREEMENT  ________________________________
-
-Diagnosis: the source contract is retrieved, but none of the top-five spans intersects any gold clause. Passage ranking, rather than finding the contract, failed. A lexical match is insufficient evidence of the requested provision.
-
-### 2. Wrong section — `5aacd88644962ff51293f4cc0ae5f18f1815d9a615908bd8283a990dcf5c4569`
-
-Consider the Service Agreement between BicycleTX Ltd and Nigel Crockett for Chief Business Officer Position; Are there any exceptions to competitive restrictions in this contract?
-
-Gold source: `cuad/BICYCLETHERAPEUTICSPLC_03_10_2020-EX-10.11-SERVICE AGREEMENT.txt`. Gold ranges: [[33572, 34034]]. Retrieved ranges in that source: 0:1000, 56000:57000, 40800:41800. Unique recall@5: 0.00%.
-
-Top result excerpt: Exhibit 10.11  DATED 26 September 2019  BicycleTX Ltd  and  Nigel Crockett  ___________________________________________________  SERVICE AGREEMENT  ________________________________
-
-Diagnosis: the source contract is retrieved, but none of the top-five spans intersects any gold clause. Passage ranking, rather than finding the contract, failed. A lexical match is insufficient evidence of the requested provision.
-
-### 3. Wrong section — `13d8e76465cd5d5ff8d880d4fcf36657d918c9f750e2aad64d336b3e99babdc2`
-
-Consider the Service Agreement between BicycleTX Ltd and Nigel Crockett for Chief Business Officer Position; Does this contract include any right of first refusal, right of first offer, or right of first negotiation?
-
-Gold source: `cuad/BICYCLETHERAPEUTICSPLC_03_10_2020-EX-10.11-SERVICE AGREEMENT.txt`. Gold ranges: [[6235, 6531], [6533, 7937]]. Retrieved ranges in that source: 0:1000, 56000:57000. Unique recall@5: 0.00%.
-
-Top result excerpt: Exhibit 10.11  DATED 26 September 2019  BicycleTX Ltd  and  Nigel Crockett  ___________________________________________________  SERVICE AGREEMENT  ________________________________
-
-Diagnosis: the source contract is retrieved, but none of the top-five spans intersects any gold clause. Passage ranking, rather than finding the contract, failed. A lexical match is insufficient evidence of the requested provision.
-
-### 4. Wrong section — `505f5239e0ca460f383a732198b07e7d4dd7f828487adaaae04dbc49d1ae98c4`
-
-Consider the Service Agreement between BicycleTX Ltd and Nigel Crockett for Chief Business Officer Position; How is intellectual property ownership assigned in this contract?
-
-Gold source: `cuad/BICYCLETHERAPEUTICSPLC_03_10_2020-EX-10.11-SERVICE AGREEMENT.txt`. Gold ranges: [[44840, 45359]]. Retrieved ranges in that source: 0:1000, 56000:57000, 56800:57041. Unique recall@5: 0.00%.
-
-Top result excerpt: Exhibit 10.11  DATED 26 September 2019  BicycleTX Ltd  and  Nigel Crockett  ___________________________________________________  SERVICE AGREEMENT  ________________________________
-
-Diagnosis: the source contract is retrieved, but none of the top-five spans intersects any gold clause. Passage ranking, rather than finding the contract, failed. A lexical match is insufficient evidence of the requested provision.
-
-### 5. Wrong section — `41ece44a0165f292b5f7c0cd8f4402ff9844983a576937f2ed8b13f1829a6a31`
-
-Consider the Cooperation Agreement between HPIL ENERGYTECH Inc. and GINARES GROUP AG for Renewable Energy Projects; What is the governing law for this contract?
-
-Gold source: `cuad/HPILHOLDING_01_07_2015-EX-99.1-COOPERATION AGREEMENT.txt`. Gold ranges: [[16867, 17117]]. Retrieved ranges in that source: 3200:4200, 0:1000, 19200:20008, 5600:6600, 13600:14600. Unique recall@5: 0.00%.
-
-Top result excerpt: .................................................................................................................... 8 23. Entire Agreement.........................................
-
-Diagnosis: the source contract is retrieved, but none of the top-five spans intersects any gold clause. Passage ranking, rather than finding the contract, failed. A lexical match is insufficient evidence of the requested provision.
-
-### 6. Partial coverage — `bf000ecae1bd79c66b1d52b3f9ff4b6b45d7ced0a7d7b30ac631cea668ad353f`
-
-Consider the Strategic Alliance Agreement between Information System Associates, Inc. and Rubicon Software Group plc; Are the licenses granted under this contract non-transferable?
-
-Gold source: `cuad/DUOSTECHNOLOGIESGROUP,INC_04_21_2009-EX-10.1-STRATEGIC ALLIANCE AGREEMENT.txt`. Gold ranges: [[5690, 6080], [6537, 7080]]. Retrieved ranges in that source: 0:1000, 45600:46298, 6400:7400, 17600:18600, 8800:9800. Unique recall@5: 58.20%.
-
-Top result excerpt: Exhibit 10.1    STRATEGIC ALLIANCE AGREEMENT    This Strategic Alliance Agreement (this "Agreement"), effective as of 15 April, 2009 (the "Effective Date"), is by and between Infor
-
-Diagnosis: retrieved spans intersect the annotation but leave some gold characters uncovered. Missing coverage is visible in the ranges above; it may arise from chunk boundaries or ranking away other required passages. This is not a complete clause retrieval.
-
-### 7. Partial coverage — `22389b42dacb7f7d34051a1c8d4a0389db11ba2c3994296821274ee72e77b01e`
-
-Consider the Supply Agreement between Florida Chemical Company, LLC and Flotek Chemistry, LLC for Terpene Products; Does this contract include any volume restrictions?
-
-Gold source: `cuad/FLOTEKINDUSTRIESINCCN_05_09_2019-EX-10.1-SUPPLY AGREEMENT.txt`. Gold ranges: [[958, 1076], [3210, 3809]]. Retrieved ranges in that source: 0:1000, 18400:19355, 15200:16200, 4000:5000, 16000:17000. Unique recall@5: 5.86%.
-
-Top result excerpt: Exhibit 10.1  Information identified with "[***]" has been excluded from this exhibit because it is both not material and would likely cause competitive harm to the registrant if p
-
-Diagnosis: retrieved spans intersect the annotation but leave some gold characters uncovered. Missing coverage is visible in the ranges above; it may arise from chunk boundaries or ranking away other required passages. This is not a complete clause retrieval.
-
-### 8. Partial coverage — `8d29c26280a10046885b4fb8a344825d05cdfb57c7f6b215e84cfe358569228f`
-
-Consider the Intellectual Property Agreement for COVID-19 Treatment Development between Marv Enterprises, LLC, Premier Biomedical, Inc., and Technology Health, Inc.; Does this contract include an exclusivity agreement?
-
-Gold source: `cuad/PREMIERBIOMEDICALINC_05_14_2020-EX-10.2-INTELLECTUAL PROPERTY AGREEMENT.txt`. Gold ranges: [[3388, 4736], [12938, 13072], [14754, 15163]]. Retrieved ranges in that source: 0:1000, 13600:14600, 22400:23282, 1600:2600, 14400:15400. Unique recall@5: 21.63%.
-
-Top result excerpt: Exhibit 10.2   INTELLECTUAL PROPERTY AGREEMENT   This Intellectual Property Agreement (this "Agreement") is entered into on May 12, 2020 ("Effective Date"), concerning the pursuits
-
-Diagnosis: retrieved spans intersect the annotation but leave some gold characters uncovered. Missing coverage is visible in the ranges above; it may arise from chunk boundaries or ranking away other required passages. This is not a complete clause retrieval.
-
-### 9. False return — `f03c96c14eab136aa7e9cf1879c3265c77f7c0a671b4857f2a4ea858d4c70951`
-
-Consider the distribution agreement between NimbleCove Media and BluePeak Distribution; Does the agreement allow sublicensing to third-party platforms?
-
-Returned source: `cuad/DUOSTECHNOLOGIESGROUP,INC_04_21_2009-EX-10.1-STRATEGIC ALLIANCE AGREEMENT.txt` at [7200, 8200), score 31.240.
-
-Returned excerpt: e Documentation.  Rubicon shall promptly notify ISA of each such upgrade to the Rubicon Offering and the Documentation which will be available to ISA under this  Agreement.     2.4
-
-Diagnosis: the missing agreement cannot be answered using another indexed agreement. Shared contract vocabulary still produces a positive score.
-
-### 10. False return — `446845f6921873c1ec8c4bf3a72699bf58775e7dad5ce3382725df439ba0aa4f`
-
-Consider the Wireless Content License Agreement between Fox Mobile Entertainment and Glu Mobile; Which clause permits training generative AI models on the licensed content?
-
-Returned source: `cuad/GluMobileInc_20070319_S-1A_EX-10.09_436630_EX-10.09_Content License Agreement4.txt` at [0, 1000), score 67.230.
-
-Returned excerpt: AMENDMENT NO. 3  Dated as of February 19, 2007  Reference is hereby made to that certain fully executed Wireless Content License Agreement Number 12965 dated as of December 16, 200
-
-Diagnosis: the named contract exists but does not establish the technology-specific provision. A positive lexical score does not validate the premise of the question.
-
-## Business interpretation
-
-Document naming terms helped locate contracts but could distract passage ranking. Separating the tasks and focusing the clause wording increased relevant clause coverage under the same five-passage budget. The second accepted change improves both recall and precision over the first accepted reference. These measured train gains justify keeping the candidates for comparison, not deploying them as autonomous legal decision makers.
-
-Privacy benefits are limited to local inference: queries and text are not sent to an external model provider. This alone is not enterprise privacy compliance. Compare later dense/LLM approaches using fixed query counts, both abstention directions, latency, cost assumptions, and data-transfer implications.
-
-## Limitations and remaining work
-
-- Web app and user search CLI are implemented using the same inference service; 46 tests pass and all nine saved configurations passed a source-offset smoke check. Run commands are documented in README.md.
-- Improve or clearly disclose weak answerability; current selected model returns text for every train negative.
-- Structured-query parsing and single inferred-document routing can fail on other phrasing or an incorrect source match.
-- Freeze comparison configurations before final test evaluation and persist a real test-run counter. Report train/test gaps and counts.
-- Refresh this baseline error analysis for the final selected model and include at least ten diagnosed failures.
-- Negative labels are synthetic, repetitive, and not expert legal annotations; seven test negatives give an imprecise estimate. Do not edit the frozen set.
-- Definitions, cross-references, redactions, and missing schedules remain unresolved.
-- Verify a clean setup and final timings; finish README run instructions and private submission checks.
-- Use the remaining budget only for explicit measured proposals; later LLM outputs require caching and secret protection.
-
-## Reproduction
-
-Run notebooks 01–03 to prepare/measure the baseline. Historical trial notebooks replay or review earlier work; `python improve.py` advances one new trial. Notebook 08 reviews trials 5–7; notebook 09 reviews the combined stemmed model. Both run saved configurations without advancing the loop. Accepted config files are in `configs/` and every accepted/rejected snapshot remains under its result directory.
-
-Results: `results/bm25_baseline/`, `results/bm25_abstention/`, and `results/iteration_01/` through `results/iteration_08/`. Complete logs: `experiments/log.jsonl` and `experiments/loop_log.jsonl`. Tests: `python -m pytest -q`. Final test reproduction commands are pending; zero test executions have occurred.
-
-## Interface checkpoint
-
-`python cli.py "question"` and `python -m streamlit run app.py` share
-`search_service.py`. They load only the verified corpus and selected saved
-configuration, not benchmark question labels. The app offers configuration
-selection, exact passage text, sources/offsets, scores, and JSON export. The
-CLI supports configuration selection, k, and JSON output. Empty/invalid input
-and no-match paths were tested. A local HTTP health check and nine-configuration
-smoke test are saved in `results/interface_smoke.json`. Zero-match behavior
-must not be mistaken for calibrated abstention on realistic negative questions.
-
-Hosted model integration is implemented and cached; local Phi-3 is also complete.
-Both use the same retrieval-assistance task; see
-`experiments/LLM_PLAN.md`. No new benchmark iteration was consumed by interface
-work, and no test performance was measured.
-
-## Runnable versions and comparison procedure
-
-All nine versions are preserved as configuration files and can be selected in
-both interfaces. Rejected means the train experiment failed our acceptance
-criteria; it does not mean the implementation is unavailable.
-
-| Configuration name | Trial | Status |
-|---|---:|---|
-| `bm25_baseline` | Baseline | Original comparison reference |
-| `bm25_stopwords` | 1 | Rejected |
-| `bm25_chunks_500` | 2 | Rejected |
-| `bm25_b_030` | 3 | Rejected |
-| `bm25_k1_080` | 4 | Rejected |
-| **✓ `bm25_document_then_clause`** | 5 | Accepted |
-| `bm25_focused_clause` | 6 | Rejected |
-| **✓ `bm25_focused_clause_fallback`** | 7 | Accepted |
-| **✓ `bm25_focused_stemmed`** | 8 | Accepted; current default |
-
-From the project folder, use the same question and k to inspect versions:
-
-```powershell
-python cli.py --list-configs
-$question = "Consider the Wireless Content License Agreement between Fox Mobile Entertainment and Glu Mobile; What is the expiration date of this contract?"
-python cli.py $question --config bm25_baseline --k 5 --json
-python cli.py $question --config bm25_focused_stemmed --k 5 --json
-```
-
-Substitute any configuration name from the table. For the web interface, run
-`python -m streamlit run app.py`, select the same configuration/question/k, and
-click Search. Full setup and command options are in README.md.
-The nine-configuration source-offset smoke check is recorded in
-`results/interface_smoke.json`. Single-question inspection is a walkthrough,
-not a replacement for the aggregate evaluation above and not a new iteration.
-
-**✓ Better than baseline** marks accepted train improvements that passed all
-acceptance checks; held-out test performance remains unmeasured. The CLI list
-and web selector use the same label. Small gains or candidates failing a
-guardrail retain explanatory labels instead. Configuration command names are
-unchanged; omit the display labels when passing `--config`.
-
-## Hosted LLM iteration 9
-
-Gemini 3.5 Flash-Lite received 53 unique train clause questions with the fixed
-query-expansion prompt. Contract descriptions, parties, original document text,
-gold spans, and the private assignment PDF were not sent. These inputs were
-explicitly reviewed and approved before external transmission. This is input
-minimization by query structure, not general-purpose name redaction.
-
-All 53 outputs passed schema/length/numeric checks. The first batch hit HTTP
-429; spacing and retry preserved the failed attempt and reused valid caches.
-Successful unique responses consumed 8,257 input and 1,284 output tokens
-(9,541 total). Actual charge is account-dependent and not inferred here.
-
-On 140 answerable train queries, unique-character recall@5 improved from
-67.01% to 79.10%, precision from 7.88% to 8.47%, and complete coverage from
-82 to 95 questions. Correct negative abstention remains 0/23 and answerable
-false abstention remains 0/140. Estimated first-use p95 is 2.58 seconds;
-cache/retrieval p95 is 15.95 ms. The 50-ms-floor operational latency guardrail
-fails on first use; all quality/replay checks pass. No threshold was relaxed
-and the accepted non-LLM model remains selected. These are train results, not
-proof of generalization or legal answer quality.
-
-`notebooks/10_gemini_bm25.ipynb` and the `llm_gemini_rewrite` interface option
-are cache-only. The presentation path was checked with network and credential
-access disabled. See README.md and the question inputs in the cache records.
-Complete results: `results/iteration_09/`; decisions and latency modes:
-`experiments/llm_log.jsonl`. Replays remain the same proposal, not new iterations.
-At the end of the hosted checkpoint Phi-3 had not run; its completed comparison is documented below. Test evaluation count remains zero.
-
-## Local Phi-3 iteration 10 and hosted comparison
-
-The installed Phi-3 Mini 3.8B Q4_0 model was verified by digest and Ollama
-runtime before generation. The same 53 unique train clause questions, prompt,
-output schema, 256-token cap, validators, original-query retention, and BM25
-reference were used. Local seed was 42 and context length 2,048 tokens. Inputs
-were short enough for that context; tokenizers and compute still differ.
-
-Phi-3 produced 47 valid outputs and six invalid outputs. Invalid responses
-were retained and used the original query; they were not regenerated to hide
-failures. Unique-character recall@5 is 70.75% versus the reference's 67.01%
-and Gemini's 79.10%. Precision is 8.07% versus 7.88% and 8.47% respectively.
-Complete gold coverage is 84/140 versus 82/140 for non-LLM and 95/140 for
-Gemini. Both LLMs still have 0/23 correct negative abstentions and 0/140
-answerable false abstentions.
-
-Estimated local first-use median/p95 is 0.68/3.74 seconds; replay p95 is about
-15.20 ms. Gemini's corresponding median/p95 is 1.46/2.58 seconds and replay
-p95 15.95 ms. Local median was lower, but its tail was slower. The first local
-call took 52.08 seconds including 36.84 seconds loading; other calls reused
-the resident model. The runtime snapshot reports about 3 GB VRAM allocation
-on a machine with about 16 GB RAM. No hosted fee applies to local execution,
-but hardware/electricity costs are not estimated. Token counts from different
-tokenizers should not be treated as equal units of useful work.
-
-Both LLMs pass quality/replay checks and fail the unchanged operational
-first-use latency ceiling. Gemini is the stronger train-quality candidate;
-Phi-3 provides local execution with lower transfer exposure but more invalid
-outputs. This does not establish an overall winner before held-out evaluation
-and deployment-budget decisions. The accepted stemmed BM25 stays default.
-
-All 106 unique model-output records are cached. Both LLM interface options
-were checked with network and credential access disabled. Notebook 11 reviews
-the hosted/local comparison. Ten distinct iterations are complete; further
-proposal work is outside the current budget. Final configuration freeze,
-held-out evaluation/run counting, final error analysis, and reproduction
-remain required. Test evaluation count is still zero.
-
-## Pure semantic iteration 11
-
-The first dense-only comparison uses the locally available Apache-2.0
-all-MiniLM-L6-v2 model at revision 1110a243fdf4706b3f48f1d95db1a4f5529b4d41.
-Normalized 384-dimensional vectors are searched by exact FAISS IndexFlatIP.
-The original full query searches globally across all 1,522 chunks. No BM25
-routing/candidates/fusion, LLM, or gold document filter is used. Original
-1,000-character chunks with 200 overlap and source offsets are unchanged.
-This compares complete pipelines: the tuned BM25 route and global dense
-baseline have different document-selection policies, not just different scores.
-
-On 140 answerable train questions, unique-character recall@5 is 35.75% and
-precision@5 4.03%. This exceeds the original BM25 baseline (18.16%/1.74%) but
-not the accepted tuned BM25 pipeline (67.01%/7.88%). Both the recall-gain and
-precision guardrails fail against that reference, so the dense baseline is
-not selected as a replacement. Complete coverage is 33/140, partial 32/140,
-and zero overlap 75/140. Correct negative abstention is 0/23 and false
-answerable abstention is 0/140. The initial positive-cosine threshold is untuned.
-
-The model's default 256-wordpiece limit truncates 105/1,522 source chunks;
-no train queries exceed the limit. Returned text/offsets still cover the
-original full chunks, including tails that may not have been encoded. This
-can limit relevance, but its causal contribution is not isolated here. Do
-not generalize this one basic, general-purpose model to all semantic retrieval.
-
-Initial model/vector/index build took about 76.51 seconds on CPU (four PyTorch
-threads). Estimated first-use query median/p95 is 10.17/12.97 ms. Document/query
-vectors are cached with exact model/config/library identities and checksums.
-No hosted API or model download was used; the model was already present and
-runtime loading is explicitly offline. Model weights remain an external setup
-dependency, not a Git artifact.
-
-See notebook 12, semantic_configs/minilm.json, dense_retrieval.py,
-evaluate_dense.py, results/iteration_11/, and experiments/semantic_log.jsonl.
-The CLI/web choice is dense_minilm_faiss. Kanon and dense+Gemini trials remain
-planned; final test performance is still unmeasured. Hybrid is still deferred.
-
-The notebook/web runtime required an isolated local embedding worker to avoid
-a Windows PyTorch DLL initialization issue; the standalone train benchmark
-used the same pinned CPU encoder directly. The verified presentation query
-replays saved vectors with no model loading or external calls. This runtime
-fix does not constitute another model experiment.
-
-## Local precision pilot (trial 12; separate cohort)
-
-Semantic work was paused at the user's request. This is a new post-retrieval
-candidate on top of the preserved local Phi-3 query-expansion/BM25 pipeline,
-not a change to any earlier model. The exact instruction-only prompt is in
-prompts/extract_answer_v1.txt; no worked example was included. The request
-contains only the question and retrieved passages. Gold labels/answers/offsets
-are used only after inference for scoring.
-
-Ten answerable and five negative train records were fixed by query-hash order
-before generation. This small pilot is not directly comparable to the 140/23
-full-train tables. It intentionally tests the user's concise one-line answer
-idea while requiring an exact source quote so retrieval offsets remain valid.
-
-| Same pilot cohort | Reference local rewrite + BM25 | Exact-excerpt candidate |
+The baseline indexes 1,000-character windows with 200-character overlap using
+BM25. Lexical improvements infer a contract using the full question, then
+rank within it using clause-focused terms. Fallback prevents empty results
+when cleaned terms have no matches; Snowball stemming normalises inflections.
+Gemini and local Phi-3 query expansion were compared on that same base.
+
+Pure semantic retrieval uses pinned all-MiniLM-L6-v2 vectors, L2 normalisation
+and exact FAISS IndexFlatIP search. FAISS is the index, not the embedding
+model. Clause-boundary chunking and same-contract definition/reference context
+were measured separately. Neither beat the original dense reference overall.
+The selected hybrid combines twenty candidates per component through weighted
+reciprocal-rank fusion: lexical weight 0.75, dense weight 0.25, rank constant
+60. Exact duplicate source intervals merge. These weights were declared before
+measurement because lexical retrieval was stronger. RRF scores are not
+probabilities. The rejected local cross-encoder reranker remains documented.
+
+### Final candidate 1: broader single-stage evidence
+
+Run 1 applies a 0.50 cutoff to the best dense cosine score, retrieves the top
+ten fused passages, and sends only their text plus the question to Gemini
+3.5 Flash-Lite. The prompt asks for a one/two-line summary and up to five exact
+complete answering clauses, preserving necessary conditions, exceptions and
+negation. A synthetic expiry/termination example is included; benchmark answers
+are not examples. Partial support can be returned with missing parts stated.
+If no supplied text supports the question, the model must explicitly abstain.
+
+Quotes are mapped back to original document offsets. Valid evidence is scored;
+summary prose is displayed separately. Invalid source/schema output falls back
+to the original retrieved passages and remains in aggregates. A gate rejection
+avoids the API. Missing presentation caches produce an error, never a silent
+provider call. The full prompt and settings are versioned.
+
+### Final candidate 2: conditional recovery
+
+Run 2 first runs the exact Run 1 policy. A valid nonempty evidence response is
+reused. No-answer, upstream rejection or invalid output triggers a second
+attempt: cutoff 0.45, forty candidates per retriever and twenty fused passages
+for the same Gemini model and prompt. This is a two-stage policy, not an
+independent model applied uniformly at 0.45. The routing decision sees only
+output status/evidence presence, never labels or gold scores. Every question,
+including reused answers and failures, enters the final aggregate.
+
+### Why these implementation choices
+
+Direct Python, FAISS and REST calls keep data flow and cache behaviour visible
+for modification and review. LangChain is permitted but not required for
+these operations; adding orchestration alone is not evidence of retrieval
+improvement. Models are pretrained, with no fine-tuning on this dataset.
+Local Phi-3 and the reranker were measured alternatives, not silently removed.
+Kanon was prepared but never run after the API requirement was excluded.
+
+## Objectives and self-improvement loop
+
+The initial train objective prioritised recall@5 gains of at least one point,
+precision at least 95% of the current reference and protected abstention and
+latency. Later precision experiments declared a one-point precision gain and
+at most two points of recall loss before measurement. The user subsequently
+set a prospective 5% false-abstention ceiling; historical decisions were not
+rewritten to fit the new limit. The last two runs declared aspirational
+50% precision, 70% recall, at least 20/23 correct negative abstentions and at
+most 4/140 false abstentions. Not all targets were achieved.
+
+The automatic loop evaluates train, groups failures, chooses an untried
+matching proposal from a rule catalogue, evaluates it, applies the objective
+and records accept/reject plus selected configuration. Original logs include
+more than five improvement iterations beyond baseline. A single-command
+five-step isolated demonstration was verified after reorganisation: three
+accepted changes followed by two rejections. It copied no test file and did
+not change the main campaign. Its scratch iteration IDs are not new project
+approaches. The main campaign blocks new core proposals after entering the
+LLM phase; replay displays historical decisions without new tuning.
+
+Command: `python manage.py improve --demo --steps 5`. Original decisions:
+`python manage.py improve --replay`. The complete configs, objectives, diagnoses,
+outputs and decisions remain in the [experiment index](experiments/README.md).
+
+## Train results: ten presentation versions
+
+All rows below use 140 answerable and 23 negative train questions at k=5. These ten illustrate the progression; only baseline and the last two candidates are evaluated on test.
+
+| Version | Precision | Recall | Benchmark precision | Benchmark recall | Correct abstention | False abstention |
+|---|---:|---:|---:|---:|---:|---:|
+| Original BM25 baseline | 1.74% | 18.16% | 1.76% | 19.24% | 0/23 (0.00%) | 0/140 (0.00%) |
+| Improved BM25 with stemming | 7.88% | 67.01% | 8.38% | 76.60% | 0/23 (0.00%) | 0/140 (0.00%) |
+| BM25 + Gemini query expansion | 8.47% | 79.10% | 8.93% | 89.58% | 0/23 (0.00%) | 0/140 (0.00%) |
+| BM25 + Phi-3 query expansion | 8.07% | 70.75% | 8.51% | 80.07% | 0/23 (0.00%) | 0/140 (0.00%) |
+| BM25 + Phi-3 summary and evidence | 20.08% | 68.92% | 20.44% | 75.64% | 7/23 (30.43%) | 3/140 (2.14%) |
+| MiniLM + FAISS with 0.55 cutoff | 4.03% | 35.75% | 4.19% | 38.90% | 9/23 (39.13%) | 1/140 (0.71%) |
+| Hybrid with 0.55 cutoff | 7.12% | 65.51% | 7.49% | 74.24% | 9/23 (39.13%) | 1/140 (0.71%) |
+| Hybrid + 0.55 cutoff + Gemini | 54.15% | 46.93% | 54.19% | 48.87% | 23/23 (100.00%) | 46/140 (32.86%) |
+| Run 1: ten-passage Gemini at 0.50 | 65.70% | 61.38% | 65.69% | 62.79% | 17/23 (73.91%) | 17/140 (12.14%) |
+| Run 2: Gemini 3.1 quota-amended recovery | 73.02% | 65.59% | 73.04% | 67.19% | 0/23 (0.00%) | 0/140 (0.00%) |
+
+### Detailed baseline / Run 1 / quota-amended Run 2 comparison
+
+| Pipeline | Provider / context | Precision@5 | Recall@5 | Correct abstention | False abstention | Train hit rate |
+|---|---|---:|---:|---:|---:|---:|
+| Original BM25 baseline | Local BM25; fixed windows | 1.74% | 18.16% | 0/23 | 0/140 | 26.43% |
+| Run 1: ten-passage Gemini at 0.50 | Gemini 3.5; cutoff 0.50; ten passages | 65.70% | 61.38% | 17/23 | 17/140 | 80.00% |
+| Run 2: conditional recovery with Gemini 3.1 | Gemini 3.5 first stage; 3.1 recovery; cutoff 0.45; twenty passages | 73.02% | 65.59% | 0/23 | 0/140 | 86.43% |
+
+The original all-3.5 Run 2 remains separately documented in stage 23. The final mixed-provider variant is stage 24, declared for quota reasons before test scoring. Its improved false-abstention rate must not hide the failure to reject any train negative questions. Run 1 remains the provisional business recommendation; neither final candidate passes every train criterion.
+
+| Pipeline | k | Precision | Recall | Benchmark precision | Benchmark recall |
+|---|---:|---:|---:|---:|---:|
+| Original BM25 baseline | 1 | 0.56% | 1.72% | 0.56% | 1.72% |
+| Original BM25 baseline | 3 | 1.36% | 7.43% | 1.45% | 8.50% |
+| Original BM25 baseline | 5 | 1.74% | 18.16% | 1.76% | 19.24% |
+| Original BM25 baseline | 10 | 1.81% | 32.16% | 1.87% | 35.52% |
+| Run 1: ten-passage Gemini at 0.50 | 1 | 65.99% | 47.48% | 65.99% | 47.48% |
+| Run 1: ten-passage Gemini at 0.50 | 3 | 65.76% | 58.64% | 65.75% | 59.86% |
+| Run 1: ten-passage Gemini at 0.50 | 5 | 65.70% | 61.38% | 65.69% | 62.79% |
+| Run 1: ten-passage Gemini at 0.50 | 10 | 65.62% | 65.21% | 65.64% | 67.19% |
+| Run 2: conditional recovery with Gemini 3.1 | 1 | 73.11% | 51.99% | 73.11% | 51.99% |
+| Run 2: conditional recovery with Gemini 3.1 | 3 | 72.98% | 63.59% | 73.03% | 65.02% |
+| Run 2: conditional recovery with Gemini 3.1 | 5 | 73.02% | 65.59% | 73.04% | 67.19% |
+| Run 2: conditional recovery with Gemini 3.1 | 10 | 72.92% | 67.70% | 72.96% | 70.24% |
+
+Valid Gemini responses contain at most five quotes, often fewer. Some recall gain at k=10 comes from invalid-output fallbacks returning additional original passages.
+
+### Operational comparison
+
+| Pipeline | New train API requests | Input / output tokens | First-use p50 / p95 ms | Cache p50 / p95 ms |
+|---|---:|---|---|---|
+| Run 1 | 160 | 440,022 / 20,394 | 2281.18 / 4463.85 | 12.37 / 16.30 |
+| Run 2, incremental calls | 58 | 292,876 / 5,002 | 2621.53 / 6037.28 | 13.03 / 29.12 |
+
+Run 2 first-use timing includes the first stage; incremental token/call totals count only its extra requests. Run 1 used 160 calls with 24 invalid fallbacks and three upstream rejections. Run 2 reused 105 valid answers and made 58 additional calls; it ended with 21 invalid fallbacks. All six train negative false returns in Run 1 and all ten in Run 2 came from invalid-output passage fallbacks. Most remaining output failures involve empty evidence with a noncanonical no-answer sentence. Changing that fallback would be a new policy, not a retroactive repair of these figures. Demo-only requests are excluded from evaluation/usage totals.
+
+## Final held-out results
+
+| Configuration | Precision@5 | Recall@5 | Correct abstention | False abstention | Test attempts |
+|---|---:|---:|---:|---:|---:|
+| Run 1: Gemini 3.5 | 58.14% | 56.94% | 5/7 (71.43%) | 4/54 (7.41%) | 1 |
+| Run 2: 3.5 first stage + 3.1 recovery | 65.87% | 62.99% | 2/7 (28.57%) | 0/54 (0.00%) | 1 |
+| Original BM25 baseline | 0.80% | 13.87% | 0/7 (0.00%) | 0/54 (0.00%) | 1 |
+
+Run 2 here is the explicitly amended Gemini 3.1 recovery policy, not the original all-3.5 version. All three cover the same 54 answerable and seven negative questions.
+
+<details>
+<summary>All k values, benchmark scores, hit rates and cached latency</summary>
+
+
+<!-- FINAL_TEST_RESULTS_START -->
+
+Only the frozen baseline and two train-selected candidates were evaluated. No test tuning.
+
+| Model | k | Queries | Precision | Recall | Benchmark precision | Benchmark recall | Hit rate | Correct abstention | False abstention | Cached p50/p95 ms | Test attempts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|
+| broad10 | 1 | 54 | 53.56% | 45.16% | 53.56% | 45.16% | 59.26% | 5/7 | 4/54 | 13.03/16.57 | 1 |
+| broad10 | 3 | 54 | 58.10% | 54.53% | 58.23% | 56.21% | 72.22% | 5/7 | 4/54 | 13.03/16.57 | 1 |
+| broad10 | 5 | 54 | 58.14% | 56.94% | 58.21% | 58.61% | 74.07% | 5/7 | 4/54 | 13.03/16.57 | 1 |
+| broad10 | 10 | 54 | 58.00% | 58.79% | 58.05% | 61.16% | 75.93% | 5/7 | 4/54 | 13.03/16.57 | 1 |
+| recovery20 | 1 | 54 | 61.63% | 51.31% | 61.63% | 51.31% | 66.67% | 2/7 | 0/54 | 13.58/28.28 | 1 |
+| recovery20 | 3 | 54 | 65.77% | 60.59% | 65.76% | 61.38% | 77.78% | 2/7 | 0/54 | 13.58/28.28 | 1 |
+| recovery20 | 5 | 54 | 65.87% | 62.99% | 65.86% | 63.78% | 79.63% | 2/7 | 0/54 | 13.58/28.28 | 1 |
+| recovery20 | 10 | 54 | 65.75% | 65.15% | 65.76% | 66.63% | 83.33% | 2/7 | 0/54 | 13.58/28.28 | 1 |
+| baseline | 1 | 54 | 0.31% | 1.85% | 0.31% | 1.85% | 1.85% | 0/7 | 0/54 | 6.53/8.17 | 1 |
+| baseline | 3 | 54 | 0.80% | 8.07% | 0.76% | 8.07% | 11.11% | 0/7 | 0/54 | 6.53/8.17 | 1 |
+| baseline | 5 | 54 | 0.80% | 13.87% | 0.76% | 13.87% | 18.52% | 0/7 | 0/54 | 6.53/8.17 | 1 |
+| baseline | 10 | 54 | 1.74% | 27.94% | 1.79% | 30.39% | 40.74% | 0/7 | 0/54 | 6.53/8.17 | 1 |
+
+<!-- FINAL_TEST_RESULTS_END -->
+
+</details>
+
+The matched train/test comparison is in [FINAL_COMPARISON.md](evaluation/FINAL_COMPARISON.md). Run 1 lost 7.55 precision points and 4.44 recall points from train; the amended Run 2 lost 7.15 and 2.60 points respectively. Run 1 still exceeds the 5% false-abstention guardrail. Run 2 rejects fewer negatives. The small seven-question negative test set limits confidence in either rate. No model settings were changed after these scores. One HTTP 503 during response preparation was preserved and retried; it did not produce an additional evaluation attempt.
+
+## Every approach and what it changed
+
+| Stage | Approach | What we learned |
+|---|---|---|
+| 00 | Original baseline | Simple lexical starting point; weak recall. |
+| 01 | Stopword removal | Did not improve the declared objective. |
+| 02 | Smaller chunks | Shorter windows did not yield an accepted improvement. |
+| 03 | BM25 length normalisation b=0.30 | Small gain below the predeclared minimum. |
+| 04 | BM25 saturation k1=0.80 | Rejected against the reference. |
+| 05 | Document then clause routing | Accepted: party names no longer dominated clause ranking. |
+| 06 | Focused clause cleanup | Recall improved but false abstention failed its guardrail. |
+| 07 | Cleanup with zero-match fallback | Accepted: recovered matches lost to filtering. |
+| 08 | Combined improvements plus stemming | Accepted lexical reference. |
+| 09 | Gemini query expansion | Highest train recall, with latency and abstention limitations. |
+| 10 | Local Phi-3 query expansion | A reproducible local-versus-hosted comparison. |
+| 11 | Pure MiniLM + FAISS | Basic semantic retrieval lost to tuned lexical retrieval. |
+| 12 | Exact-answer Phi-3 pilot | Small subset only; precision gain came with unacceptable recall loss. |
+| 13 | Full-train Phi-3 summary/evidence | Precision improved; output failures required many fallbacks. |
+| 14 | Kanon preparation | Not run; no metric or improvement is claimed. |
+| 15 | Clause-aware MiniLM chunks | Slight precision improvement but substantial recall loss. |
+| 16 | Clause-aware cutoff sweep | Higher rejection rates also rejected answerable questions. |
+| 17 | Definitions/cross-reference enrichment | No overall retrieval gain; threshold effects required a control. |
+| 18 | Original dense cutoff control | Matched enrichment abstention without its retrieval loss. |
+| 19 | BM25/dense hybrid and cutoff sweep | Did not beat tuned BM25; 0.55 became the user-selected reference. |
+| 20 | Hybrid + local reranker | Worse precision and recall; excluded from the final pipeline. |
+| 21 | Hybrid + five-passage Gemini evidence | Strong precision, but 46/140 false abstentions. |
+| 22 | Run 1: ten passages and complete clauses | Better overlap and fewer false abstentions; incomplete target attainment. |
+| 23 | Original Run 2: all-3.5 conditional recovery | Further overlap improvement; negative abstention degraded. |
+| 24 | Quota-amended Run 2: 3.1 recovery | Matched train counterpart; negative abstention failed badly due to invalid-output fallback. |
+
+The complete table below includes each measured threshold variant. There are 46 full-train configurations, not 45 independent model families. Repeated verification runs are not new approaches. The historical pilot is isolated because it used ten answerable and five negative questions. Configurations, raw outputs and decisions are linked from experiments/iterations/.
+
+### All full-train model and threshold outputs
+
+| Stage | Configuration | Precision@5 | Recall@5 | Correct abstention | False abstention |
+|---|---|---:|---:|---:|---:|
+| 00 | Original BM25 baseline | 1.74% | 18.16% | 0/23 | 0/140 |
+| 01 | BM25 + stopword removal | 1.61% | 15.89% | 0/23 | 0/140 |
+| 02 | BM25 + 500-character chunks | 0.78% | 4.09% | 0/23 | 0/140 |
+| 03 | BM25 with b=0.30 | 1.79% | 18.82% | 0/23 | 0/140 |
+| 04 | BM25 with k1=0.80 | 1.57% | 16.16% | 0/23 | 0/140 |
+| 05 | BM25 + document/clause routing | 5.15% | 47.12% | 0/23 | 0/140 |
+| 06 | BM25 + focused clause query | 5.81% | 50.72% | 1/23 | 12/140 |
+| 07 | BM25 + focused clause query + fallback | 6.28% | 53.50% | 0/23 | 0/140 |
+| 08 | BM25 + focused query, fallback and stemming | 7.88% | 67.01% | 0/23 | 0/140 |
+| 09 | BM25 + Gemini query expansion | 8.47% | 79.10% | 0/23 | 0/140 |
+| 10 | BM25 + Phi-3 query expansion | 8.07% | 70.75% | 0/23 | 0/140 |
+| 13 | BM25/Phi-3 + one-shot summary and evidence | 20.08% | 68.92% | 7/23 | 3/140 |
+| 11 | MiniLM + FAISS, fixed windows | 4.03% | 35.75% | 0/23 | 0/140 |
+| 15 | Clause-aware MiniLM + FAISS | 5.12% | 19.74% | 0/23 | 0/140 |
+| 17 | Definition/reference-enriched MiniLM + FAISS | 3.87% | 35.70% | 0/23 | 0/140 |
+| 16 | Clause-aware MiniLM + cutoff 0.20 | 5.12% | 19.74% | 0/23 | 0/140 |
+| 16 | Clause-aware MiniLM + cutoff 0.30 | 5.12% | 19.74% | 0/23 | 0/140 |
+| 16 | Clause-aware MiniLM + cutoff 0.40 | 5.12% | 19.74% | 0/23 | 0/140 |
+| 16 | Clause-aware MiniLM + cutoff 0.50 | 5.12% | 19.74% | 1/23 | 0/140 |
+| 16 | Clause-aware MiniLM + cutoff 0.60 | 4.91% | 19.02% | 14/23 | 10/140 |
+| 16 | Clause-aware MiniLM + cutoff 0.70 | 1.91% | 7.12% | 22/23 | 84/140 |
+| 16 | Clause-aware MiniLM + cutoff 0.80 | 0.00% | 0.00% | 22/23 | 140/140 |
+| 17 | Enriched MiniLM + cutoff 0.40 | 3.87% | 35.70% | 0/23 | 0/140 |
+| 17 | Enriched MiniLM + cutoff 0.45 | 3.87% | 35.70% | 0/23 | 0/140 |
+| 17 | Enriched MiniLM + cutoff 0.50 | 3.87% | 35.70% | 3/23 | 0/140 |
+| 17 | Enriched MiniLM + cutoff 0.55 | 3.87% | 35.70% | 9/23 | 1/140 |
+| 17 | Enriched MiniLM + cutoff 0.60 | 3.64% | 33.14% | 15/23 | 11/140 |
+| 17 | Enriched MiniLM + cutoff 0.65 | 2.57% | 22.91% | 20/23 | 52/140 |
+| 18 | Original MiniLM + cutoff 0.40 | 4.03% | 35.75% | 0/23 | 0/140 |
+| 18 | Original MiniLM + cutoff 0.45 | 4.03% | 35.75% | 0/23 | 0/140 |
+| 18 | Original MiniLM + cutoff 0.50 | 4.03% | 35.75% | 3/23 | 0/140 |
+| 18 | Original MiniLM + cutoff 0.55 | 4.03% | 35.75% | 9/23 | 1/140 |
+| 18 | Original MiniLM + cutoff 0.60 | 3.82% | 33.90% | 16/23 | 11/140 |
+| 18 | Original MiniLM + cutoff 0.65 | 2.68% | 23.68% | 20/23 | 52/140 |
+| 19 | BM25 + MiniLM hybrid, ungated | 7.14% | 66.23% | 0/23 | 0/140 |
+| 19 | Hybrid + cutoff 0.40 | 7.14% | 66.23% | 0/23 | 0/140 |
+| 19 | Hybrid + cutoff 0.45 | 7.14% | 66.23% | 0/23 | 0/140 |
+| 19 | Hybrid + cutoff 0.50 | 7.14% | 66.23% | 3/23 | 0/140 |
+| 19 | Hybrid + cutoff 0.55 | 7.12% | 65.51% | 9/23 | 1/140 |
+| 19 | Hybrid + cutoff 0.60 | 6.83% | 62.66% | 16/23 | 11/140 |
+| 19 | Hybrid + cutoff 0.65 | 4.85% | 44.08% | 20/23 | 52/140 |
+| 20 | Hybrid + 0.55 + local cross-encoder reranker | 3.59% | 34.89% | 9/23 | 1/140 |
+| 21 | Hybrid + 0.55 + Gemini, five passages | 54.15% | 46.93% | 23/23 | 46/140 |
+| 22 | Run 1: Gemini, ten passages, cutoff 0.50 | 65.70% | 61.38% | 17/23 | 17/140 |
+| 23 | Run 2: conditional twenty-passage recovery at 0.45 | 70.43% | 64.56% | 13/23 | 12/140 |
+
+| 24 | Run 2: Gemini 3.1 quota-amended recovery | 73.02% | 65.59% | 0/23 | 0/140 |
+
+The small exact-answer pilot improved precision from 3.06% to 6.00% on its own ten-question subset, but recall fell from 45.88% to 35.40%; correct negative abstention was 2/5. It was rejected. These numbers are not comparable to full-train aggregates. Superseded boundary-fix and timing replays remain preserved in the [all-model audit](evaluation/ALL_MODELS_SUMMARY.md).
+
+## Concrete failure analysis
+
+The following twelve examples were chosen from train after scoring. Gold spans are used here only for diagnosis. Full questions, source paths, offsets, annotated text and returned evidence are in [the detailed failure file](evaluation/ERROR_ANALYSIS_TRAIN.md). No test labels were used to redesign the pipelines.
+
+| Case | Stage | Failure | Question excerpt / query ID | Diagnosis |
+|---|---:|---|---|---|
+| 1 | 22 | partial_evidence | Are there any exceptions to competitive restrictions in this contract? (`5aacd88644`) | Returned evidence overlaps the annotated answer but omits part of its span. Longer complete-clause evidence or additional support may help; this is an offset-level diagnosis. |
+| 2 | 22 | partial_evidence | Does this contract include any right of first refusal, right of first offer, or right of first negot (`13d8e76465`) | Returned evidence overlaps the annotated answer but omits part of its span. Longer complete-clause evidence or additional support may help; this is an offset-level diagnosis. |
+| 3 | 22 | partial_evidence | How is intellectual property ownership assigned in this contract? (`505f5239e0`) | Returned evidence overlaps the annotated answer but omits part of its span. Longer complete-clause evidence or additional support may help; this is an offset-level diagnosis. |
+| 4 | 22 | wrong_section | What is the expiration date of this contract? (`83b1521f8c`) | Returned evidence has zero character overlap with the annotated answer; rank/source selection needs review. |
+| 5 | 22 | false_abstention | Is there a covenant not to sue included in this contract? (`4e02d75b0e`) | No gold overlap in the first-stage supplied context; retrieval expansion or routing is needed. |
+| 6 | 22 | wrong_section | What is the expiration date of this contract? (`652ee16919`) | Returned evidence has zero character overlap with the annotated answer; rank/source selection needs review. |
+| 7 | 22 | false_abstention | Does this contract include any revenue or profit-sharing arrangements? (`4270fd03ea`) | Retrieved context contained some gold overlap, but no evidence was returned. |
+| 8 | 22 | wrong_section | Is there a non-compete clause in this contract? (`e72f339f6d`) | Returned evidence has zero character overlap with the annotated answer; rank/source selection needs review. |
+| 9 | 22 | false_abstention | What are the audit rights under this contract? (`4c60c9594f`) | No gold overlap in the first-stage supplied context; retrieval expansion or routing is needed. |
+| 10 | 23 | invalid_fallback | Does the agreement allow sublicensing to third-party platforms? (`f03c96c14e`) | The output failed validation, so the declared fallback returned original passages for a labeled unanswerable query. Strict formatting plus fallback policy caused this false return. |
+| 11 | 23 | invalid_fallback | When does the exclusivity period end? (`8880cd6a3b`) | The output failed validation, so the declared fallback returned original passages for a labeled unanswerable query. Strict formatting plus fallback policy caused this false return. |
+| 12 | 23 | invalid_fallback | Which clause requires approval before using ChatGPT on customer communications? (`439a5a9054`) | The output failed validation, so the declared fallback returned original passages for a labeled unanswerable query. Strict formatting plus fallback policy caused this false return. |
+
+Wrong-section and partial-evidence cases motivate better ranking and full-clause support, but the measured generic reranker did not help. False abstentions have two causes: missing evidence in the supplied context, and missed support despite some relevant retrieved text. Invalid-output fallbacks expose a separate engineering issue: an incompatible no-answer sentence can turn an otherwise cautious output into returned passages. These causes should not be conflated.
+
+## Business trade-offs and limitations
+
+| Choice | Benefit | Cost or risk |
+|---|---|---|
+| Original BM25 | Cheap, local, transparent, no provider dependency | Weak baseline recall and no useful negative abstention |
+| Tuned BM25 | Strong local recall with simple operational setup | Broad passages keep character precision low; unsupported questions still return text |
+| Local Phi-3 | Offline inference option, cached and inspectable | Slow first use and frequent exact-output failures; no quality guarantee from brevity |
+| Pure semantic / hybrid | Semantic candidates complement lexical matches | Extra model/index dependencies; hybrid did not automatically beat tuned BM25 |
+| Run 1 | Stronger evidence precision with one generation stage; fewer negative false returns than Run 2 on train | API dependency and false answerable abstention above the target |
+| Run 2 | Recovery increases precision/recall and reduces false answerable abstention on train | Extra latency/calls and weaker negative abstention due to fallback behaviour |
+| Cached presentation | Fast, repeatable, no API cost during known demonstrations | A cache is not proof of live-model reliability or generalisation |
+
+Neither late Gemini version passed every train gate. A claim of production readiness would require broader annotated negatives, human review of summary faithfulness and legal qualifications, confidence calibration, robust invalid-output handling, privacy/retention decisions and operational monitoring. Those are limitations, not completed features.
+
+The test set is small and repeated train-based choices create selection optimism. Test results may differ in either direction. All three held-out outcomes must be reported, including failures; no settings are changed in response. Generated summaries are not legally authoritative. Definition/reference parsing is heuristic, handles unique same-document targets only, and was not adopted as a retrieval improvement. Local encoder truncation and exact-quote validation failures remain recorded rather than hidden.
+
+## Reproducibility and deliverables
+
+The organised project contains root web/CLI/command entry points, shared src/, explicit scripts/, all configurations and prompts, checked caches, append-only logs, per-iteration record folders, ten presentation notebooks, complete implementation walkthroughs, frozen negatives and core tests. README.md gives setup, data/model preparation, offline demo, train evaluation, loop demonstration and frozen test commands. Runtime/library/model versions, source hashes, usage and raw predictions are retained.
+
+Code and settings are frozen in evaluation/execution_freeze.json before held-out generation. evaluation/test_runs.jsonl is the authoritative attempt ledger; preparation-time counters in historical manifests are snapshots, not a replacement for that ledger. Provider outputs are cached, credentials are not. Personal guides and the source assignment PDF are excluded. Git history must also be checked before publication so excluded personal files do not remain in old commits.
+
+Useful entry points: [selected ten](evaluation/SELECTED_VERSIONS.md), [complete model summary](evaluation/ALL_MODELS_SUMMARY.md), [iteration folders](experiments/README.md), and [presentation notebooks](notebooks/presentation/README.md).
+
+## Quota-driven provider amendment before held-out scoring
+
+After Run 1 test responses were prepared, the user confirmed only one Gemini
+3.5 daily request remained and requested Gemini 3.1 for recovery. No test
+metrics had been calculated. The original freeze was archived; the amendment
+was recorded before generation in evaluation/PROTOCOL_AMENDMENT_31.json.
+Run 1, its cached answers, prompts, cutoffs, candidate pools, validation and
+fallback stayed fixed. Only Run 2 recovery calls changed provider model.
+
+The original all-3.5 Run 2 remains iteration 23. A matched train counterpart
+for the mixed 3.5/3.1 policy is iteration 24: 73.02% precision, 65.59% recall,
+0/23 correct negative abstentions and 0/140 false answerable abstentions.
+The poor negative result is a failure, not an improvement: invalid no-answer
+outputs fell back to retrieved passages. Its final held-out result must not
+be compared against iteration 23 as if both used the same provider.
+
+The final three-model test table uses baseline, Run 1 and this explicitly
+amended Run 2. Both train counterparts and original results remain visible.
+The protocol change was driven by quota, not test quality or label inspection.
+
+## Matched train/test results for the three final configurations
+
+All test configurations were selected before metrics were viewed; one evaluation attempt each. Run 2 uses the declared quota-amended provider policy on both splits.
+
+| Model | Split | Answerable / negative n | Precision@5 | Recall@5 | Benchmark P/R | Correct abstention | False abstention |
+|---|---|---|---:|---:|---|---:|---:|
+| Run 1 (Gemini 3.5) | train | 140 / 23 | 65.70% | 61.38% | 65.69% / 62.79% | 17/23 (73.91%) | 17/140 (12.14%) |
+| Run 1 (Gemini 3.5) | test | 54 / 7 | 58.14% | 56.94% | 58.21% / 58.61% | 5/7 (71.43%) | 4/54 (7.41%) |
+| Run 2 (3.5 first stage + 3.1 recovery) | train | 140 / 23 | 73.02% | 65.59% | 73.04% / 67.19% | 0/23 (0.00%) | 0/140 (0.00%) |
+| Run 2 (3.5 first stage + 3.1 recovery) | test | 54 / 7 | 65.87% | 62.99% | 65.86% / 63.78% | 2/7 (28.57%) | 0/54 (0.00%) |
+| Baseline (local BM25) | train | 140 / 23 | 1.74% | 18.16% | 1.76% / 19.24% | 0/23 (0.00%) | 0/140 (0.00%) |
+| Baseline (local BM25) | test | 54 / 7 | 0.80% | 13.87% | 0.76% / 13.87% | 0/7 (0.00%) | 0/54 (0.00%) |
+
+| Model | Test minus train precision | Test minus train recall |
 |---|---:|---:|
-| Answerable queries | 10 | 10 |
-| Unique precision@5 | 3.06% | 6.00% |
-| Unique recall@5 | 45.88% | 35.40% |
-| Reference precision@5 | 3.38% | 6.17% |
-| Reference recall@5 | 54.57% | 39.09% |
-| Correct negative abstentions | 0/5 | 2/5 |
-| False answerable abstentions | 0/10 | 0/10 |
+| Run 1 (Gemini 3.5) | -7.55 points | -4.44 points |
+| Run 2 (3.5 first stage + 3.1 recovery) | -7.15 points | -2.60 points |
+| Baseline (local BM25) | -0.94 points | -4.30 points |
 
-The new phase's policy was declared before measurement: at least a one-point
-precision gain, at most a two-point recall loss, and protected abstention.
-Precision rose 2.94 points, but recall fell 10.48 points, so the quality gate
-failed. The existing operational latency check also failed. First-use timing
-includes both the upstream local rewrite and extraction; a cached replay was
-rerun to correct timing accounting, with identical quality scores. Both saved
-run records remain the same proposal, not two new experiments.
+No pipeline tuning or new provider calls followed these scores. A service HTTP 503 during response preparation was preserved and retried as a transport failure; it was not an additional model evaluation. See test_runs.jsonl for evaluation attempts and cache/failed_attempts provenance for the provider failure.
 
-Nine of fifteen outputs passed source/schema validation, including two explicit
-no-answer responses. Six were invalid: five quotes were not exact substrings
-of the cited passage, and one JSON string was truncated/unparseable. Invalid
-outputs retain the original candidates rather than removing difficult queries.
-Every returned excerpt was checked against the original document slice.
-Validity does not mean the quote necessarily answers the question correctly.
+### Test inference and replay accounting
 
-Returned characters averaged 2,638 versus 4,980.8 input characters on the ten
-answerable queries; fallback passages explain why not every result is short.
-Four zero-overlap reference failures became six after extraction. A concise
-fact can omit required clause evidence or select the wrong text; shorter output
-alone is not successful retrieval. The exact-copy constraint also exposed the
-small model's quoting/format-following limitations.
+| Configuration | Unique API responses used | Model versions | Tokens (input / output) | Estimated first-use p50 / p95 ms | Cached p50 / p95 ms |
+|---|---:|---|---|---|---|
+| broad10 | 58 | gemini-3.5-flash-lite: 58 | 162,110 / 7,310 | 4123.72 / 14021.12 | 13.03 / 16.57 |
+| recovery20 | 74 | gemini-3.5-flash-lite: 58, gemini-3.1-flash-lite: 16 | 244,786 / 9,079 | 4799.04 / 14020.50 | 13.58 / 28.28 |
+| baseline | 0 | Local BM25 | 0 / 0 | 6.53 / 8.17 | 6.53 / 8.17 |
 
-The candidate is not adopted. There is no full-train expansion, Gemini
-extraction, or semantic continuation yet. Stop and review possible output/
-prompt redesign rather than spend API quota. Possible future hypotheses are
-selecting source sentence IDs instead of copying or asking for the complete
-answering clause with qualifiers; these are suggestions, not measured trials.
+Run 2 response/token totals include reused first-stage calls; they are not additional API charges for replay. Sixteen extra recovery calls used Gemini 3.1. The Run 1 provider 503 was retained in failed-attempt history and retried once without model-output regeneration. Timing excludes startup and quota pacing. Saved-prediction rescoring verifies arithmetic without generating new predictions; the model-evaluation ledger remains one attempt per configuration.
 
-All 15 local request/response records are cached in cache/local_extractions/.
-See notebook 13, experiments/precision_log.jsonl, and
-results/iteration_12_precision_pilot/. The original pipelines, prompts, and
-caches remain available. Test performance remains unmeasured.
+Publication history was filtered only to remove excluded personal/credential/PDF paths; chronological experiment proof and frozen negatives remain. Historical commit-ID mapping is under experiments/source_snapshots/.

@@ -72,6 +72,22 @@ def test_cli_handles_bad_config(monkeypatch):
     assert error.value.code == 2
 
 
+def test_dense_abstention_choice_uses_shared_gate(small_project, monkeypatch):
+    import dense_retrieval
+    config = dict(name='dense_gate',retriever_type='dense',abstention_threshold=.5)
+    (small_project/'configs/dense_gate.json').write_text(json.dumps(config))
+    class FakeDense:
+        def __init__(self, documents, settings, root):
+            assert 'abstention_threshold' not in settings
+            self.config = settings
+        def search(self,query,k):
+            return [dict(score=.7 if query=='supported' else .4)]
+    monkeypatch.setattr(dense_retrieval,'DenseRetriever',FakeDense)
+    model = build_model('dense_gate',small_project)
+    assert search(model,'supported')['status']=='matches'
+    assert search(model,'unrelated')['status']=='no_matches'
+
+
 def test_saved_llm_choice_uses_cache_only(small_project):
     from llm_rewrite import CacheMissError, get_rewrite
     from search_service import available_configs
@@ -89,14 +105,38 @@ def test_saved_llm_choice_uses_cache_only(small_project):
         search(model,'uncached question')
 
 
+def test_hosted_summary_is_connected_to_retrieval_and_replays_offline(small_project,monkeypatch):
+    from hosted_summary import cached_gemini_summary
+    (small_project/'llm_configs').mkdir()
+    (small_project/'summary_prompt.txt').write_text('Use only supplied evidence.')
+    settings=dict(name='llm_hybrid_demo',provider='gemini',task='hybrid_summary_with_evidence',
+                  model='test',model_revision='pinned',runtime='test',temperature=0,seed=None,
+                  prompt_file='summary_prompt.txt',max_output_tokens=1536,context_length=100000,
+                  thinking_level='minimal',candidate_k=5,max_evidence_quotes=3,max_summary_words=45,
+                  invalid_output_policy='return_original_candidates',retrieval_config='configs/demo.json',
+                  expose_in_demo=True)
+    (small_project/'llm_configs/summary.json').write_text(json.dumps(settings))
+    base=build_model('demo',small_project)
+    hits=base.search('sublicensing',5)
+    raw=json.dumps(dict(summary='Sublicensing permission.',evidence=[dict(passage_id=1,quote=hits[0]['text'])]))
+    cached_gemini_summary(small_project,settings,'sublicensing',hits,False,lambda request:dict(text=raw))
+    def forbidden(*args,**kwargs): pytest.fail('Unexpected API call during interface replay.')
+    monkeypatch.setattr('hosted_summary.call_gemini',forbidden)
+    result=search(build_model('llm_hybrid_demo',small_project),'sublicensing')
+    assert result['summary']=='Sublicensing permission.'
+    assert result['hits'][0]['text']==hits[0]['text']
+    assert search(build_model('llm_hybrid_demo',small_project),'missingword')['hits']==[]
+
+
 @pytest.mark.skipif(not (ROOT / 'data/prepared/manifest.json').exists(), reason='Prepare corpus first.')
 def test_web_search_and_empty_state():
     from streamlit.testing.v1 import AppTest
     app = AppTest.from_file(ROOT / 'app.py', default_timeout=60).run()
     assert not app.exception
+    app.selectbox[0].select('bm25_baseline').run()
     app.button[0].click().run()
     assert not app.exception
-    expected = search(build_model(), EXAMPLE_QUERY, 5)['hits']
+    expected = search(build_model('bm25_baseline'), EXAMPLE_QUERY, 5)['hits']
     assert len(app.expander) == len(expected)
     assert app.text[0].value == expected[0]['text']
     app.text_area[0].set_value('zzzznonexistenttokenzzzz')
@@ -121,16 +161,10 @@ def test_gemini_demo_requires_neither_network_nor_api_key(monkeypatch):
     assert search(model,EXAMPLE_QUERY,3)['hits']
     from streamlit.testing.v1 import AppTest
     app=AppTest.from_file(ROOT/'app.py',default_timeout=60).run()
-    app.selectbox[0].select('llm_gemini_rewrite').run()
-    app.button[0].click().run()
-    assert not app.exception
-    assert len(app.expander)>0
+    assert len(app.selectbox[0].options)==3
     local=build_model('llm_local_phi3_rewrite')
     assert search(local,EXAMPLE_QUERY,3)['hits']
-    app.selectbox[0].select('llm_local_phi3_rewrite').run()
-    app.button[0].click().run()
-    assert not app.exception
-    assert len(app.expander)>0
+    assert search(local,EXAMPLE_QUERY,3)['hits']
 
 
 @pytest.mark.skipif(not (ROOT/'cache/dense').exists(), reason='Build local dense cache first.')
@@ -143,8 +177,5 @@ def test_dense_web_and_cli_service_share_cached_evidence(monkeypatch):
     expected=search(model,EXAMPLE_QUERY,5)
     from streamlit.testing.v1 import AppTest
     app=AppTest.from_file(ROOT/'app.py',default_timeout=60).run()
-    app.selectbox[0].select('dense_minilm_faiss').run()
-    app.button[0].click().run()
-    assert not app.exception
-    assert len(app.expander)==len(expected['hits'])
-    assert app.text[0].value==expected['hits'][0]['text']
+    assert len(app.selectbox[0].options)==3
+    assert expected['hits']

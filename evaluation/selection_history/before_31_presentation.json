@@ -1,0 +1,805 @@
+{
+  "status": "Ten presentation versions selected on train; only baseline, Run 1 and Run 2 selected for held-out evaluation",
+  "selection_basis": "Progression and meaningful comparisons, not ten accepted or monotonically improving systems",
+  "number_selected": 10,
+  "k_values": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "primary_k": 5,
+  "headline_metric_convention": "unique-character; benchmark pairwise also required",
+  "test_evaluation_runs": 0,
+  "test_execution": "Deferred until quota reset and readiness verification; only the separate three-model test selection will execute",
+  "decision_rule": "Do not tune or replace the selected configurations after viewing test outcomes. Any setting change before freeze must be versioned and recorded.",
+  "historical_attempts": "All other configurations, predictions and logs remain retained; historical pilot excluded from full-train comparison.",
+  "models": [
+    {
+      "order": 1,
+      "label": "Original BM25 baseline",
+      "config_path": "configs/bm25_baseline.json",
+      "config_sha256_at_selection": "c49b18d7c127451fc85e55b3563489370f317c1a83686b13eebbbc856fc826c7",
+      "config_snapshot": {
+        "name": "bm25_baseline",
+        "chunk_size": 1000,
+        "chunk_overlap": 200,
+        "k1": 1.5,
+        "b": 0.75,
+        "min_score": 0.0,
+        "k_values": [
+          1,
+          3,
+          5,
+          10
+        ]
+      },
+      "train_source_iteration": 10,
+      "train_source_run_id": "20261101T035007767701Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.005642857142857143,
+            "recall": 0.017213463111394565,
+            "hit": 0.03571428571428571,
+            "benchmark_precision": 0.005642857142857143,
+            "benchmark_recall": 0.017213463111394565
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.013628578665409043,
+            "recall": 0.07426194589360333,
+            "hit": 0.12142857142857143,
+            "benchmark_precision": 0.014457137177193241,
+            "benchmark_recall": 0.08504172882126716
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.017433113661637845,
+            "recall": 0.18164706021184368,
+            "hit": 0.2642857142857143,
+            "benchmark_precision": 0.017593637856464374,
+            "benchmark_recall": 0.1924268431395075
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.018139540102769674,
+            "recall": 0.3215982088425699,
+            "hit": 0.4357142857142857,
+            "benchmark_precision": 0.018651677246298463,
+            "benchmark_recall": 0.3551538517325359
+          }
+        ],
+        "false_abstention": 0.0,
+        "correct_abstention": 0.0,
+        "negative_counts": {
+          "n": 23,
+          "correct": 0
+        },
+        "latency_ms": {
+          "median": 6.190699990838766,
+          "p95": 8.619304985040793
+        }
+      },
+      "notebook": "notebooks/experiments/02_bm25_baseline.ipynb",
+      "selection_reason": "Starting reference; not a best-performing candidate.",
+      "selected_for_test": true
+    },
+    {
+      "order": 2,
+      "label": "Improved BM25 with stemming",
+      "config_path": "configs/bm25_focused_stemmed.json",
+      "config_sha256_at_selection": "d984a4c5ee15a3bb43b420f95c70cefb29c3c933c36a90f230e0b654d51b39cd",
+      "config_snapshot": {
+        "name": "bm25_focused_stemmed",
+        "chunk_size": 1000,
+        "chunk_overlap": 200,
+        "k1": 1.5,
+        "b": 0.75,
+        "min_score": 0.0,
+        "k_values": [
+          1,
+          3,
+          5,
+          10
+        ],
+        "query_mode": "document_then_clause",
+        "clause_query_cleanup": true,
+        "clause_cleanup_fallback": true,
+        "stemming": "english"
+      },
+      "train_source_iteration": 8,
+      "train_source_run_id": "20261101T024714413632Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.1700357142857143,
+            "recall": 0.41526133116046304,
+            "hit": 0.5071428571428571,
+            "benchmark_precision": 0.1700357142857143,
+            "benchmark_recall": 0.41526133116046304
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.10661879665477571,
+            "recall": 0.6069437789019805,
+            "hit": 0.6857142857142857,
+            "benchmark_precision": 0.11100613980519013,
+            "benchmark_recall": 0.6729085942675426
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.07879811750133806,
+            "recall": 0.6700748331024532,
+            "hit": 0.7428571428571429,
+            "benchmark_precision": 0.08376627056416923,
+            "benchmark_recall": 0.7659751595154611
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.055810192115114086,
+            "recall": 0.7535360093926569,
+            "hit": 0.8285714285714286,
+            "benchmark_precision": 0.058382615574542475,
+            "benchmark_recall": 0.8623772479966695
+          }
+        ],
+        "false_abstention": 0.0,
+        "correct_abstention": 0.0,
+        "negative_counts": {
+          "n": 23,
+          "correct": 0
+        },
+        "latency_ms": {
+          "median": 7.58655002573505,
+          "p95": 10.498929925961418
+        }
+      },
+      "notebook": "notebooks/experiments/09_combined_bm25_stemming.ipynb",
+      "selection_reason": "Strong accepted lexical reference; low correct negative abstention.",
+      "selected_for_test": false
+    },
+    {
+      "order": 3,
+      "label": "BM25 + Gemini query expansion",
+      "config_path": "llm_configs/gemini.json",
+      "config_sha256_at_selection": "a2b922ab95ef915f2ce78b600237c57973ed8a88e9d5c65d160d13935599ff58",
+      "config_snapshot": {
+        "name": "llm_gemini_rewrite",
+        "provider": "gemini",
+        "model": "gemini-3.5-flash-lite",
+        "model_revision": "stable identifier; actual modelVersion recorded in every response",
+        "runtime": "gemini-rest-v1beta",
+        "prompt_file": "prompts/retrieval_rewrite_v1.txt",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "thinking_level": "minimal",
+        "baseline_config": "configs/bm25_focused_stemmed.json",
+        "expose_in_demo": true
+      },
+      "train_source_iteration": 9,
+      "train_source_run_id": "20261101T033133766706Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.21677857142857143,
+            "recall": 0.5295218421673918,
+            "hit": 0.6357142857142857,
+            "benchmark_precision": 0.21677857142857143,
+            "benchmark_recall": 0.5295218421673918
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.12213959210020105,
+            "recall": 0.711064687008859,
+            "hit": 0.7857142857142857,
+            "benchmark_precision": 0.12744647961003977,
+            "benchmark_recall": 0.7928418275397942
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.08469078521349811,
+            "recall": 0.7909862333781973,
+            "hit": 0.8714285714285714,
+            "benchmark_precision": 0.0892549564892317,
+            "benchmark_recall": 0.8958408032650031
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.052400612145914606,
+            "recall": 0.8789825785408156,
+            "hit": 0.9285714285714286,
+            "benchmark_precision": 0.05601841734197729,
+            "benchmark_recall": 1.0282725525235277
+          }
+        ],
+        "false_abstention": 0.0,
+        "correct_abstention": 0.0,
+        "negative_counts": {
+          "n": 23,
+          "correct": 0
+        },
+        "latency_ms": {
+          "median": 12.404250039253384,
+          "p95": 15.954549965681505
+        }
+      },
+      "notebook": "notebooks/experiments/10_gemini_bm25.ipynb",
+      "selection_reason": "Highest completed recall among these train versions; first-use latency and abstention limitations.",
+      "selected_for_test": false
+    },
+    {
+      "order": 4,
+      "label": "BM25 + Phi-3 query expansion",
+      "config_path": "llm_configs/local_phi3.json",
+      "config_sha256_at_selection": "5143728dfa40904427c2ffd519dc1c6e9a97309d7af1cee6f3dc48014d7c2a11",
+      "config_snapshot": {
+        "name": "llm_local_phi3_rewrite",
+        "provider": "ollama",
+        "model": "phi3:mini",
+        "model_revision": "4f222292793889a9a40a020799cfd28d53f3e01af25d48e06c5e708610fc47e9",
+        "runtime": "ollama-0.40.13",
+        "prompt_file": "prompts/retrieval_rewrite_v1.txt",
+        "temperature": 0,
+        "seed": 42,
+        "max_output_tokens": 256,
+        "context_length": 2048,
+        "baseline_config": "configs/bm25_focused_stemmed.json",
+        "expose_in_demo": true
+      },
+      "train_source_iteration": 10,
+      "train_source_run_id": "20261101T035007767701Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.1808642857142857,
+            "recall": 0.45465993182860953,
+            "hit": 0.55,
+            "benchmark_precision": 0.1808642857142857,
+            "benchmark_recall": 0.45465993182860953
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.1123574300211437,
+            "recall": 0.6376659927936699,
+            "hit": 0.7357142857142858,
+            "benchmark_precision": 0.1173572815211691,
+            "benchmark_recall": 0.7156477697822313
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.08068227172906191,
+            "recall": 0.7074997919714986,
+            "hit": 0.8,
+            "benchmark_precision": 0.08512801677639863,
+            "benchmark_recall": 0.800670909507339
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.05263072952758247,
+            "recall": 0.8141669891307146,
+            "hit": 0.8714285714285714,
+            "benchmark_precision": 0.05611491705662557,
+            "benchmark_recall": 0.9481243970000656
+          }
+        ],
+        "false_abstention": 0.0,
+        "correct_abstention": 0.0,
+        "negative_counts": {
+          "n": 23,
+          "correct": 0
+        },
+        "latency_ms": {
+          "median": 11.98835001559928,
+          "p95": 15.204055042704562
+        }
+      },
+      "notebook": "notebooks/experiments/11_local_phi3_comparison.ipynb",
+      "selection_reason": "Local-versus-hosted query-expansion comparison; no API needed for local inference.",
+      "selected_for_test": false
+    },
+    {
+      "order": 5,
+      "label": "BM25 + Phi-3 summary and evidence",
+      "config_path": "llm_configs/local_phi3_summary.json",
+      "config_sha256_at_selection": "e6af5e654caf3729a3d1b42de2488e4335c3d143d7f8bf13d49cde2e5396c7bb",
+      "config_snapshot": {
+        "name": "phi3_summary_with_evidence",
+        "provider": "ollama",
+        "task": "summary_with_evidence",
+        "model": "phi3:mini",
+        "model_revision": "4f222292793889a9a40a020799cfd28d53f3e01af25d48e06c5e708610fc47e9",
+        "runtime": "ollama-0.40.13",
+        "prompt_file": "prompts/summarise_with_evidence_v1.txt",
+        "temperature": 0,
+        "seed": 42,
+        "max_output_tokens": 768,
+        "context_length": 12288,
+        "candidate_k": 5,
+        "retrieval_config": "llm_configs/local_phi3.json",
+        "max_evidence_quotes": 3,
+        "max_summary_words": 45,
+        "invalid_output_policy": "return_original_candidates"
+      },
+      "train_source_iteration": 13,
+      "train_source_run_id": "20261101T073640876452Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.28298638028716844,
+            "recall": 0.4659961530898024,
+            "hit": 0.5642857142857143,
+            "benchmark_precision": 0.28298638028716844,
+            "benchmark_recall": 0.4659961530898024
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.22686219515178424,
+            "recall": 0.6208454526231583,
+            "hit": 0.7142857142857143,
+            "benchmark_precision": 0.23014579012823633,
+            "benchmark_recall": 0.6728353895704217
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.20082186680674166,
+            "recall": 0.6892106269678763,
+            "hit": 0.7785714285714286,
+            "benchmark_precision": 0.20437127793048943,
+            "benchmark_recall": 0.7563899044624184
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.20082186680674166,
+            "recall": 0.6892106269678763,
+            "hit": 0.7785714285714286,
+            "benchmark_precision": 0.20437127793048943,
+            "benchmark_recall": 0.7563899044624184
+          }
+        ],
+        "false_abstention": 0.02142857142857143,
+        "correct_abstention": 0.30434782608695654,
+        "negative_counts": {
+          "n": 23,
+          "correct": 7
+        },
+        "latency_ms": {
+          "median": 12.991600029636174,
+          "p95": 16.41446999274194
+        }
+      },
+      "notebook": "notebooks/experiments/14_phi3_full_summary.ipynb",
+      "selection_reason": "Prompting improves precision; many invalid outputs fall back to original passages. Historical acceptance decision is preserved.",
+      "selected_for_test": false
+    },
+    {
+      "order": 6,
+      "label": "MiniLM + FAISS with 0.55 cutoff",
+      "config_path": "configs/dense_minilm_abstention.json",
+      "config_sha256_at_selection": "bcc6d1c9b1a52a9e49f7d5d7bd1c70ed107cc9cb63da3d57e93250b769d82732",
+      "config_snapshot": {
+        "name": "dense_minilm_abstention",
+        "retriever_type": "dense",
+        "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+        "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+        "dimension": 384,
+        "max_seq_length": 256,
+        "device": "cpu",
+        "torch_threads": 4,
+        "batch_size": 32,
+        "chunk_size": 1000,
+        "chunk_overlap": 200,
+        "min_score": 0.0,
+        "k_values": [
+          1,
+          3,
+          5,
+          10
+        ],
+        "query_mode": "full",
+        "normalize_embeddings": true,
+        "faiss_index": "IndexFlatIP",
+        "abstention_threshold": 0.55
+      },
+      "train_source_iteration": 18,
+      "train_source_run_id": "20261101T080954682988Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.05269285714285714,
+            "recall": 0.10887729956591313,
+            "hit": 0.15714285714285714,
+            "benchmark_precision": 0.05269285714285714,
+            "benchmark_recall": 0.10887729956591313
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.04450173816437784,
+            "recall": 0.2575164920472117,
+            "hit": 0.35714285714285715,
+            "benchmark_precision": 0.04581414004820829,
+            "benchmark_recall": 0.2763982163917642
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.04034053185653337,
+            "recall": 0.35748930802374496,
+            "hit": 0.4642857142857143,
+            "benchmark_precision": 0.04189175796982168,
+            "benchmark_recall": 0.38904316812722806
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.028280139172079284,
+            "recall": 0.4827086393526138,
+            "hit": 0.5857142857142857,
+            "benchmark_precision": 0.02976347278268916,
+            "benchmark_recall": 0.534877541999451
+          }
+        ],
+        "false_abstention": 0.007142857142857143,
+        "correct_abstention": 0.391304347826087,
+        "negative_counts": {
+          "n": 23,
+          "correct": 9
+        },
+        "latency_ms": {
+          "median": 1.4008500147610903,
+          "p95": 1.7931099049746981
+        }
+      },
+      "notebook": "notebooks/experiments/17_hybrid_bm25_minilm.ipynb",
+      "selection_reason": "Pure semantic control with calibrated abstention; retrieval below improved BM25.",
+      "selected_for_test": false
+    },
+    {
+      "order": 7,
+      "label": "Hybrid with 0.55 cutoff",
+      "config_path": "configs/hybrid_bm25_minilm_rrf_abstention.json",
+      "config_sha256_at_selection": "4506d625bc48b211db6e3a11996a15e422495b6ab5ae0607ca966571c9152a19",
+      "config_snapshot": {
+        "name": "hybrid_bm25_minilm_rrf_abstention",
+        "retriever_type": "hybrid",
+        "bm25_config": "configs/bm25_focused_stemmed.json",
+        "dense_config": "semantic_configs/minilm.json",
+        "candidate_pool": 20,
+        "rrf_constant": 60,
+        "bm25_weight": 0.75,
+        "dense_confidence_threshold": 0.55
+      },
+      "train_source_iteration": 19,
+      "train_source_run_id": "20261101T080954682988Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.1443357142857143,
+            "recall": 0.31907875739236236,
+            "hit": 0.4357142857142857,
+            "benchmark_precision": 0.1443357142857143,
+            "benchmark_recall": 0.31907875739236236
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.09163070389400516,
+            "recall": 0.5348305129119237,
+            "hit": 0.65,
+            "benchmark_precision": 0.09528680931857794,
+            "benchmark_recall": 0.5846647624870903
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.07116647729470574,
+            "recall": 0.6551329003937527,
+            "hit": 0.75,
+            "benchmark_precision": 0.07488695988976452,
+            "benchmark_recall": 0.7424400636295297
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.04564549415617565,
+            "recall": 0.8031966766952396,
+            "hit": 0.8714285714285714,
+            "benchmark_precision": 0.04857384206241044,
+            "benchmark_recall": 0.9305308673875187
+          }
+        ],
+        "false_abstention": 0.007142857142857143,
+        "correct_abstention": 0.391304347826087,
+        "negative_counts": {
+          "n": 23,
+          "correct": 9
+        },
+        "latency_ms": {
+          "median": 10.737449978478253,
+          "p95": 13.93350497819483
+        }
+      },
+      "notebook": "notebooks/experiments/17_hybrid_bm25_minilm.ipynb",
+      "selection_reason": "User-selected non-LLM hybrid reference; not a retrieval win over improved BM25.",
+      "selected_for_test": false
+    },
+    {
+      "order": 8,
+      "label": "Hybrid + 0.55 cutoff + Gemini",
+      "config_path": "llm_configs/hybrid_gemini_summary.json",
+      "config_sha256_at_selection": "eb05b6249024f86391d6f13f9cc9c5253ce11108ccac8aff4e968fcfbb547130",
+      "config_snapshot": {
+        "name": "llm_hybrid_gemini_summary_055",
+        "provider": "gemini",
+        "task": "hybrid_summary_with_evidence",
+        "model": "gemini-3.5-flash-lite",
+        "model_revision": "API alias; actual modelVersion recorded per response",
+        "runtime": "gemini-rest-v1beta",
+        "prompt_file": "prompts/summarise_with_evidence_v1.txt",
+        "temperature": 0,
+        "seed": null,
+        "max_output_tokens": 1536,
+        "context_length": 1048576,
+        "thinking_level": "minimal",
+        "candidate_k": 5,
+        "retrieval_config": "configs/hybrid_bm25_minilm_rrf_abstention.json",
+        "max_evidence_quotes": 3,
+        "max_summary_words": 45,
+        "invalid_output_policy": "return_original_candidates",
+        "expose_in_demo": true
+      },
+      "train_source_iteration": 21,
+      "train_source_run_id": "20261101T083700775338Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.5551140066862548,
+            "recall": 0.38690957131415166,
+            "hit": 0.5785714285714286,
+            "benchmark_precision": 0.5551140066862548,
+            "benchmark_recall": 0.38690957131415166
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.5418787165272875,
+            "recall": 0.4662433807474131,
+            "hit": 0.6071428571428571,
+            "benchmark_precision": 0.5424760833430478,
+            "benchmark_recall": 0.4856665256921178
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.5415228643049754,
+            "recall": 0.4693102584680304,
+            "hit": 0.6071428571428571,
+            "benchmark_precision": 0.5419194166763811,
+            "benchmark_recall": 0.4887334034127351
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.5415228643049754,
+            "recall": 0.4693102584680304,
+            "hit": 0.6071428571428571,
+            "benchmark_precision": 0.5419194166763811,
+            "benchmark_recall": 0.4887334034127351
+          }
+        ],
+        "false_abstention": 0.32857142857142857,
+        "correct_abstention": 1.0,
+        "negative_counts": {
+          "n": 23,
+          "correct": 23
+        },
+        "latency_ms": {
+          "median": 11.522900022100657,
+          "p95": 14.880775019992138
+        }
+      },
+      "notebook": "notebooks/experiments/19_hybrid_gemini_summary.ipynb",
+      "selection_reason": "Large precision and negative-abstention gain, but severe false answerable abstention.",
+      "selected_for_test": false
+    },
+    {
+      "order": 9,
+      "label": "Run 1: ten-passage Gemini at 0.50",
+      "config_path": "llm_configs/hybrid_gemini_broad10.json",
+      "config_sha256_at_selection": "729da3347451e42bdde82cc9e1c1d2f0d132d6ad12f73dd658664171b5c1af57",
+      "config_snapshot": {
+        "name": "llm_hybrid_gemini_broad10",
+        "provider": "gemini",
+        "task": "hybrid_recall_recovery",
+        "model": "gemini-3.5-flash-lite",
+        "model_revision": "API alias; actual modelVersion recorded per response",
+        "runtime": "gemini-rest-v1beta",
+        "prompt_file": "prompts/summarise_complete_clauses_v2.txt",
+        "temperature": 0,
+        "seed": null,
+        "max_output_tokens": 3072,
+        "context_length": 1048576,
+        "thinking_level": "minimal",
+        "candidate_k": 10,
+        "retrieval_config": "configs/hybrid_recall_broad10.json",
+        "max_evidence_quotes": 5,
+        "max_summary_words": 45,
+        "invalid_output_policy": "return_original_candidates",
+        "expose_in_demo": true,
+        "stage": "broad10"
+      },
+      "train_source_iteration": 22,
+      "train_source_run_id": "20261101T091840954082Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.659852901027678,
+            "recall": 0.4747563611920853,
+            "hit": 0.6928571428571428,
+            "benchmark_precision": 0.659852901027678,
+            "benchmark_recall": 0.4747563611920853
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.6575579599589895,
+            "recall": 0.5863739558017664,
+            "hit": 0.7785714285714286,
+            "benchmark_precision": 0.6574720154983028,
+            "benchmark_recall": 0.5985967728086509
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.6569777213817486,
+            "recall": 0.6137757828352847,
+            "hit": 0.8,
+            "benchmark_precision": 0.6568953940596169,
+            "benchmark_recall": 0.627909618696941
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.6562346992251571,
+            "recall": 0.652114127690181,
+            "hit": 0.8214285714285714,
+            "benchmark_precision": 0.656436356769649,
+            "benchmark_recall": 0.671874577625522
+          }
+        ],
+        "false_abstention": 0.12142857142857143,
+        "correct_abstention": 0.7391304347826086,
+        "negative_counts": {
+          "n": 23,
+          "correct": 17
+        },
+        "latency_ms": {
+          "median": 12.37290003336966,
+          "p95": 16.2987899268046
+        }
+      },
+      "notebook": "notebooks/experiments/20_gemini_broad10.ipynb",
+      "selection_reason": "Provisional user-preferred recommendation; improves overlap but fails abstention guardrails.",
+      "selected_for_test": true
+    },
+    {
+      "order": 10,
+      "label": "Run 2: conditional recovery at 0.45",
+      "config_path": "llm_configs/hybrid_gemini_recovery20.json",
+      "config_sha256_at_selection": "c98fd9806c57c1ca8468c732f327487cc801e032cc410d256ac169a1c9a870d0",
+      "config_snapshot": {
+        "name": "llm_hybrid_gemini_recovery20",
+        "provider": "gemini",
+        "task": "hybrid_recall_recovery",
+        "model": "gemini-3.5-flash-lite",
+        "model_revision": "API alias; actual modelVersion recorded per response",
+        "runtime": "gemini-rest-v1beta",
+        "prompt_file": "prompts/summarise_complete_clauses_v2.txt",
+        "temperature": 0,
+        "seed": null,
+        "max_output_tokens": 3072,
+        "context_length": 1048576,
+        "thinking_level": "minimal",
+        "candidate_k": 20,
+        "retrieval_config": "configs/hybrid_recall_recovery20.json",
+        "max_evidence_quotes": 5,
+        "max_summary_words": 45,
+        "invalid_output_policy": "return_original_candidates",
+        "expose_in_demo": true,
+        "stage": "recovery20",
+        "previous_config": "llm_configs/hybrid_gemini_broad10.json"
+      },
+      "train_source_iteration": 23,
+      "train_source_run_id": "20261101T092459985105Z",
+      "train_metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.7009003570121717,
+            "recall": 0.5054600514869169,
+            "hit": 0.7214285714285714,
+            "benchmark_precision": 0.7009003570121717,
+            "benchmark_recall": 0.5054600514869169
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.7035929124665934,
+            "recall": 0.6114492077537548,
+            "hit": 0.8,
+            "benchmark_precision": 0.7040963579518246,
+            "benchmark_recall": 0.6233210244096391
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.7043229657898274,
+            "recall": 0.645551635130038,
+            "hit": 0.8214285714285714,
+            "benchmark_precision": 0.7048468260259391,
+            "benchmark_recall": 0.6590912707717942
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.7024873225832157,
+            "recall": 0.6526944922728951,
+            "hit": 0.8285714285714286,
+            "benchmark_precision": 0.7032305369530816,
+            "benchmark_recall": 0.6733136052618284
+          }
+        ],
+        "false_abstention": 0.08571428571428572,
+        "correct_abstention": 0.5652173913043478,
+        "negative_counts": {
+          "n": 23,
+          "correct": 13
+        },
+        "latency_ms": {
+          "median": 13.02844996098429,
+          "p95": 29.121145064709708
+        }
+      },
+      "notebook": "notebooks/experiments/21_gemini_recovery20.ipynb",
+      "selection_reason": "Higher precision/recall; reuses Run 1 answers and retries unresolved cases. Not a standalone 0.45 run; abstention guardrails fail.",
+      "selected_for_test": true
+    }
+  ],
+  "selection_purpose": "Train progression and presentation, not ten held-out evaluations",
+  "final_test_selection": "evaluation/final_test_selection.json"
+}

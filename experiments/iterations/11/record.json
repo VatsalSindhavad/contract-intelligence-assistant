@@ -1,0 +1,287 @@
+{
+  "iteration": 11,
+  "run_id": "20261101T042451971140Z",
+  "proposal": "Pure local MiniLM embeddings plus exact FAISS search",
+  "proposer": "Codex; basic semantic comparison declared before measurement",
+  "reference_config": {
+    "name": "bm25_focused_stemmed",
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "k1": 1.5,
+    "b": 0.75,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "query_mode": "document_then_clause",
+    "clause_query_cleanup": true,
+    "clause_cleanup_fallback": true,
+    "stemming": "english"
+  },
+  "candidate_config": {
+    "name": "dense_minilm_faiss",
+    "retriever_type": "dense",
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "dimension": 384,
+    "max_seq_length": 256,
+    "device": "cpu",
+    "torch_threads": 4,
+    "batch_size": 32,
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "query_mode": "full",
+    "normalize_embeddings": true,
+    "faiss_index": "IndexFlatIP"
+  },
+  "objective": {
+    "primary_metric": "macro_character_recall_at_5",
+    "minimum_recall_gain_absolute": 0.01,
+    "minimum_precision_ratio": 0.95,
+    "maximum_false_abstention_increase_absolute": 0.02,
+    "maximum_correct_abstention_drop_absolute": 0.05,
+    "latency_p95_multiplier": 2.0,
+    "latency_p95_floor_ms": 50.0,
+    "comparison": "candidate versus current accepted configuration; also report unchanged baseline",
+    "evaluation_split": "train"
+  },
+  "decision": {
+    "accepted": false,
+    "checks": {
+      "recall_gain": false,
+      "precision": false,
+      "answerable_abstention": true,
+      "unanswerable_abstention": true,
+      "latency": true
+    }
+  },
+  "selected_config": {
+    "name": "bm25_focused_stemmed",
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "k1": 1.5,
+    "b": 0.75,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "query_mode": "document_then_clause",
+    "clause_query_cleanup": true,
+    "clause_cleanup_fallback": true,
+    "stemming": "english"
+  },
+  "observed_timing_decision": {
+    "accepted": false,
+    "checks": {
+      "recall_gain": false,
+      "precision": false,
+      "answerable_abstention": true,
+      "unanswerable_abstention": true,
+      "latency": false
+    }
+  },
+  "metrics": {
+    "baseline": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394565,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005642857142857143,
+          "benchmark_recall": 0.017213463111394565
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.013628578665409043,
+          "recall": 0.07426194589360333,
+          "hit": 0.12142857142857143,
+          "benchmark_precision": 0.014457137177193241,
+          "benchmark_recall": 0.08504172882126716
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.017433113661637845,
+          "recall": 0.18164706021184368,
+          "hit": 0.2642857142857143,
+          "benchmark_precision": 0.017593637856464374,
+          "benchmark_recall": 0.1924268431395075
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018139540102769674,
+          "recall": 0.3215982088425699,
+          "hit": 0.4357142857142857,
+          "benchmark_precision": 0.018651677246298463,
+          "benchmark_recall": 0.3551538517325359
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 6.1710000154562294,
+        "p95": 8.675459917867554
+      }
+    },
+    "reference": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.1700357142857143,
+          "recall": 0.41526133116046304,
+          "hit": 0.5071428571428571,
+          "benchmark_precision": 0.1700357142857143,
+          "benchmark_recall": 0.41526133116046304
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.10661879665477571,
+          "recall": 0.6069437789019805,
+          "hit": 0.6857142857142857,
+          "benchmark_precision": 0.11100613980519013,
+          "benchmark_recall": 0.6729085942675426
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.07879811750133806,
+          "recall": 0.6700748331024532,
+          "hit": 0.7428571428571429,
+          "benchmark_precision": 0.08376627056416923,
+          "benchmark_recall": 0.7659751595154611
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.055810192115114086,
+          "recall": 0.7535360093926569,
+          "hit": 0.8285714285714286,
+          "benchmark_precision": 0.058382615574542475,
+          "benchmark_recall": 0.8623772479966695
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 7.947749982122332,
+        "p95": 11.258104955777522
+      }
+    },
+    "candidate": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.05269285714285714,
+          "recall": 0.10887729956591313,
+          "hit": 0.15714285714285714,
+          "benchmark_precision": 0.05269285714285714,
+          "benchmark_recall": 0.10887729956591313
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.04450173816437784,
+          "recall": 0.2575164920472117,
+          "hit": 0.35714285714285715,
+          "benchmark_precision": 0.04581414004820829,
+          "benchmark_recall": 0.2763982163917642
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.04034053185653337,
+          "recall": 0.35748930802374496,
+          "hit": 0.4642857142857143,
+          "benchmark_precision": 0.04189175796982168,
+          "benchmark_recall": 0.38904316812722806
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.028280139172079284,
+          "recall": 0.4827086393526138,
+          "hit": 0.5857142857142857,
+          "benchmark_precision": 0.02976347278268916,
+          "benchmark_recall": 0.534877541999451
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 29.60669994354248,
+        "p95": 75.78495498164537
+      }
+    }
+  },
+  "estimated_first_use_latency_ms": {
+    "median": 10.17034996766597,
+    "p95": 12.974840047536416
+  },
+  "document_inputs_over_token_limit": 105,
+  "query_inputs_over_token_limit": 0,
+  "cache_hits": {
+    "miss": 163
+  },
+  "build_seconds": 76.511675799964,
+  "vector_cache_directory": "cache/dense/06c23934081c90b590f6c0ba128cb03e127c30a91f0b9609ae670ceb568a7a26",
+  "diagnosis_before": {
+    "complete_coverage": 82,
+    "right_document_wrong_section": 36,
+    "partial_coverage": 22
+  },
+  "diagnosis_after": {
+    "complete_coverage": 33,
+    "right_document_wrong_section": 75,
+    "partial_coverage": 32
+  },
+  "n_answerable_train": 140,
+  "n_unanswerable_train": 23,
+  "test_evaluation_runs": 0,
+  "dataset_revision": "2b9c248bc8179ef0908fd6ba01d50b156facd48b",
+  "frozen_question_sha256": "458d7e7252e7377b2a416764102aeca53546aba71e3ec62fafed393376443289",
+  "packages": {
+    "faiss-cpu": "1.14.2",
+    "sentence-transformers": "5.5.1",
+    "transformers": "4.51.2",
+    "torch": "2.11.0+cu128"
+  },
+  "code_sha256": {
+    "dense_retrieval.py": "d32fb5a2f5e9d86c550168670758664f64c441a17e9b59f4c4a22a8bb65885a3",
+    "evaluate_dense.py": "c5234a23453ca48c19805e6b6aa5bda1e9676f3806dc626e9c0eb5a703f90174",
+    "retrieval.py": "a0d59f36bfb7f40f49b1f24030758e02e070504595d2009cd522dbb7d2447aab"
+  },
+  "result_directory": "results/iteration_11/20261101T042451971140Z",
+  "source_log": "experiments/semantic_log.jsonl"
+}

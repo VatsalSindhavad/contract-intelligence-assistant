@@ -1,0 +1,65 @@
+[
+  {
+    "group": "Hybrid with Gemini",
+    "label": "Run 2: Gemini 3.1 quota-amended recovery",
+    "iteration": 24,
+    "threshold": null,
+    "pilot": false,
+    "selected_for_final_comparison": true,
+    "selected_for_final_test": true,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/llm_log.jsonl",
+    "source_run_id": "20261101T122914565953Z",
+    "result_directory": "results/iteration_24_recovery20_31/20261101T122914565953Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.7311403871849316,
+          "recall": 0.5199499736986277,
+          "hit": 0.7642857142857142,
+          "benchmark_precision": 0.7311403871849316,
+          "benchmark_recall": 0.5199499736986277
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.729834608332991,
+          "recall": 0.6358630890872754,
+          "hit": 0.85,
+          "benchmark_precision": 0.7303024053689031,
+          "benchmark_recall": 0.6502344775904068
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.7301659954562906,
+          "recall": 0.6558984610699724,
+          "hit": 0.8642857142857143,
+          "benchmark_precision": 0.7303529663178594,
+          "benchmark_recall": 0.6719376685589761
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.7292171603005102,
+          "recall": 0.6769744129494958,
+          "hit": 0.8785714285714286,
+          "benchmark_precision": 0.7296498083417292,
+          "benchmark_recall": 0.702435075375595
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 12.876099965069443,
+        "p95": 28.544694982701895
+      }
+    }
+  }
+]

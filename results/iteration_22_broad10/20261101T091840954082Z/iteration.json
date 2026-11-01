@@ -1,0 +1,189 @@
+{
+  "iteration": 22,
+  "run_id": "20261101T091840954082Z",
+  "proposal": "Broader evidence and lower cutoff",
+  "proposer": "User; two recall-recovery experiments declared before generation",
+  "config": {
+    "name": "llm_hybrid_gemini_broad10",
+    "provider": "gemini",
+    "task": "hybrid_recall_recovery",
+    "model": "gemini-3.5-flash-lite",
+    "model_revision": "API alias; actual modelVersion recorded per response",
+    "runtime": "gemini-rest-v1beta",
+    "prompt_file": "prompts/summarise_complete_clauses_v2.txt",
+    "temperature": 0,
+    "seed": null,
+    "max_output_tokens": 3072,
+    "context_length": 1048576,
+    "thinking_level": "minimal",
+    "candidate_k": 10,
+    "retrieval_config": "configs/hybrid_recall_broad10.json",
+    "max_evidence_quotes": 5,
+    "max_summary_words": 45,
+    "invalid_output_policy": "return_original_candidates",
+    "expose_in_demo": false,
+    "stage": "broad10"
+  },
+  "metrics": {
+    "reference": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.5551140066862548,
+          "recall": 0.38690957131415166,
+          "hit": 0.5785714285714286,
+          "benchmark_precision": 0.5551140066862548,
+          "benchmark_recall": 0.38690957131415166
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.5418787165272875,
+          "recall": 0.4662433807474131,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5424760833430478,
+          "benchmark_recall": 0.4856665256921178
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.5415228643049754,
+          "recall": 0.4693102584680304,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5419194166763811,
+          "benchmark_recall": 0.4887334034127351
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.5415228643049754,
+          "recall": 0.4693102584680304,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5419194166763811,
+          "benchmark_recall": 0.4887334034127351
+        }
+      ],
+      "false_abstention": 0.32857142857142857,
+      "correct_abstention": 1.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 23
+      },
+      "latency_ms": {
+        "median": 11.522900022100657,
+        "p95": 14.880775019992138
+      }
+    },
+    "candidate": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.659852901027678,
+          "recall": 0.4747563611920853,
+          "hit": 0.6928571428571428,
+          "benchmark_precision": 0.659852901027678,
+          "benchmark_recall": 0.4747563611920853
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.6575579599589895,
+          "recall": 0.5863739558017664,
+          "hit": 0.7785714285714286,
+          "benchmark_precision": 0.6574720154983028,
+          "benchmark_recall": 0.5985967728086509
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.6569777213817486,
+          "recall": 0.6137757828352847,
+          "hit": 0.8,
+          "benchmark_precision": 0.6568953940596169,
+          "benchmark_recall": 0.627909618696941
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.6562346992251571,
+          "recall": 0.652114127690181,
+          "hit": 0.8214285714285714,
+          "benchmark_precision": 0.656436356769649,
+          "benchmark_recall": 0.671874577625522
+        }
+      ],
+      "false_abstention": 0.12142857142857143,
+      "correct_abstention": 0.7391304347826086,
+      "negative_counts": {
+        "n": 23,
+        "correct": 17
+      },
+      "latency_ms": {
+        "median": 12.37290003336966,
+        "p95": 16.2987899268046
+      }
+    }
+  },
+  "target_checks": {
+    "precision": true,
+    "recall": false,
+    "correct_abstention": false,
+    "false_abstention": false
+  },
+  "target_success": false,
+  "checks": {
+    "precision": true,
+    "recall": true,
+    "correct_abstention": false,
+    "false_abstention": false
+  },
+  "quality_accepted": false,
+  "status_counts": {
+    "valid": 136,
+    "invalid_output": 24,
+    "upstream_abstention": 3
+  },
+  "decision_counts": {
+    "first_stage": 160,
+    "upstream_abstention": 3
+  },
+  "validation_errors": {
+    "Empty evidence requires the declared no-answer summary.": 14,
+    "Answer is not an exact substring of the cited passage.": 9,
+    "Summary introduces numbers absent from its cited evidence/question.": 1
+  },
+  "additional_api_requests": 160,
+  "additional_token_usage": {
+    "promptTokenCount": 440022,
+    "candidatesTokenCount": 20394,
+    "totalTokenCount": 460416
+  },
+  "model_versions": {
+    "gemini-3.5-flash-lite": 160
+  },
+  "estimated_first_use_latency_ms": {
+    "median": 2281.182400067337,
+    "p95": 4463.850790029384
+  },
+  "diagnosis_after": {
+    "complete_coverage": 58,
+    "partial_coverage": 54,
+    "right_document_wrong_section": 11,
+    "incorrect_abstention": 17
+  },
+  "n_answerable_train": 140,
+  "n_unanswerable_train": 23,
+  "test_evaluation_runs": 0,
+  "dataset_revision": "2b9c248bc8179ef0908fd6ba01d50b156facd48b",
+  "frozen_question_sha256": "458d7e7252e7377b2a416764102aeca53546aba71e3ec62fafed393376443289",
+  "prompt_sha256": "86af80917dfabeeb9ec850f23a13bb418c99d7b3407dc0a0afcd25d3bf91b8da",
+  "code_sha256": {
+    "recall_recovery.py": "86d9c3123d5bd5cbbff36d75d44e06dabc214c09e088ec5b1875cc23f7d83953",
+    "run_recall_recovery.py": "72e0c889cffde62a055a5713d758f95456baec0f7295acb0e2b945e42754afb2",
+    "hosted_summary.py": "83b5e3cd0fde9c27cbb153b87a27b77cb0e874250ca863ba2b7bd8f17c93b9d7",
+    "hybrid_retrieval.py": "445337f7dacde06d6e7a8ff4c13640247a562b1b6fd52f9d3488c0d8578ba500"
+  },
+  "result_directory": "results/iteration_22_broad10/20261101T091840954082Z"
+}

@@ -1,28 +1,31 @@
+import bootstrap
 import argparse
 import json
 import sys
 
 from llm_rewrite import CacheMissError
-from search_service import DEFAULT_CONFIG, available_configs, build_model, config_label, search
+from search_service import DEMO_DEFAULT_CONFIG, available_configs, demo_configs, build_model, config_label, search
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Search indexed contracts for relevant passages.')
     parser.add_argument('question', nargs='?', help='Natural-language question, quoted as one argument.')
-    parser.add_argument('--config', default=DEFAULT_CONFIG, help='Saved configuration name.')
+    parser.add_argument('--config', default=DEMO_DEFAULT_CONFIG, help='Saved configuration name; default Run 1.')
     parser.add_argument('--k', type=int, default=5, help='Number of passages, 1–20.')
     parser.add_argument('--json', action='store_true', dest='as_json', help='Print a machine-readable response.')
     parser.add_argument('--list-configs', action='store_true')
+    parser.add_argument('--all-configs', action='store_true',help='List all historical configurations rather than the three final comparison choices.')
     args = parser.parse_args(argv)
     if args.list_configs:
-        print('\n'.join(config_label(name) for name in available_configs()))
+        choices=available_configs() if args.all_configs else demo_configs()
+        print('\n'.join(config_label(name) for name in choices))
         return 0
     if not args.question:
         parser.error('Provide a quoted question or use --list-configs.')
     try:
         result = search(build_model(args.config), args.question, args.k)
     except CacheMissError as error:
-        parser.exit(2, f'Error: {error}\nPrepare the approved rewrite cache separately. This CLI makes no model calls.\n')
+        parser.exit(2, f'Error: {error}\nPrepare the selected model cache separately. This CLI makes no model calls.\n')
     except (ValueError, OSError, KeyError) as error:
         parser.exit(2, f'Error: {error}\nRun notebook 01 first if prepared data is missing.\n')
     if args.as_json:
@@ -30,6 +33,8 @@ def main(argv=None):
     else:
         print(f"Configuration: {result['configuration']}")
         print(f"{result['message']} Search: {result['latency_ms']:.1f} ms")
+        if 'summary' in result:
+            print('Summary:',result['summary'] or 'Output failed validation; original passages retained.')
         for rank, hit in enumerate(result['hits'], 1):
             print(f"\n{rank}. {hit['file_path']}\nOffsets: [{hit['start']}, {hit['end']}) | Score: {hit['score']:.3f}")
             print(hit['text'])

@@ -1,0 +1,17 @@
+{
+  "name": "phi3_exact_excerpt_pilot",
+  "provider": "ollama",
+  "model": "phi3:mini",
+  "model_revision": "4f222292793889a9a40a020799cfd28d53f3e01af25d48e06c5e708610fc47e9",
+  "runtime": "ollama-0.40.13",
+  "prompt_file": "prompts/extract_answer_v1.txt",
+  "temperature": 0,
+  "seed": 42,
+  "max_output_tokens": 256,
+  "context_length": 8192,
+  "candidate_k": 5,
+  "retrieval_config": "llm_configs/local_phi3.json",
+  "pilot_answerable_count": 10,
+  "pilot_negative_count": 5,
+  "invalid_output_policy": "return_original_candidates"
+}

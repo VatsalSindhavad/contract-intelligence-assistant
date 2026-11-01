@@ -1,0 +1,22 @@
+{
+  "name": "llm_hybrid_gemini_recovery20",
+  "provider": "gemini",
+  "task": "hybrid_recall_recovery",
+  "model": "gemini-3.5-flash-lite",
+  "model_revision": "API alias; actual modelVersion recorded per response",
+  "runtime": "gemini-rest-v1beta",
+  "prompt_file": "prompts/summarise_complete_clauses_v2.txt",
+  "temperature": 0,
+  "seed": null,
+  "max_output_tokens": 3072,
+  "context_length": 1048576,
+  "thinking_level": "minimal",
+  "candidate_k": 20,
+  "retrieval_config": "configs/hybrid_recall_recovery20.json",
+  "max_evidence_quotes": 5,
+  "max_summary_words": 45,
+  "invalid_output_policy": "return_original_candidates",
+  "expose_in_demo": false,
+  "stage": "recovery20",
+  "previous_config": "llm_configs/hybrid_gemini_broad10.json"
+}

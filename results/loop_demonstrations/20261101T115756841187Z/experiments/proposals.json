@@ -1,0 +1,68 @@
+[
+  {
+    "id": "english_stemming_on_focused_pipeline",
+    "name": "bm25_focused_stemmed",
+    "trigger": "right_document_wrong_section",
+    "requires": {"query_mode": "document_then_clause", "clause_query_cleanup": true, "clause_cleanup_fallback": true},
+    "changes": {"stemming": "english"},
+    "reason": "Normalize word inflections in indexed text and search tokens, building on both accepted query policies without changing source text or offsets."
+  },
+  {
+    "id": "focused_clause_with_fallback",
+    "name": "bm25_focused_clause_fallback",
+    "trigger": "right_document_wrong_section",
+    "requires": {"query_mode": "document_then_clause"},
+    "changes": {"clause_query_cleanup": true, "clause_cleanup_fallback": true},
+    "reason": "Use focused clause terms when they produce matches; recover the accepted clause ranking when lexical filtering would otherwise return nothing."
+  },
+  {
+    "id": "clause_query_cleanup",
+    "name": "bm25_focused_clause",
+    "trigger": "right_document_wrong_section",
+    "requires": {"query_mode": "document_then_clause"},
+    "changes": {"clause_query_cleanup": true},
+    "reason": "Remove function words and generic contract-question scaffolding from the clause query while preserving negation and keeping document routing unchanged."
+  },
+  {
+    "id": "document_then_clause",
+    "name": "bm25_document_then_clause",
+    "trigger": "right_document_wrong_section",
+    "changes": {"query_mode": "document_then_clause"},
+    "reason": "Use the full question to identify a contract, then rank passages in that inferred contract using only the clause question; prevent repeated party names from dominating clause scores."
+  },
+  {
+    "id": "smaller_chunks",
+    "name": "bm25_chunks_500",
+    "trigger": "right_document_wrong_section",
+    "changes": {"chunk_size": 500},
+    "reason": "Shorter passages may separate relevant clauses from nearby distracting text."
+  },
+  {
+    "id": "larger_chunks",
+    "name": "bm25_chunks_1500",
+    "trigger": "partial_coverage",
+    "changes": {"chunk_size": 1500},
+    "reason": "Longer passages may cover answer spans split across chunk boundaries."
+  },
+  {
+    "id": "less_length_normalization",
+    "name": "bm25_b_030",
+    "trigger": "right_document_wrong_section",
+    "changes": {"b": 0.3},
+    "reason": "Less length normalization may reduce ranking bias toward short fragments."
+  },
+  {
+    "id": "lower_term_saturation",
+    "name": "bm25_k1_080",
+    "trigger": "right_document_wrong_section",
+    "changes": {"k1": 0.8},
+    "reason": "Earlier term-frequency saturation may reduce the influence of repeated words."
+  },
+  {
+    "id": "positive_score_threshold",
+    "name": "bm25_threshold_50",
+    "trigger": "false_returns",
+    "changes": {"min_score": 50.0},
+    "reason": "A higher score threshold may reduce false returns, subject to recall and false-abstention guardrails."
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "created_at_utc": "2026-11-01T12:21:35.463328+00:00",
+  "reason": "User requested Gemini 3.1 recovery after confirming one Gemini 3.5 daily request remained",
+  "changed": "Recovery-stage provider model only; first-stage responses remain frozen Gemini 3.5 Run 1",
+  "previous_config": "llm_configs/hybrid_gemini_recovery20.json",
+  "amended_config": "llm_configs/hybrid_gemini_recovery20_31.json",
+  "old_model": "gemini-3.5-flash-lite",
+  "new_model": "gemini-3.1-flash-lite",
+  "test_metrics_viewed": false,
+  "train_counterpart": "Evaluate the identical amended two-stage policy on train before held-out scoring",
+  "unchanged": [
+    "hybrid weights",
+    "candidate pools",
+    "cutoffs",
+    "prompts",
+    "evidence validator",
+    "fallback policy",
+    "negative labels",
+    "test split"
+  ]
+}

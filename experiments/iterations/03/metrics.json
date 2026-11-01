@@ -1,0 +1,65 @@
+[
+  {
+    "group": "BM25",
+    "label": "BM25 with b=0.30",
+    "iteration": 3,
+    "threshold": null,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/loop_log.jsonl",
+    "source_run_id": "20261101T023005238322Z",
+    "result_directory": "results/iteration_03/20261101T023005238322Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394565,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005642857142857143,
+          "benchmark_recall": 0.017213463111394565
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.013158477527608788,
+          "recall": 0.07061219288495035,
+          "hit": 0.12142857142857143,
+          "benchmark_precision": 0.013987036039392987,
+          "benchmark_recall": 0.08139197581261418
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.017915733345875175,
+          "recall": 0.18820221391889613,
+          "hit": 0.2714285714285714,
+          "benchmark_precision": 0.018035495486888556,
+          "benchmark_recall": 0.19898199684655996
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018152717525045693,
+          "recall": 0.3302807805668159,
+          "hit": 0.45714285714285713,
+          "benchmark_precision": 0.018624780431005118,
+          "benchmark_recall": 0.3626652441169667
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 7.818699930794537,
+        "p95": 10.469324968289584
+      }
+    },
+    "selected_for_final_test": false
+  }
+]

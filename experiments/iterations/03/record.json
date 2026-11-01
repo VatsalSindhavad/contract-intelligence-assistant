@@ -1,0 +1,271 @@
+{
+  "iteration": 3,
+  "run_id": "20261101T023005238322Z",
+  "proposal": {
+    "id": "less_length_normalization",
+    "name": "bm25_b_030",
+    "trigger": "right_document_wrong_section",
+    "changes": {
+      "b": 0.3
+    },
+    "reason": "Less length normalization may reduce ranking bias toward short fragments."
+  },
+  "proposer": "deterministic diagnostic rule; proposal catalog authored by Codex",
+  "selection_rule": "Largest matching failure count first, catalog order breaks ties; skip tried proposals.",
+  "diagnosis_before": {
+    "complete_coverage": 15,
+    "right_document_wrong_section": 103,
+    "partial_coverage": 22,
+    "false_returns": 23
+  },
+  "diagnosis_after": {
+    "complete_coverage": 15,
+    "right_document_wrong_section": 102,
+    "partial_coverage": 23
+  },
+  "changes": {
+    "b": {
+      "before": 0.75,
+      "after": 0.3
+    }
+  },
+  "reference_config": {
+    "name": "bm25_baseline",
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "k1": 1.5,
+    "b": 0.75,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ]
+  },
+  "candidate_config": {
+    "name": "bm25_b_030",
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "k1": 1.5,
+    "b": 0.3,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ]
+  },
+  "selected_config": {
+    "name": "bm25_baseline",
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "k1": 1.5,
+    "b": 0.75,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ]
+  },
+  "objective": {
+    "primary_metric": "macro_character_recall_at_5",
+    "minimum_recall_gain_absolute": 0.01,
+    "minimum_precision_ratio": 0.95,
+    "maximum_false_abstention_increase_absolute": 0.02,
+    "maximum_correct_abstention_drop_absolute": 0.05,
+    "latency_p95_multiplier": 2.0,
+    "latency_p95_floor_ms": 50.0,
+    "comparison": "candidate versus current accepted configuration; also report unchanged baseline",
+    "evaluation_split": "train"
+  },
+  "decision": {
+    "accepted": false,
+    "checks": {
+      "recall_gain": false,
+      "precision": true,
+      "answerable_abstention": true,
+      "unanswerable_abstention": true,
+      "latency": true
+    }
+  },
+  "metrics": {
+    "baseline": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394565,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005642857142857143,
+          "benchmark_recall": 0.017213463111394565
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.013628578665409043,
+          "recall": 0.07426194589360333,
+          "hit": 0.12142857142857143,
+          "benchmark_precision": 0.014457137177193241,
+          "benchmark_recall": 0.08504172882126716
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.017433113661637845,
+          "recall": 0.18164706021184368,
+          "hit": 0.2642857142857143,
+          "benchmark_precision": 0.017593637856464374,
+          "benchmark_recall": 0.1924268431395075
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018139540102769674,
+          "recall": 0.3215982088425699,
+          "hit": 0.4357142857142857,
+          "benchmark_precision": 0.018651677246298463,
+          "benchmark_recall": 0.3551538517325359
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 8.507650054525584,
+        "p95": 11.648064950713886
+      }
+    },
+    "reference": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394565,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005642857142857143,
+          "benchmark_recall": 0.017213463111394565
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.013628578665409043,
+          "recall": 0.07426194589360333,
+          "hit": 0.12142857142857143,
+          "benchmark_precision": 0.014457137177193241,
+          "benchmark_recall": 0.08504172882126716
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.017433113661637845,
+          "recall": 0.18164706021184368,
+          "hit": 0.2642857142857143,
+          "benchmark_precision": 0.017593637856464374,
+          "benchmark_recall": 0.1924268431395075
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018139540102769674,
+          "recall": 0.3215982088425699,
+          "hit": 0.4357142857142857,
+          "benchmark_precision": 0.018651677246298463,
+          "benchmark_recall": 0.3551538517325359
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 8.507650054525584,
+        "p95": 11.648064950713886
+      }
+    },
+    "candidate": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394565,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005642857142857143,
+          "benchmark_recall": 0.017213463111394565
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.013158477527608788,
+          "recall": 0.07061219288495035,
+          "hit": 0.12142857142857143,
+          "benchmark_precision": 0.013987036039392987,
+          "benchmark_recall": 0.08139197581261418
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.017915733345875175,
+          "recall": 0.18820221391889613,
+          "hit": 0.2714285714285714,
+          "benchmark_precision": 0.018035495486888556,
+          "benchmark_recall": 0.19898199684655996
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018152717525045693,
+          "recall": 0.3302807805668159,
+          "hit": 0.45714285714285713,
+          "benchmark_precision": 0.018624780431005118,
+          "benchmark_recall": 0.3626652441169667
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 7.818699930794537,
+        "p95": 10.469324968289584
+      }
+    }
+  },
+  "n_answerable_train": 140,
+  "n_unanswerable_train": 23,
+  "test_evaluation_runs": 0,
+  "dataset_revision": "2b9c248bc8179ef0908fd6ba01d50b156facd48b",
+  "frozen_question_sha256": "458d7e7252e7377b2a416764102aeca53546aba71e3ec62fafed393376443289",
+  "metric_convention": "unique-character objective; benchmark pairwise scores also reported",
+  "python": "3.12.4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "packages": {
+    "rank-bm25": "0.2.2",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3"
+  },
+  "prepared_manifest_sha256": "0365ac62e1051df431c60a2fbf3850779ec6417313979b923c6097148ac53aab",
+  "source_commit": "99627627c314682079526bcbbfc3e673c0bbbcd1",
+  "code_sha256": {
+    "improve.py": "2c9c5de80f01c9e7c3de4f360a3898c562879e231ad052e8305f34713d74b387",
+    "run_experiment.py": "64c12b080d9ccc817a3f6b078ade0a988f2a2d999e07179ea7a8ec1e52bdaea3",
+    "retrieval.py": "bc3bc16fc7d8b8d5dd585086e1111592a74ec7c03088edb4e1715df3cc29da2b",
+    "negative_validation.py": "809c44f18a4ef2d1c9f0f790c19135aae78b3b24382a3209734120f8e654f29d",
+    "experiments/proposals.json": "c347fea2200218e79b2744c34ddab171ddf7ef61797c73ce154a33fbfc2823db"
+  },
+  "result_directory": "results/iteration_03/20261101T023005238322Z",
+  "source_log": "experiments/loop_log.jsonl"
+}

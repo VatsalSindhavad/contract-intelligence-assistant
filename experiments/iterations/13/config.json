@@ -1,0 +1,18 @@
+{
+  "name": "phi3_summary_with_evidence",
+  "provider": "ollama",
+  "task": "summary_with_evidence",
+  "model": "phi3:mini",
+  "model_revision": "4f222292793889a9a40a020799cfd28d53f3e01af25d48e06c5e708610fc47e9",
+  "runtime": "ollama-0.40.13",
+  "prompt_file": "prompts/summarise_with_evidence_v1.txt",
+  "temperature": 0,
+  "seed": 42,
+  "max_output_tokens": 768,
+  "context_length": 12288,
+  "candidate_k": 5,
+  "retrieval_config": "llm_configs/local_phi3.json",
+  "max_evidence_quotes": 3,
+  "max_summary_words": 45,
+  "invalid_output_policy": "return_original_candidates"
+}

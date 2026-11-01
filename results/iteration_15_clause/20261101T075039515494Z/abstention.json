@@ -1,0 +1,492 @@
+{
+  "run_id": "20261101T075039515494Z",
+  "n_answerable_train": 140,
+  "n_unanswerable_train": 23,
+  "test_evaluation_runs": 0,
+  "dataset_revision": "2b9c248bc8179ef0908fd6ba01d50b156facd48b",
+  "frozen_question_sha256": "458d7e7252e7377b2a416764102aeca53546aba71e3ec62fafed393376443289",
+  "proposer": "User; deterministic clause chunking followed by abstention threshold search",
+  "code_sha256": {
+    "clause_chunking.py": "faee023afe9a0672627b62572eda4cd6ab345210fa7fa25dcf7778e121a7bd02",
+    "dense_retrieval.py": "d9fd1f49b2d1c5dfd9b7758239737e5eb2c896d9487b14fc197de28b3ddf7e3b",
+    "evaluate_clause.py": "d54a0f2b6a754bc10cce2b649d77d9a1aec73ee456eebe3580f03cc3463de364"
+  },
+  "result_directory": "results/iteration_15_clause/20261101T075039515494Z",
+  "iteration": 16,
+  "proposal": "Top-score abstention threshold on clause-aware dense retrieval",
+  "reference": {
+    "retrieval": [
+      {
+        "k": 1,
+        "n_queries": 140,
+        "precision": 0.04979236020740738,
+        "recall": 0.038959304927862135,
+        "hit": 0.06428571428571428,
+        "benchmark_precision": 0.04979236020740738,
+        "benchmark_recall": 0.038959304927862135
+      },
+      {
+        "k": 3,
+        "n_queries": 140,
+        "precision": 0.052957846988367,
+        "recall": 0.12582207719417465,
+        "hit": 0.16428571428571428,
+        "benchmark_precision": 0.052957846988367,
+        "benchmark_recall": 0.12582207719417465
+      },
+      {
+        "k": 5,
+        "n_queries": 140,
+        "precision": 0.0524821723964817,
+        "recall": 0.20038432487374255,
+        "hit": 0.25,
+        "benchmark_precision": 0.0524821723964817,
+        "benchmark_recall": 0.20038432487374255
+      },
+      {
+        "k": 10,
+        "n_queries": 140,
+        "precision": 0.044943300634696835,
+        "recall": 0.30511831088058267,
+        "hit": 0.35714285714285715,
+        "benchmark_precision": 0.044943300634696835,
+        "benchmark_recall": 0.30511831088058267
+      }
+    ],
+    "false_abstention": 0.0,
+    "correct_abstention": 0.0,
+    "negative_counts": {
+      "n": 23,
+      "correct": 0
+    },
+    "latency_ms": {
+      "median": 20.83494997350499,
+      "p95": 44.02888495242221
+    }
+  },
+  "trials": [
+    {
+      "threshold": 0.2,
+      "metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.04979236020740738,
+            "recall": 0.038959304927862135,
+            "hit": 0.06428571428571428,
+            "benchmark_precision": 0.04979236020740738,
+            "benchmark_recall": 0.038959304927862135
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.052957846988367,
+            "recall": 0.12582207719417465,
+            "hit": 0.16428571428571428,
+            "benchmark_precision": 0.052957846988367,
+            "benchmark_recall": 0.12582207719417465
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.0524821723964817,
+            "recall": 0.20038432487374255,
+            "hit": 0.25,
+            "benchmark_precision": 0.0524821723964817,
+            "benchmark_recall": 0.20038432487374255
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.044943300634696835,
+            "recall": 0.30511831088058267,
+            "hit": 0.35714285714285715,
+            "benchmark_precision": 0.044943300634696835,
+            "benchmark_recall": 0.30511831088058267
+          }
+        ],
+        "false_abstention": 0.0,
+        "correct_abstention": 0.0,
+        "negative_counts": {
+          "n": 23,
+          "correct": 0
+        },
+        "latency_ms": {
+          "median": 20.582900033332407,
+          "p95": 26.06837490457109
+        }
+      },
+      "checks": {
+        "precision": true,
+        "recall": true,
+        "false_abstention": true,
+        "correct_abstention": false
+      },
+      "accepted": false
+    },
+    {
+      "threshold": 0.3,
+      "metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.04979236020740738,
+            "recall": 0.038959304927862135,
+            "hit": 0.06428571428571428,
+            "benchmark_precision": 0.04979236020740738,
+            "benchmark_recall": 0.038959304927862135
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.052957846988367,
+            "recall": 0.12582207719417465,
+            "hit": 0.16428571428571428,
+            "benchmark_precision": 0.052957846988367,
+            "benchmark_recall": 0.12582207719417465
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.0524821723964817,
+            "recall": 0.20038432487374255,
+            "hit": 0.25,
+            "benchmark_precision": 0.0524821723964817,
+            "benchmark_recall": 0.20038432487374255
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.044943300634696835,
+            "recall": 0.30511831088058267,
+            "hit": 0.35714285714285715,
+            "benchmark_precision": 0.044943300634696835,
+            "benchmark_recall": 0.30511831088058267
+          }
+        ],
+        "false_abstention": 0.0,
+        "correct_abstention": 0.0,
+        "negative_counts": {
+          "n": 23,
+          "correct": 0
+        },
+        "latency_ms": {
+          "median": 1.6322500887326896,
+          "p95": 2.212185005191705
+        }
+      },
+      "checks": {
+        "precision": true,
+        "recall": true,
+        "false_abstention": true,
+        "correct_abstention": false
+      },
+      "accepted": false
+    },
+    {
+      "threshold": 0.4,
+      "metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.04979236020740738,
+            "recall": 0.038959304927862135,
+            "hit": 0.06428571428571428,
+            "benchmark_precision": 0.04979236020740738,
+            "benchmark_recall": 0.038959304927862135
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.052957846988367,
+            "recall": 0.12582207719417465,
+            "hit": 0.16428571428571428,
+            "benchmark_precision": 0.052957846988367,
+            "benchmark_recall": 0.12582207719417465
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.0524821723964817,
+            "recall": 0.20038432487374255,
+            "hit": 0.25,
+            "benchmark_precision": 0.0524821723964817,
+            "benchmark_recall": 0.20038432487374255
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.044943300634696835,
+            "recall": 0.30511831088058267,
+            "hit": 0.35714285714285715,
+            "benchmark_precision": 0.044943300634696835,
+            "benchmark_recall": 0.30511831088058267
+          }
+        ],
+        "false_abstention": 0.0,
+        "correct_abstention": 0.0,
+        "negative_counts": {
+          "n": 23,
+          "correct": 0
+        },
+        "latency_ms": {
+          "median": 1.6056000022217631,
+          "p95": 2.089295070618391
+        }
+      },
+      "checks": {
+        "precision": true,
+        "recall": true,
+        "false_abstention": true,
+        "correct_abstention": false
+      },
+      "accepted": false
+    },
+    {
+      "threshold": 0.5,
+      "metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.04979236020740738,
+            "recall": 0.038959304927862135,
+            "hit": 0.06428571428571428,
+            "benchmark_precision": 0.04979236020740738,
+            "benchmark_recall": 0.038959304927862135
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.052957846988367,
+            "recall": 0.12582207719417465,
+            "hit": 0.16428571428571428,
+            "benchmark_precision": 0.052957846988367,
+            "benchmark_recall": 0.12582207719417465
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.0524821723964817,
+            "recall": 0.20038432487374255,
+            "hit": 0.25,
+            "benchmark_precision": 0.0524821723964817,
+            "benchmark_recall": 0.20038432487374255
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.044943300634696835,
+            "recall": 0.30511831088058267,
+            "hit": 0.35714285714285715,
+            "benchmark_precision": 0.044943300634696835,
+            "benchmark_recall": 0.30511831088058267
+          }
+        ],
+        "false_abstention": 0.0,
+        "correct_abstention": 0.043478260869565216,
+        "negative_counts": {
+          "n": 23,
+          "correct": 1
+        },
+        "latency_ms": {
+          "median": 1.6004500212147832,
+          "p95": 2.0242250408045948
+        }
+      },
+      "checks": {
+        "precision": true,
+        "recall": true,
+        "false_abstention": true,
+        "correct_abstention": true
+      },
+      "accepted": true
+    },
+    {
+      "threshold": 0.6,
+      "metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.04961497137107814,
+            "recall": 0.03884446799630494,
+            "hit": 0.05714285714285714,
+            "benchmark_precision": 0.04961497137107814,
+            "benchmark_recall": 0.03884446799630494
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.050995007196579845,
+            "recall": 0.12166498027180442,
+            "hit": 0.15714285714285714,
+            "benchmark_precision": 0.050995007196579845,
+            "benchmark_recall": 0.12166498027180442
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.05040671748701869,
+            "recall": 0.19324146773088544,
+            "hit": 0.24285714285714285,
+            "benchmark_precision": 0.05040671748701869,
+            "benchmark_recall": 0.19324146773088544
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.04271549910622138,
+            "recall": 0.2801183108805826,
+            "hit": 0.32857142857142857,
+            "benchmark_precision": 0.04271549910622138,
+            "benchmark_recall": 0.2801183108805826
+          }
+        ],
+        "false_abstention": 0.07142857142857142,
+        "correct_abstention": 0.6086956521739131,
+        "negative_counts": {
+          "n": 23,
+          "correct": 14
+        },
+        "latency_ms": {
+          "median": 1.5922499587759376,
+          "p95": 1.9865749869495628
+        }
+      },
+      "checks": {
+        "precision": false,
+        "recall": true,
+        "false_abstention": false,
+        "correct_abstention": true
+      },
+      "accepted": false
+    },
+    {
+      "threshold": 0.7,
+      "metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.039768139966790704,
+            "recall": 0.027706857693419178,
+            "hit": 0.04285714285714286,
+            "benchmark_precision": 0.039768139966790704,
+            "benchmark_recall": 0.027706857693419178
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.02182749166324877,
+            "recall": 0.05106092089217778,
+            "hit": 0.06428571428571428,
+            "benchmark_precision": 0.02182749166324877,
+            "benchmark_recall": 0.05106092089217778
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.01905684164267783,
+            "recall": 0.07117345309397353,
+            "hit": 0.1,
+            "benchmark_precision": 0.01905684164267783,
+            "benchmark_recall": 0.07117345309397353
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.01847229841572066,
+            "recall": 0.10406736055437908,
+            "hit": 0.12857142857142856,
+            "benchmark_precision": 0.01847229841572066,
+            "benchmark_recall": 0.10406736055437908
+          }
+        ],
+        "false_abstention": 0.6,
+        "correct_abstention": 0.9565217391304348,
+        "negative_counts": {
+          "n": 23,
+          "correct": 22
+        },
+        "latency_ms": {
+          "median": 1.5388500760309398,
+          "p95": 1.9305499212350696
+        }
+      },
+      "checks": {
+        "precision": false,
+        "recall": false,
+        "false_abstention": false,
+        "correct_abstention": true
+      },
+      "accepted": false
+    },
+    {
+      "threshold": 0.8,
+      "metrics": {
+        "retrieval": [
+          {
+            "k": 1,
+            "n_queries": 140,
+            "precision": 0.0,
+            "recall": 0.0,
+            "hit": 0.0,
+            "benchmark_precision": 0.0,
+            "benchmark_recall": 0.0
+          },
+          {
+            "k": 3,
+            "n_queries": 140,
+            "precision": 0.0,
+            "recall": 0.0,
+            "hit": 0.0,
+            "benchmark_precision": 0.0,
+            "benchmark_recall": 0.0
+          },
+          {
+            "k": 5,
+            "n_queries": 140,
+            "precision": 0.0,
+            "recall": 0.0,
+            "hit": 0.0,
+            "benchmark_precision": 0.0,
+            "benchmark_recall": 0.0
+          },
+          {
+            "k": 10,
+            "n_queries": 140,
+            "precision": 0.0,
+            "recall": 0.0,
+            "hit": 0.0,
+            "benchmark_precision": 0.0,
+            "benchmark_recall": 0.0
+          }
+        ],
+        "false_abstention": 1.0,
+        "correct_abstention": 0.9565217391304348,
+        "negative_counts": {
+          "n": 23,
+          "correct": 22
+        },
+        "latency_ms": {
+          "median": 1.7525000148452818,
+          "p95": 2.576285041868686
+        }
+      },
+      "checks": {
+        "precision": false,
+        "recall": false,
+        "false_abstention": false,
+        "correct_abstention": true
+      },
+      "accepted": false
+    }
+  ],
+  "selected_threshold": 0.5,
+  "accepted": true,
+  "limitation": "Thresholds selected and measured on train; not held-out estimates."
+}

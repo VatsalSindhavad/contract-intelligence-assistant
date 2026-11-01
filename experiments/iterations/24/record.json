@@ -1,0 +1,190 @@
+{
+  "iteration": 24,
+  "run_id": "20261101T122914565953Z",
+  "proposal": "Conditional expanded-context recovery",
+  "proposer": "User; two recall-recovery experiments declared before generation",
+  "config": {
+    "name": "llm_hybrid_gemini_recovery20_31",
+    "provider": "gemini",
+    "task": "hybrid_recall_recovery",
+    "model": "gemini-3.1-flash-lite",
+    "model_revision": "API alias; actual modelVersion recorded per response",
+    "runtime": "gemini-rest-v1beta",
+    "prompt_file": "prompts/summarise_complete_clauses_v2.txt",
+    "temperature": 0,
+    "seed": null,
+    "max_output_tokens": 3072,
+    "context_length": 1048576,
+    "thinking_level": "minimal",
+    "candidate_k": 20,
+    "retrieval_config": "configs/hybrid_recall_recovery20.json",
+    "max_evidence_quotes": 5,
+    "max_summary_words": 45,
+    "invalid_output_policy": "return_original_candidates",
+    "expose_in_demo": true,
+    "stage": "recovery20_31",
+    "previous_config": "llm_configs/hybrid_gemini_broad10.json"
+  },
+  "metrics": {
+    "reference": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.5551140066862548,
+          "recall": 0.38690957131415166,
+          "hit": 0.5785714285714286,
+          "benchmark_precision": 0.5551140066862548,
+          "benchmark_recall": 0.38690957131415166
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.5418787165272875,
+          "recall": 0.4662433807474131,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5424760833430478,
+          "benchmark_recall": 0.4856665256921178
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.5415228643049754,
+          "recall": 0.4693102584680304,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5419194166763811,
+          "benchmark_recall": 0.4887334034127351
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.5415228643049754,
+          "recall": 0.4693102584680304,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5419194166763811,
+          "benchmark_recall": 0.4887334034127351
+        }
+      ],
+      "false_abstention": 0.32857142857142857,
+      "correct_abstention": 1.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 23
+      },
+      "latency_ms": {
+        "median": 11.522900022100657,
+        "p95": 14.880775019992138
+      }
+    },
+    "candidate": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.7311403871849316,
+          "recall": 0.5199499736986277,
+          "hit": 0.7642857142857142,
+          "benchmark_precision": 0.7311403871849316,
+          "benchmark_recall": 0.5199499736986277
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.729834608332991,
+          "recall": 0.6358630890872754,
+          "hit": 0.85,
+          "benchmark_precision": 0.7303024053689031,
+          "benchmark_recall": 0.6502344775904068
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.7301659954562906,
+          "recall": 0.6558984610699724,
+          "hit": 0.8642857142857143,
+          "benchmark_precision": 0.7303529663178594,
+          "benchmark_recall": 0.6719376685589761
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.7292171603005102,
+          "recall": 0.6769744129494958,
+          "hit": 0.8785714285714286,
+          "benchmark_precision": 0.7296498083417292,
+          "benchmark_recall": 0.702435075375595
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 12.876099965069443,
+        "p95": 28.544694982701895
+      }
+    }
+  },
+  "target_checks": {
+    "precision": true,
+    "recall": false,
+    "correct_abstention": false,
+    "false_abstention": true
+  },
+  "target_success": false,
+  "checks": {
+    "precision": true,
+    "recall": true,
+    "correct_abstention": false,
+    "false_abstention": true
+  },
+  "quality_accepted": false,
+  "status_counts": {
+    "valid": 122,
+    "invalid_output": 41
+  },
+  "decision_counts": {
+    "reuse_supported_answer": 105,
+    "recovery": 58
+  },
+  "validation_errors": {
+    "Empty evidence requires the declared no-answer summary.": 27,
+    "Answer is not an exact substring of the cited passage.": 14
+  },
+  "additional_api_requests": 58,
+  "additional_token_usage": {
+    "promptTokenCount": 292876,
+    "candidatesTokenCount": 7801,
+    "totalTokenCount": 300677
+  },
+  "model_versions": {
+    "gemini-3.5-flash-lite": 105,
+    "gemini-3.1-flash-lite": 58
+  },
+  "estimated_first_use_latency_ms": {
+    "median": 2620.2256999677047,
+    "p95": 5639.966514956902
+  },
+  "diagnosis_after": {
+    "complete_coverage": 62,
+    "partial_coverage": 59,
+    "right_document_wrong_section": 18,
+    "wrong_document": 1
+  },
+  "n_answerable_train": 140,
+  "n_unanswerable_train": 23,
+  "test_evaluation_runs": 0,
+  "dataset_revision": "2b9c248bc8179ef0908fd6ba01d50b156facd48b",
+  "frozen_question_sha256": "458d7e7252e7377b2a416764102aeca53546aba71e3ec62fafed393376443289",
+  "prompt_sha256": "86af80917dfabeeb9ec850f23a13bb418c99d7b3407dc0a0afcd25d3bf91b8da",
+  "code_sha256": {
+    "recall_recovery.py": "26def7ba40a241414219d6d235e3bff60da2e88f423cb68d4ee35083cc202d84",
+    "run_recall_recovery.py": "28e28825e9abcf88e4bffcc50f276276927875cd80670e84aee9d1d737aee001",
+    "hosted_summary.py": "4c460dae821a29c4242da6f861835a5780afad3c82b7a50fbceddc41cc47b73a",
+    "hybrid_retrieval.py": "daa9323d5e86b779b0b80420bb01067f59e8cd92711a148915027b066fd43bb7"
+  },
+  "result_directory": "results/iteration_24_recovery20_31/20261101T122914565953Z",
+  "source_log": "experiments/llm_log.jsonl"
+}

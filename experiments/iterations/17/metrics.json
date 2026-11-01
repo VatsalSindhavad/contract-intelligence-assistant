@@ -1,0 +1,443 @@
+[
+  {
+    "group": "Pure semantic and indexing changes",
+    "label": "Definition/reference-enriched MiniLM + FAISS",
+    "iteration": 17,
+    "threshold": null,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/semantic_log.jsonl",
+    "source_run_id": "20261101T080519887642Z",
+    "result_directory": "results/iteration_17_enriched/20261101T080519887642Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.05269285714285714,
+          "recall": 0.10887729956591313,
+          "hit": 0.15714285714285714,
+          "benchmark_precision": 0.05269285714285714,
+          "benchmark_recall": 0.10887729956591313
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.04611364764643384,
+          "recall": 0.2749763666081416,
+          "hit": 0.35714285714285715,
+          "benchmark_precision": 0.047536933884005796,
+          "benchmark_recall": 0.29742951952412267
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.038732377435377364,
+          "recall": 0.3570101989782413,
+          "hit": 0.4642857142857143,
+          "benchmark_precision": 0.04030181968740512,
+          "benchmark_recall": 0.39196623709013867
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.02854911441912086,
+          "recall": 0.49110239555318075,
+          "hit": 0.5857142857142857,
+          "benchmark_precision": 0.030298264522370305,
+          "benchmark_recall": 0.5478812926887678
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 15.308999980334193,
+        "p95": 26.41813496593385
+      }
+    },
+    "selected_for_final_test": false
+  },
+  {
+    "group": "Semantic abstention sweeps",
+    "label": "Enriched MiniLM + cutoff 0.40",
+    "iteration": 17,
+    "threshold": 0.4,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/semantic_log.jsonl",
+    "source_run_id": "20261101T080519887642Z",
+    "result_directory": "results/iteration_17_enriched/20261101T080519887642Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.05269285714285714,
+          "recall": 0.10887729956591313,
+          "hit": 0.15714285714285714,
+          "benchmark_precision": 0.05269285714285714,
+          "benchmark_recall": 0.10887729956591313
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.04611364764643384,
+          "recall": 0.2749763666081416,
+          "hit": 0.35714285714285715,
+          "benchmark_precision": 0.047536933884005796,
+          "benchmark_recall": 0.29742951952412267
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.038732377435377364,
+          "recall": 0.3570101989782413,
+          "hit": 0.4642857142857143,
+          "benchmark_precision": 0.04030181968740512,
+          "benchmark_recall": 0.39196623709013867
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.02854911441912086,
+          "recall": 0.49110239555318075,
+          "hit": 0.5857142857142857,
+          "benchmark_precision": 0.030298264522370305,
+          "benchmark_recall": 0.5478812926887678
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 1.3988500577397645,
+        "p95": 1.7765700235031545
+      }
+    },
+    "selected_for_final_test": false
+  },
+  {
+    "group": "Semantic abstention sweeps",
+    "label": "Enriched MiniLM + cutoff 0.45",
+    "iteration": 17,
+    "threshold": 0.45,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/semantic_log.jsonl",
+    "source_run_id": "20261101T080519887642Z",
+    "result_directory": "results/iteration_17_enriched/20261101T080519887642Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.05269285714285714,
+          "recall": 0.10887729956591313,
+          "hit": 0.15714285714285714,
+          "benchmark_precision": 0.05269285714285714,
+          "benchmark_recall": 0.10887729956591313
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.04611364764643384,
+          "recall": 0.2749763666081416,
+          "hit": 0.35714285714285715,
+          "benchmark_precision": 0.047536933884005796,
+          "benchmark_recall": 0.29742951952412267
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.038732377435377364,
+          "recall": 0.3570101989782413,
+          "hit": 0.4642857142857143,
+          "benchmark_precision": 0.04030181968740512,
+          "benchmark_recall": 0.39196623709013867
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.02854911441912086,
+          "recall": 0.49110239555318075,
+          "hit": 0.5857142857142857,
+          "benchmark_precision": 0.030298264522370305,
+          "benchmark_recall": 0.5478812926887678
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 1.3592499890364707,
+        "p95": 1.7629200243391094
+      }
+    },
+    "selected_for_final_test": false
+  },
+  {
+    "group": "Semantic abstention sweeps",
+    "label": "Enriched MiniLM + cutoff 0.50",
+    "iteration": 17,
+    "threshold": 0.5,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/semantic_log.jsonl",
+    "source_run_id": "20261101T080519887642Z",
+    "result_directory": "results/iteration_17_enriched/20261101T080519887642Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.05269285714285714,
+          "recall": 0.10887729956591313,
+          "hit": 0.15714285714285714,
+          "benchmark_precision": 0.05269285714285714,
+          "benchmark_recall": 0.10887729956591313
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.04611364764643384,
+          "recall": 0.2749763666081416,
+          "hit": 0.35714285714285715,
+          "benchmark_precision": 0.047536933884005796,
+          "benchmark_recall": 0.29742951952412267
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.038732377435377364,
+          "recall": 0.3570101989782413,
+          "hit": 0.4642857142857143,
+          "benchmark_precision": 0.04030181968740512,
+          "benchmark_recall": 0.39196623709013867
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.02854911441912086,
+          "recall": 0.49110239555318075,
+          "hit": 0.5857142857142857,
+          "benchmark_precision": 0.030298264522370305,
+          "benchmark_recall": 0.5478812926887678
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.13043478260869565,
+      "negative_counts": {
+        "n": 23,
+        "correct": 3
+      },
+      "latency_ms": {
+        "median": 1.351799990516156,
+        "p95": 1.7399899719748642
+      }
+    },
+    "selected_for_final_test": false
+  },
+  {
+    "group": "Semantic abstention sweeps",
+    "label": "Enriched MiniLM + cutoff 0.55",
+    "iteration": 17,
+    "threshold": 0.55,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/semantic_log.jsonl",
+    "source_run_id": "20261101T080519887642Z",
+    "result_directory": "results/iteration_17_enriched/20261101T080519887642Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.05269285714285714,
+          "recall": 0.10887729956591313,
+          "hit": 0.15714285714285714,
+          "benchmark_precision": 0.05269285714285714,
+          "benchmark_recall": 0.10887729956591313
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.04611364764643384,
+          "recall": 0.2749763666081416,
+          "hit": 0.35714285714285715,
+          "benchmark_precision": 0.047536933884005796,
+          "benchmark_recall": 0.29742951952412267
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.038732377435377364,
+          "recall": 0.3570101989782413,
+          "hit": 0.4642857142857143,
+          "benchmark_precision": 0.04030181968740512,
+          "benchmark_recall": 0.39196623709013867
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.02854911441912086,
+          "recall": 0.49110239555318075,
+          "hit": 0.5857142857142857,
+          "benchmark_precision": 0.030298264522370305,
+          "benchmark_recall": 0.5478812926887678
+        }
+      ],
+      "false_abstention": 0.007142857142857143,
+      "correct_abstention": 0.391304347826087,
+      "negative_counts": {
+        "n": 23,
+        "correct": 9
+      },
+      "latency_ms": {
+        "median": 1.3986999401822686,
+        "p95": 1.701550016878172
+      }
+    },
+    "selected_for_final_test": false
+  },
+  {
+    "group": "Semantic abstention sweeps",
+    "label": "Enriched MiniLM + cutoff 0.60",
+    "iteration": 17,
+    "threshold": 0.6,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/semantic_log.jsonl",
+    "source_run_id": "20261101T080519887642Z",
+    "result_directory": "results/iteration_17_enriched/20261101T080519887642Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.04881428571428571,
+          "recall": 0.10472020264354288,
+          "hit": 0.15,
+          "benchmark_precision": 0.04881428571428571,
+          "benchmark_recall": 0.10472020264354288
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.043167729279086894,
+          "recall": 0.260394559261061,
+          "hit": 0.3357142857142857,
+          "benchmark_precision": 0.04422502912210102,
+          "benchmark_recall": 0.27963020895953883
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.03635117401922829,
+          "recall": 0.3314245306272997,
+          "hit": 0.4357142857142857,
+          "benchmark_precision": 0.03749181968740512,
+          "benchmark_recall": 0.3599455623041906
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.02683845297561743,
+          "recall": 0.45538810983889505,
+          "hit": 0.55,
+          "benchmark_precision": 0.028372981857423665,
+          "benchmark_recall": 0.5052496854269354
+        }
+      ],
+      "false_abstention": 0.07857142857142857,
+      "correct_abstention": 0.6521739130434783,
+      "negative_counts": {
+        "n": 23,
+        "correct": 15
+      },
+      "latency_ms": {
+        "median": 1.3664999860338867,
+        "p95": 1.6615550615824755
+      }
+    },
+    "selected_for_final_test": false
+  },
+  {
+    "group": "Semantic abstention sweeps",
+    "label": "Enriched MiniLM + cutoff 0.65",
+    "iteration": 17,
+    "threshold": 0.65,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/semantic_log.jsonl",
+    "source_run_id": "20261101T080519887642Z",
+    "result_directory": "results/iteration_17_enriched/20261101T080519887642Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.04267857142857143,
+          "recall": 0.0848959524016854,
+          "hit": 0.12142857142857143,
+          "benchmark_precision": 0.04267857142857143,
+          "benchmark_recall": 0.0848959524016854
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.031381135531135536,
+          "recall": 0.17651090361147082,
+          "hit": 0.24285714285714285,
+          "benchmark_precision": 0.031785714285714285,
+          "benchmark_recall": 0.18450080501062885
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.025684456016005715,
+          "recall": 0.22907571161197202,
+          "hit": 0.30714285714285716,
+          "benchmark_precision": 0.026580020761766195,
+          "benchmark_recall": 0.2463509949895432
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018509087861470423,
+          "recall": 0.3142811489332337,
+          "hit": 0.38571428571428573,
+          "benchmark_precision": 0.01948385239313448,
+          "benchmark_recall": 0.346651070353178
+        }
+      ],
+      "false_abstention": 0.37142857142857144,
+      "correct_abstention": 0.8695652173913043,
+      "negative_counts": {
+        "n": 23,
+        "correct": 20
+      },
+      "latency_ms": {
+        "median": 1.3810500386171043,
+        "p95": 1.81620997027494
+      }
+    },
+    "selected_for_final_test": false
+  }
+]

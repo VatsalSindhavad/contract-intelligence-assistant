@@ -1,0 +1,162 @@
+{
+  "run_id": "20261101T075039515494Z",
+  "n_answerable_train": 140,
+  "n_unanswerable_train": 23,
+  "test_evaluation_runs": 0,
+  "dataset_revision": "2b9c248bc8179ef0908fd6ba01d50b156facd48b",
+  "frozen_question_sha256": "458d7e7252e7377b2a416764102aeca53546aba71e3ec62fafed393376443289",
+  "proposer": "User; deterministic clause chunking followed by abstention threshold search",
+  "code_sha256": {
+    "clause_chunking.py": "faee023afe9a0672627b62572eda4cd6ab345210fa7fa25dcf7778e121a7bd02",
+    "dense_retrieval.py": "d9fd1f49b2d1c5dfd9b7758239737e5eb2c896d9487b14fc197de28b3ddf7e3b",
+    "evaluate_clause.py": "d54a0f2b6a754bc10cce2b649d77d9a1aec73ee456eebe3580f03cc3463de364"
+  },
+  "result_directory": "results/iteration_15_clause/20261101T075039515494Z",
+  "iteration": 15,
+  "proposal": "Clause-aware MiniLM + FAISS",
+  "config": {
+    "name": "dense_minilm_clause_faiss",
+    "retriever_type": "dense",
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "dimension": 384,
+    "max_seq_length": 256,
+    "device": "cpu",
+    "torch_threads": 4,
+    "batch_size": 32,
+    "chunk_size": 700,
+    "chunk_overlap": 0,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "query_mode": "full",
+    "normalize_embeddings": true,
+    "faiss_index": "IndexFlatIP",
+    "chunk_strategy": "clause_v1"
+  },
+  "metrics": {
+    "reference": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.05269285714285714,
+          "recall": 0.10887729956591313,
+          "hit": 0.15714285714285714,
+          "benchmark_precision": 0.05269285714285714,
+          "benchmark_recall": 0.10887729956591313
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.04450173816437784,
+          "recall": 0.2575164920472117,
+          "hit": 0.35714285714285715,
+          "benchmark_precision": 0.04581414004820829,
+          "benchmark_recall": 0.2763982163917642
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.04034053185653337,
+          "recall": 0.35748930802374496,
+          "hit": 0.4642857142857143,
+          "benchmark_precision": 0.04189175796982168,
+          "benchmark_recall": 0.38904316812722806
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.028280139172079284,
+          "recall": 0.4827086393526138,
+          "hit": 0.5857142857142857,
+          "benchmark_precision": 0.02976347278268916,
+          "benchmark_recall": 0.534877541999451
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 29.60669994354248,
+        "p95": 75.78495498164537
+      }
+    },
+    "candidate": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.04979236020740738,
+          "recall": 0.038959304927862135,
+          "hit": 0.06428571428571428,
+          "benchmark_precision": 0.04979236020740738,
+          "benchmark_recall": 0.038959304927862135
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.052957846988367,
+          "recall": 0.12582207719417465,
+          "hit": 0.16428571428571428,
+          "benchmark_precision": 0.052957846988367,
+          "benchmark_recall": 0.12582207719417465
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.0524821723964817,
+          "recall": 0.20038432487374255,
+          "hit": 0.25,
+          "benchmark_precision": 0.0524821723964817,
+          "benchmark_recall": 0.20038432487374255
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.044943300634696835,
+          "recall": 0.30511831088058267,
+          "hit": 0.35714285714285715,
+          "benchmark_precision": 0.044943300634696835,
+          "benchmark_recall": 0.30511831088058267
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 0
+      },
+      "latency_ms": {
+        "median": 20.83494997350499,
+        "p95": 44.02888495242221
+      }
+    }
+  },
+  "checks": {
+    "precision_gain": true,
+    "recall": false,
+    "false_abstention": true,
+    "correct_abstention": true
+  },
+  "accepted": false,
+  "build_seconds": 91.04254980001133,
+  "chunk_count": 4698,
+  "embedding_metadata": {
+    "signature": "{\"corpus_hash\": \"f0667755e1618453272c34c4e093783bbdb68eefbaf5bdf0101ba9c2b380cc35\", \"identity\": {\"config\": {\"batch_size\": 32, \"chunk_overlap\": 0, \"chunk_size\": 700, \"chunk_strategy\": \"clause_v1\", \"device\": \"cpu\", \"dimension\": 384, \"faiss_index\": \"IndexFlatIP\", \"k_values\": [1, 3, 5, 10], \"max_seq_length\": 256, \"min_score\": 0.0, \"model_id\": \"sentence-transformers/all-MiniLM-L6-v2\", \"normalize_embeddings\": true, \"query_mode\": \"full\", \"retriever_type\": \"dense\", \"revision\": \"1110a243fdf4706b3f48f1d95db1a4f5529b4d41\", \"torch_threads\": 4}, \"embedding_protocol\": 1, \"libraries\": {\"faiss-cpu\": \"1.14.2\", \"sentence-transformers\": \"5.5.1\", \"torch\": \"2.11.0+cu128\", \"transformers\": \"4.51.2\"}}}",
+    "vectors_sha256": "9f62f1db613ded0951209dfbfc4fcfa79ae47f984dc6fe475f18250c739d6de0",
+    "chunk_count": 4698,
+    "encode_ms": 40309.086499968544,
+    "inputs_over_token_limit": 17,
+    "max_input_tokens": 534,
+    "max_seq_length": 256
+  },
+  "vector_cache_directory": "cache/dense/35bde6b0490a3f8f9ce4fb2e9043520a59b4c5e94544af10c1cc5c4976a6f513"
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "group": "BM25",
+    "label": "BM25 + focused clause query",
+    "iteration": 6,
+    "threshold": null,
+    "pilot": false,
+    "selected_for_final_comparison": false,
+    "scope": "140 answerable + 23 negative train questions",
+    "source_log": "experiments/loop_log.jsonl",
+    "source_run_id": "20261101T023940566109Z",
+    "result_directory": "results/iteration_06/20261101T023940566109Z",
+    "metrics": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.1098,
+          "recall": 0.2655790074432562,
+          "hit": 0.3357142857142857,
+          "benchmark_precision": 0.1098,
+          "benchmark_recall": 0.2655790074432562
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.07510040272677408,
+          "recall": 0.42786693919036123,
+          "hit": 0.5071428571428571,
+          "benchmark_precision": 0.07640064052222598,
+          "benchmark_recall": 0.4585112733564357
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.05811606993279005,
+          "recall": 0.5071642430779163,
+          "hit": 0.6,
+          "benchmark_precision": 0.06066455054793572,
+          "benchmark_recall": 0.5626909039604239
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.04378052271057932,
+          "recall": 0.5811805712208997,
+          "hit": 0.6571428571428571,
+          "benchmark_precision": 0.0463562627720964,
+          "benchmark_recall": 0.6703100328849825
+        }
+      ],
+      "false_abstention": 0.08571428571428572,
+      "correct_abstention": 0.043478260869565216,
+      "negative_counts": {
+        "n": 23,
+        "correct": 1
+      },
+      "latency_ms": {
+        "median": 7.089549966622144,
+        "p95": 10.360140062402934
+      }
+    },
+    "selected_for_final_test": false
+  }
+]

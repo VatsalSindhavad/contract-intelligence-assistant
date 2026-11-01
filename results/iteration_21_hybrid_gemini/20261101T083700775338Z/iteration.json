@@ -1,0 +1,188 @@
+{
+  "iteration": 21,
+  "run_id": "20261101T083700775338Z",
+  "proposal": "Selected hybrid with cutoff plus Gemini summary and source evidence",
+  "proposer": "User; final hosted LLM experiment",
+  "config": {
+    "name": "llm_hybrid_gemini_summary_055",
+    "provider": "gemini",
+    "task": "hybrid_summary_with_evidence",
+    "model": "gemini-3.5-flash-lite",
+    "model_revision": "API alias; actual modelVersion recorded per response",
+    "runtime": "gemini-rest-v1beta",
+    "prompt_file": "prompts/summarise_with_evidence_v1.txt",
+    "temperature": 0,
+    "seed": null,
+    "max_output_tokens": 1536,
+    "context_length": 1048576,
+    "thinking_level": "minimal",
+    "candidate_k": 5,
+    "retrieval_config": "configs/hybrid_bm25_minilm_rrf_abstention.json",
+    "max_evidence_quotes": 3,
+    "max_summary_words": 45,
+    "invalid_output_policy": "return_original_candidates",
+    "expose_in_demo": false
+  },
+  "metrics": {
+    "reference": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.1443357142857143,
+          "recall": 0.31907875739236236,
+          "hit": 0.4357142857142857,
+          "benchmark_precision": 0.1443357142857143,
+          "benchmark_recall": 0.31907875739236236
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.09163070389400516,
+          "recall": 0.5348305129119237,
+          "hit": 0.65,
+          "benchmark_precision": 0.09528680931857794,
+          "benchmark_recall": 0.5846647624870903
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.07116647729470574,
+          "recall": 0.6551329003937527,
+          "hit": 0.75,
+          "benchmark_precision": 0.07488695988976452,
+          "benchmark_recall": 0.7424400636295297
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.04564549415617565,
+          "recall": 0.8031966766952396,
+          "hit": 0.8714285714285714,
+          "benchmark_precision": 0.04857384206241044,
+          "benchmark_recall": 0.9305308673875187
+        }
+      ],
+      "false_abstention": 0.007142857142857143,
+      "correct_abstention": 0.391304347826087,
+      "negative_counts": {
+        "n": 23,
+        "correct": 9
+      },
+      "latency_ms": {
+        "median": 10.550899954978377,
+        "p95": 14.0840100008063
+      }
+    },
+    "candidate": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.5551140066862548,
+          "recall": 0.38690957131415166,
+          "hit": 0.5785714285714286,
+          "benchmark_precision": 0.5551140066862548,
+          "benchmark_recall": 0.38690957131415166
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.5418787165272875,
+          "recall": 0.4662433807474131,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5424760833430478,
+          "benchmark_recall": 0.4856665256921178
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.5415228643049754,
+          "recall": 0.4693102584680304,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5419194166763811,
+          "benchmark_recall": 0.4887334034127351
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.5415228643049754,
+          "recall": 0.4693102584680304,
+          "hit": 0.6071428571428571,
+          "benchmark_precision": 0.5419194166763811,
+          "benchmark_recall": 0.4887334034127351
+        }
+      ],
+      "false_abstention": 0.32857142857142857,
+      "correct_abstention": 1.0,
+      "negative_counts": {
+        "n": 23,
+        "correct": 23
+      },
+      "latency_ms": {
+        "median": 11.522900022100657,
+        "p95": 14.880775019992138
+      }
+    }
+  },
+  "checks": {
+    "precision_gain": true,
+    "recall": false,
+    "false_abstention": false,
+    "correct_abstention": true
+  },
+  "quality_accepted": false,
+  "latency_pass": false,
+  "operational_accepted": false,
+  "estimated_first_use_latency_ms": {
+    "median": 2149.3253999506123,
+    "p95": 4992.472910037031
+  },
+  "status_counts": {
+    "valid": 149,
+    "invalid_output": 4,
+    "upstream_abstention": 10
+  },
+  "validation_errors": {
+    "Answer is not an exact substring of the cited passage.": 3,
+    "Summary introduces numbers absent from its cited evidence/question.": 1
+  },
+  "model_versions": {
+    "gemini-3.5-flash-lite": 153
+  },
+  "total_usage": {
+    "promptTokenCount": 230342,
+    "candidatesTokenCount": 15032,
+    "totalTokenCount": 245374
+  },
+  "prompt_sha256": "61df47d7659fe8082fe045abc6d6a7793c63cf444a5891c6baae4d884fd5afa3",
+  "abstention_policy": {
+    "scope": "Future experiments after iterations 15 and 16; does not alter historical decisions",
+    "proposer": "User",
+    "evaluation_split": "train",
+    "maximum_false_answerable_abstention_rate": 0.05,
+    "selection_goal": "Improve correct unanswerable abstention while protecting precision and recall under each experiment's predeclared criteria",
+    "answerable_train_count": 140,
+    "maximum_false_answerable_abstentions_on_current_train": 7,
+    "test_policy": "No test tuning; final reporting only"
+  },
+  "diagnosis_after": {
+    "partial_coverage": 42,
+    "right_document_wrong_section": 9,
+    "incorrect_abstention": 46,
+    "complete_coverage": 43
+  },
+  "n_answerable_train": 140,
+  "n_unanswerable_train": 23,
+  "test_evaluation_runs": 0,
+  "dataset_revision": "2b9c248bc8179ef0908fd6ba01d50b156facd48b",
+  "frozen_question_sha256": "458d7e7252e7377b2a416764102aeca53546aba71e3ec62fafed393376443289",
+  "code_sha256": {
+    "run_hybrid_gemini.py": "65dfd38f39054a5325f3472e909f2fa5e0ec531cfbd2db4fe494324192642dbe",
+    "hosted_summary.py": "83b5e3cd0fde9c27cbb153b87a27b77cb0e874250ca863ba2b7bd8f17c93b9d7",
+    "summary_retrieval.py": "b4972e71d8a25f5c6af9ae077e9a1c55b0a1565a39c9ed1e1f96c8b5e03b2065",
+    "hybrid_retrieval.py": "445337f7dacde06d6e7a8ff4c13640247a562b1b6fd52f9d3488c0d8578ba500",
+    "retrieval.py": "a0d59f36bfb7f40f49b1f24030758e02e070504595d2009cd522dbb7d2447aab"
+  },
+  "result_directory": "results/iteration_21_hybrid_gemini/20261101T083700775338Z"
+}
