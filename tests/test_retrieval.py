@@ -1,0 +1,47 @@
+import pytest
+
+from retrieval import BM25Retriever, character_metrics, evaluate_train, make_chunks
+
+
+def test_chunks_preserve_offsets_and_cover_document():
+    text = 'A\nβ contract ' * 12
+    chunks = make_chunks({'a': text}, size=23, overlap=7)
+    covered = set()
+    for chunk in chunks:
+        assert chunk['text'] == text[chunk['start']:chunk['end']]
+        covered.update(range(chunk['start'], chunk['end']))
+    assert covered == set(range(len(text)))
+
+
+def test_invalid_overlap():
+    with pytest.raises(ValueError):
+        make_chunks({'a': 'abc'}, size=2, overlap=2)
+
+
+def test_overlap_is_counted_once():
+    predicted = [dict(file_path='a', start=0, end=10), dict(file_path='a', start=5, end=15)]
+    gold = [dict(file_path='a', span=[5, 10]), dict(file_path='a', span=[7, 12])]
+    assert character_metrics(predicted, gold) == dict(precision=7 / 15, recall=1.0, hit=1)
+
+
+def test_wrong_document_is_not_a_match():
+    assert character_metrics([dict(file_path='b', start=0, end=10)],
+                             [dict(file_path='a', span=[0, 10])])['recall'] == 0
+
+
+def test_empty_retrieval():
+    assert character_metrics([], [dict(file_path='a', span=[0, 10])]) == dict(precision=0, recall=0, hit=0)
+
+
+def test_retrieval_and_unknown_query():
+    config = dict(chunk_size=100, chunk_overlap=0, k1=1.5, b=0.75, min_score=0)
+    retriever = BM25Retriever({'a': 'sublicensing permission', 'b': 'payment terms',
+                              'c': 'termination notice'}, config)
+    assert retriever.search('sublicensing')[0]['file_path'] == 'a'
+    assert retriever.search('unseenword') == []
+    assert retriever.search('') == []
+
+
+def test_development_rejects_test_records():
+    with pytest.raises(ValueError):
+        evaluate_train(None, [dict(split='test')], [1])
