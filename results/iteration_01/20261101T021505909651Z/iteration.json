@@ -1,0 +1,176 @@
+{
+  "iteration": 1,
+  "run_id": "20261101T021505909651Z",
+  "proposer": "Codex, based on train failure diagnosis",
+  "proposal": "Remove fixed common function words from query and document tokens.",
+  "reason": "Reduce common-word noise when ranking passages within the correct document.",
+  "changed": {
+    "remove_stopwords": {
+      "before": false,
+      "after": true
+    }
+  },
+  "objective": {
+    "primary_metric": "macro_character_recall_at_5",
+    "minimum_recall_gain_absolute": 0.01,
+    "minimum_precision_ratio": 0.95,
+    "maximum_false_abstention_increase_absolute": 0.02,
+    "maximum_correct_abstention_drop_absolute": 0.05,
+    "latency_p95_multiplier": 2.0,
+    "latency_p95_floor_ms": 50.0,
+    "comparison": "candidate versus unchanged baseline for iteration 1",
+    "evaluation_split": "train"
+  },
+  "diagnosis_before": {
+    "complete_coverage": 15,
+    "right_document_wrong_section": 103,
+    "partial_coverage": 22
+  },
+  "diagnosis_after": {
+    "complete_coverage": 13,
+    "right_document_wrong_section": 107,
+    "partial_coverage": 20
+  },
+  "decision": {
+    "accepted": false,
+    "checks": {
+      "recall_gain": false,
+      "precision": false,
+      "answerable_abstention": true,
+      "unanswerable_abstention": true,
+      "latency": true
+    }
+  },
+  "reference": {
+    "name": "bm25_baseline",
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "k1": 1.5,
+    "b": 0.75,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ]
+  },
+  "candidate": {
+    "name": "bm25_stopwords",
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "k1": 1.5,
+    "b": 0.75,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "remove_stopwords": true
+  },
+  "selected_config": {
+    "name": "bm25_baseline",
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "k1": 1.5,
+    "b": 0.75,
+    "min_score": 0.0,
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ]
+  },
+  "n_answerable_train": 140,
+  "n_unanswerable_train": 23,
+  "test_evaluation_runs": 0,
+  "dataset_revision": "2b9c248bc8179ef0908fd6ba01d50b156facd48b",
+  "frozen_question_sha256": "458d7e7252e7377b2a416764102aeca53546aba71e3ec62fafed393376443289",
+  "python": "3.12.4",
+  "metrics": {
+    "reference": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394565,
+          "hit": 0.03571428571428571
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.013628578665409043,
+          "recall": 0.07426194589360333,
+          "hit": 0.12142857142857143
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.017433113661637845,
+          "recall": 0.18164706021184368,
+          "hit": 0.2642857142857143
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018139540102769674,
+          "recall": 0.3215982088425699,
+          "hit": 0.4357142857142857
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "latency_ms": {
+        "median": 8.280200068838894,
+        "p95": 11.981419939547775
+      }
+    },
+    "candidate": {
+      "retrieval": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005664285714285714,
+          "recall": 0.01577781831171397,
+          "hit": 0.03571428571428571
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.014657431287679382,
+          "recall": 0.08137190011562653,
+          "hit": 0.12857142857142856
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.016146065784987156,
+          "recall": 0.15890680894673265,
+          "hit": 0.2357142857142857
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.017826201564423032,
+          "recall": 0.31873354292090506,
+          "hit": 0.4357142857142857
+        }
+      ],
+      "false_abstention": 0.0,
+      "correct_abstention": 0.0,
+      "latency_ms": {
+        "median": 5.575499963015318,
+        "p95": 8.137754985364152
+      }
+    }
+  },
+  "code_sha256": {
+    "retrieval.py": "b54a277ae183e01f5f8804d60ad7d38ca84ecf1b05a0f17c62703fd426a4707c",
+    "negative_validation.py": "809c44f18a4ef2d1c9f0f790c19135aae78b3b24382a3209734120f8e654f29d",
+    "run_experiment.py": "83b8c085ed0a05bfd438bc25957b7fc19611c68a7b36ff9799010a2cd057f42b"
+  }
+}
