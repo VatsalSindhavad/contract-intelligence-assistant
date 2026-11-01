@@ -93,7 +93,7 @@ def call_model(request):
     raise ValueError('Unsupported hosted provider; select and implement it before calling.')
 
 
-def get_rewrite(root, config, question, cache_only=True, caller=call_model):
+def get_rewrite(root, config, question, cache_only=True, caller=call_model, retry_failed=False):
     request = make_request(root, config, question)
     key = hashlib.sha256(canonical(request).encode('utf-8')).hexdigest()
     cache = Path(root) / 'cache' / 'llm_rewrites' / f'{key}.json'
@@ -106,7 +106,13 @@ def get_rewrite(root, config, question, cache_only=True, caller=call_model):
                 raise ValueError('Cached output differs from validated text.')
         elif entry['search_terms'] is not None:
             raise ValueError('Invalid cache fallback entry.')
-        return entry, True
+        if not cache_only and retry_failed and entry['status'] in ['http_error', 'transport_error']:
+            history = cache.parent / 'failed_attempts'
+            history.mkdir(exist_ok=True)
+            suffix = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+            (history / f'{key}_{suffix}.json').write_text(json.dumps(entry,ensure_ascii=False,indent=2),encoding='utf-8')
+        else:
+            return entry, True
     if cache_only:
         raise CacheMissError(f'Missing rewrite cache: {key}. No model call was made.')
     started = perf_counter()
@@ -122,6 +128,15 @@ def get_rewrite(root, config, question, cache_only=True, caller=call_model):
     except requests.HTTPError as error:
         status = 'http_error'
         metadata = {'http_status': error.response.status_code if error.response is not None else None}
+        if error.response is not None:
+            metadata['retry_after'] = error.response.headers.get('Retry-After')
+            try:
+                detail = error.response.json().get('error', {})
+                metadata['provider_status'] = detail.get('status')
+                metadata['quota_ids'] = [v.get('quotaId') for d in detail.get('details', [])
+                                        for v in d.get('violations', []) if v.get('quotaId')]
+            except ValueError:
+                pass
     except requests.RequestException:
         status = 'transport_error'
     entry = dict(cache_key=key, request=request, status=status, search_terms=terms,

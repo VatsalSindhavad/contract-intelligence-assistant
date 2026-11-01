@@ -82,3 +82,16 @@ def test_local_key_file_is_not_added_to_cache_identity(rewrite_setup, monkeypatc
     entry, _ = get_rewrite(root, config, 'term?', cache_only=False,
                            caller=lambda request: dict(text='{"search_terms":"expiration"}'))
     assert 'fake-test-secret' not in json.dumps(entry)
+
+
+def test_retry_preserves_failed_attempt_without_recalling_valid_outputs(rewrite_setup):
+    import requests
+    root, config = rewrite_setup
+    def failed(request):
+        raise requests.ConnectionError('do not serialize request secrets')
+    entry, _ = get_rewrite(root,config,'term?',cache_only=False,caller=failed)
+    assert entry['status']=='transport_error'
+    entry, _ = get_rewrite(root,config,'term?',cache_only=False,retry_failed=True,
+                           caller=lambda request:dict(text='{"search_terms":"expiration"}'))
+    assert entry['status']=='valid'
+    assert len(list((root/'cache/llm_rewrites/failed_attempts').glob('*.json')))==1
