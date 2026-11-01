@@ -1,5 +1,12 @@
 [
   {
+    "id": "document_then_clause",
+    "name": "bm25_document_then_clause",
+    "trigger": "right_document_wrong_section",
+    "changes": {"query_mode": "document_then_clause"},
+    "reason": "Use the full question to identify a contract, then rank passages in that inferred contract using only the clause question; prevent repeated party names from dominating clause scores."
+  },
+  {
     "id": "smaller_chunks",
     "name": "bm25_chunks_500",
     "trigger": "right_document_wrong_section",

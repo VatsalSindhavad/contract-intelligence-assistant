@@ -43,6 +43,11 @@ def tokenize(text, remove_stopwords=False):
     return [token for token in tokens if token not in STOPWORDS] if remove_stopwords else tokens
 
 
+def clause_question(query):
+    match = re.match(r'^\s*Consider\s+.+?;\s*(.+)$', query, flags=re.IGNORECASE | re.DOTALL)
+    return match.group(1).strip() if match else None
+
+
 class BM25Retriever:
     def __init__(self, documents, config):
         self.config = dict(config)
@@ -62,6 +67,18 @@ class BM25Retriever:
         if not tokens:
             return []
         scores = self.index.get_scores(tokens)
+        question = clause_question(query)
+        if self.config.get('query_mode', 'full') == 'document_then_clause' and question:
+            best = int(np.argmax(scores))
+            if scores[best] <= 0:
+                return []
+            source = self.chunks[best]['file_path']
+            question_tokens = tokenize(question, self.remove_stopwords)
+            if not question_tokens:
+                return []
+            scores = self.index.get_scores(question_tokens)
+            scores = np.array([score if chunk['file_path'] == source else -np.inf
+                               for score, chunk in zip(scores, self.chunks)])
         order = np.argsort(-scores, kind='stable')[:k]
         return [dict(self.chunks[i], score=float(scores[i])) for i in order
                 if scores[i] > self.config['min_score']]

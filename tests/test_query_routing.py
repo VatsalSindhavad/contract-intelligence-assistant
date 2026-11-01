@@ -1,0 +1,38 @@
+import numpy as np
+
+from retrieval import BM25Retriever, clause_question
+
+
+def test_question_parser_preserves_plain_query_and_semicolons():
+    assert clause_question('Consider the contract; What is the term; and renewal?') == 'What is the term; and renewal?'
+    assert clause_question('What is the term?') is None
+
+
+def stub_retriever(mode):
+    retriever = object.__new__(BM25Retriever)
+    retriever.config = dict(query_mode=mode, min_score=0)
+    retriever.remove_stopwords = False
+    retriever.chunks = [dict(file_path='a', start=0, end=10, text='intro'),
+                        dict(file_path='a', start=10, end=20, text='term'),
+                        dict(file_path='b', start=0, end=10, text='term')]
+    class Index:
+        def get_scores(self, tokens):
+            return np.array([10., 2., 1.]) if 'consider' in tokens else np.array([1., 8., 20.])
+    retriever.index = Index()
+    return retriever
+
+
+def test_route_from_query_then_rank_clause_without_gold():
+    retriever = stub_retriever('document_then_clause')
+    hits = retriever.search('Consider A; term', k=3)
+    assert [h['text'] for h in hits] == ['term', 'intro']
+    assert all(h['file_path'] == 'a' for h in hits)
+
+
+def test_plain_query_uses_original_global_search():
+    retriever = stub_retriever('document_then_clause')
+    assert retriever.search('term')[0]['file_path'] == 'b'
+
+
+def test_baseline_does_not_apply_routing():
+    assert stub_retriever('full').search('Consider A; term')[0]['text'] == 'intro'
