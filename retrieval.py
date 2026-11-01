@@ -10,19 +10,26 @@ from rank_bm25 import BM25Okapi
 STOPWORDS = frozenset('a an and are as at be been being by do does for from had has have how i if in into is it its of on or that the their them there these they this those to was were what when where which who will with would'.split())
 QUESTION_SCAFFOLD = frozenset('contract agreement include includes included contain contains containing any provision provisions clause clauses'.split())
 
-def load_inputs(root):
+def load_corpus(root):
     root = Path(root)
     prepared = root / 'data' / 'prepared'
     manifest = json.loads((prepared / 'manifest.json').read_text(encoding='utf-8'))
-    train_path = prepared / 'train.json'
-    assert hashlib.sha256(train_path.read_bytes()).hexdigest() == manifest['prepared_sha256']['train']
-    train = json.loads(train_path.read_text(encoding='utf-8'))
-    assert all(r['split'] == 'train' for r in train)
     documents = {}
     for file_path, hashes in manifest['corpus'].items():
         text = (root / 'data' / 'corpus' / file_path).read_text(encoding='utf-8')
-        assert hashlib.sha256(text.encode('utf-8')).hexdigest() == hashes['text_sha256']
+        if hashlib.sha256(text.encode('utf-8')).hexdigest() != hashes['text_sha256']:
+            raise ValueError(f'Corpus hash mismatch: {file_path}')
         documents[file_path] = text
+    return documents, manifest
+
+
+def load_inputs(root):
+    root = Path(root)
+    documents, manifest = load_corpus(root)
+    train_path = root / 'data' / 'prepared' / 'train.json'
+    assert hashlib.sha256(train_path.read_bytes()).hexdigest() == manifest['prepared_sha256']['train']
+    train = json.loads(train_path.read_text(encoding='utf-8'))
+    assert all(r['split'] == 'train' for r in train)
     return train, documents, manifest
 
 

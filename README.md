@@ -137,8 +137,8 @@ can exceed 1 with overlapping retrieved passages. Report both conventions
 explicitly; do not label them interchangeably. See `evaluation/metrics.md`.
 
 See `CORE_CHECKLIST.md` for delivery status and `REPORT.md` for measured results.
-Web/search CLI commands and final test reproduction instructions will be added
-when those interfaces and the final evaluator exist.
+Web/search CLI commands are below; final test reproduction instructions will
+be added when the final evaluator exists.
 
 Notebook 06 reviews the saved third iteration (BM25 length normalization) and
 provides an editable question cell for either configuration without advancing
@@ -157,3 +157,22 @@ must be considered when comparing approaches and using the future interfaces.
 Notebook 09 reviews the accepted combined pipeline plus English stemming.
 Its configuration is `configs/bm25_focused_stemmed.json`; NLTK Snowball needs
 no separate corpus download. Earlier configurations remain available.
+
+## Search interfaces
+
+```powershell
+python cli.py "Consider the Wireless Content License Agreement between Fox Mobile Entertainment and Glu Mobile; What is the expiration date of this contract?" --k 3
+python cli.py --list-configs
+python -m streamlit run app.py --server.address 127.0.0.1 --server.port 8501 --server.headless true --browser.gatherUsageStats false
+```
+
+Open http://127.0.0.1:8501 after starting Streamlit. Both interfaces default to
+`bm25_focused_stemmed` and share `search_service.py`. The service loads corpus
+text and saved configuration only, never train/test question labels. Select
+any preserved configuration; the CLI supports `--config NAME`, `--k N`, and
+`--json`. Results include exact passage text, source, offsets, score, and timing.
+
+See `DEMO.md` for the walkthrough, expected example, no-match check, and known
+limitations. Model loading/index building occurs before displayed search timing.
+Streamlit caches each model until the config/manifest fingerprint changes or
+the server restarts. Restart after changing corpus files or retrieval code.

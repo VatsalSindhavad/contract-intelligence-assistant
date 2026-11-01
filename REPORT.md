@@ -2,7 +2,7 @@
 
 ## Current status
 
-Eight distinct non-LLM improvement trials are recorded: five rejected and three accepted. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. Final interfaces, final test evaluation, and the full case-study report remain incomplete. Test evaluation runs so far: **0**.
+Eight distinct non-LLM improvement trials are recorded: five rejected and three accepted. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. The shared CLI and Streamlit app are implemented and verified. Final test evaluation and the complete case-study report remain pending. Test evaluation runs so far: **0**.
 
 ## System design
 
@@ -172,7 +172,7 @@ Privacy benefits are limited to local inference: queries and text are not sent t
 
 ## Limitations and remaining work
 
-- Build the required shared web app and user-facing search CLI; the experiment command is not the search CLI.
+- Web app and user search CLI are implemented using the same inference service; 46 tests pass and all nine saved configurations passed a source-offset smoke check. See DEMO.md for the user walkthrough.
 - Improve or clearly disclose weak answerability; current selected model returns text for every train negative.
 - Structured-query parsing and single inferred-document routing can fail on other phrasing or an incorrect source match.
 - Freeze comparison configurations before final test evaluation and persist a real test-run counter. Report train/test gaps and counts.
@@ -187,3 +187,19 @@ Privacy benefits are limited to local inference: queries and text are not sent t
 Run notebooks 01–03 to prepare/measure the baseline. Historical trial notebooks replay or review earlier work; `python improve.py` advances one new trial. Notebook 08 reviews trials 5–7; notebook 09 reviews the combined stemmed model. Both run saved configurations without advancing the loop. Accepted config files are in `configs/` and every accepted/rejected snapshot remains under its result directory.
 
 Results: `results/bm25_baseline/`, `results/bm25_abstention/`, and `results/iteration_01/` through `results/iteration_08/`. Complete logs: `experiments/log.jsonl` and `experiments/loop_log.jsonl`. Tests: `python -m pytest -q`. Final test reproduction commands are pending; zero test executions have occurred.
+
+## Interface checkpoint
+
+`python cli.py "question"` and `python -m streamlit run app.py` share
+`search_service.py`. They load only the verified corpus and selected saved
+configuration, not benchmark question labels. The app offers configuration
+selection, exact passage text, sources/offsets, scores, and JSON export. The
+CLI supports configuration selection, k, and JSON output. Empty/invalid input
+and no-match paths were tested. A local HTTP health check and nine-configuration
+smoke test are saved in `results/interface_smoke.json`. Zero-match behavior
+must not be mistaken for calibrated abstention on realistic negative questions.
+
+No model inference/API integration is implemented yet. Planned hosted/local
+experiments must use the same retrieval-assistance task; see
+`experiments/LLM_PLAN.md`. No new benchmark iteration was consumed by interface
+work, and no test performance was measured.
