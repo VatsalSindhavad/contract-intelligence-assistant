@@ -65,7 +65,7 @@ Read credentials from environment variables; never put keys in source,
 notebooks, outputs, or commits. Local environment and secrets files are ignored.
 LLM integration must persist request-keyed outputs, model identifiers and
 settings, and support cache-only evaluation with no model calls. Measure cost
-and latency separately for cache creation and replay. Gemini rewrites are cached; local Phi-3 is pending.
+and latency separately for cache creation and replay. Both hosted Gemini and local Phi-3 rewrites are cached.
 
 ## First improvement iteration
 
@@ -220,14 +220,14 @@ unchanged; omit the display labels when passing `--config`.
 
 ## Hosted/local LLM preparation
 
-Gemini API is first; the already installed Phi-3 Mini model is second.
+Gemini API was evaluated first; the installed Phi-3 Mini model was evaluated second.
 See `LLM_SETUP.md` for local key setup and the one-request check.
 `python prepare_llm.py --config gemini` reports cache readiness with no model
 calls. The shared prompt is in `prompts/retrieval_rewrite_v1.txt`; model and
 generation settings live in `llm_configs/`, separate from runnable BM25 configs.
 `llm_rewrite.py` validates and caches outputs and refuses cache-only misses.
 The adapter retains the original question for routing and supplements only the
-clause query. Hosted iteration 9 is scored; local Phi-3 iteration 10 is pending.
+clause query. Hosted iteration 9 and local Phi-3 iteration 10 are scored.
 
 `llm_gemini_rewrite` is available in the CLI and web selector in cache-only mode.
 See `LLM_PRESENTATION.md` for exact offline demo commands and supported inputs.
@@ -236,3 +236,18 @@ clearly without calling a provider. The non-LLM model remains the default.
 
 The implementation uses plain Python, rank-bm25, NLTK, and direct provider HTTP
 requests. LangChain is not used; orchestration and caching are explicit.
+
+## Completed hosted/local comparison
+
+The shared prompt was evaluated with Gemini and Phi-3; both output sets are
+cached. Select `llm_gemini_rewrite` or `llm_local_phi3_rewrite` in the CLI/web
+app. Neither presentation mode needs an API key or running model service for
+cached questions. `python evaluate_llm.py --config local_phi3` replays local
+train evaluation from cache. Notebook 11 presents the comparison.
+
+Notebook 05 reviews the required improvement process and all ten iteration
+IDs; it is not the engine. The engine is `improve.py` for core development,
+with `evaluate_llm.py` for the controlled LLM comparisons. The current ten-trial
+budget is complete, so the core command blocks new proposals in this phase.
+Running a review notebook does not start another proposal or make model calls.
+Final held-out evaluation and reproduction checks are still pending.

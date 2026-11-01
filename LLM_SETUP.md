@@ -26,14 +26,12 @@ request was retried with pacing. Original failed-attempt history is retained.
 All responses passed the fixed output checks. Actual billing depends on the
 Google project; reported tokens are not treated as an invoice.
 
-## Local model next
+## Local model setup (now evaluated)
 
 The user selected Phi-3 Mini and required hosted-first order. The installed
 `phi3:mini` is 3.8B, Q4_0, about 2.2 GB; the machine has about 16 GB RAM.
-Exact digest and runtime are recorded in llm_configs/local_phi3.json. No
-local generation or new download has been started. Local preparation remains
-locked until the next checkpoint explicitly enables it after verifying the
-installed digest. It will use the same prompt, schema and output cap.
+Exact digest and runtime are recorded in llm_configs/local_phi3.json. Local generation is complete with no new download. The installed digest was
+verified before generation. The same prompt, schema and output cap were used.
 
 ## Results and remaining work
 
@@ -41,10 +39,14 @@ Gemini improves unique-character train recall@5 from 67.01% to 79.10%, but
 estimated first-use p95 of 2.58 seconds fails the unchanged operational latency
 guardrail. Cached retrieval p95 is 15.95 ms. The best accepted non-LLM model
 stays the default. Neither resolves negative abstention. No test evaluation
-has occurred. Local comparison, final reporting and held-out evaluation remain
-pending. FAISS and hybrid retrieval remain deferred.
+has occurred. Final reporting and held-out evaluation remain pending. FAISS and hybrid retrieval remain deferred.
 
 References:
 - https://ai.google.dev/gemini-api/docs/api-key
 - https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite
 - https://docs.ollama.com/api/generate
+
+## Local checkpoint completed
+
+Iteration 10 is complete: 47 valid and 6 explicit fallback outputs cached.
+Both models now replay with no network/key/model service. See notebook 11.

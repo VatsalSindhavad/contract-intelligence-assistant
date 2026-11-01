@@ -2,7 +2,7 @@
 
 ## Current status
 
-Eight non-LLM trials and hosted LLM iteration 9 are recorded. Three non-LLM improvements are accepted; Gemini improves retrieval but fails the first-use latency guardrail. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. The shared CLI and Streamlit app are implemented and verified. Final test evaluation and the complete case-study report remain pending. Test evaluation runs so far: **0**.
+All ten iterations are complete: eight non-LLM trials and two LLM comparisons. Three non-LLM improvements are accepted; Both Gemini and Phi-3 improve retrieval but fail the first-use latency guardrail. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. The shared CLI and Streamlit app are implemented and verified. Final test evaluation and the complete case-study report remain pending. Test evaluation runs so far: **0**.
 
 ## System design
 
@@ -38,6 +38,7 @@ All quality rows use 140 answerable train questions. The following are BM25 pipe
 | Focused clause with fallback | 6.28% | 53.50% | 6.51% | 59.16% | Accepted |
 | Combined pipeline plus stemming | 7.88% | 67.01% | 8.38% | 76.60% | Accepted |
 | Gemini query expansion + best BM25 | 8.47% | 79.10% | 8.93% | 89.58% | Quality/replay checks pass; first-use latency fails |
+| Local Phi-3 query expansion + best BM25 | 8.07% | 70.75% | 8.51% | 80.07% | Quality/replay checks pass; first-use latency fails |
 
 ## Abstention and speed
 
@@ -200,7 +201,7 @@ and no-match paths were tested. A local HTTP health check and nine-configuration
 smoke test are saved in `results/interface_smoke.json`. Zero-match behavior
 must not be mistaken for calibrated abstention on realistic negative questions.
 
-Hosted model integration is implemented and cached; local Phi-3 remains pending.
+Hosted model integration is implemented and cached; local Phi-3 is also complete.
 Both use the same retrieval-assistance task; see
 `experiments/LLM_PLAN.md`. No new benchmark iteration was consumed by interface
 work, and no test performance was measured.
@@ -272,4 +273,42 @@ are cache-only. The presentation path was checked with network and credential
 access disabled. See `LLM_PRESENTATION.md` and `CACHED_QUESTIONS.md`.
 Complete results: `results/iteration_09/`; decisions and latency modes:
 `experiments/llm_log.jsonl`. Replays remain the same proposal, not new iterations.
-Phi-3 has not run and test evaluation count remains zero.
+At the end of the hosted checkpoint Phi-3 had not run; its completed comparison is documented below. Test evaluation count remains zero.
+
+## Local Phi-3 iteration 10 and hosted comparison
+
+The installed Phi-3 Mini 3.8B Q4_0 model was verified by digest and Ollama
+runtime before generation. The same 53 unique train clause questions, prompt,
+output schema, 256-token cap, validators, original-query retention, and BM25
+reference were used. Local seed was 42 and context length 2,048 tokens. Inputs
+were short enough for that context; tokenizers and compute still differ.
+
+Phi-3 produced 47 valid outputs and six invalid outputs. Invalid responses
+were retained and used the original query; they were not regenerated to hide
+failures. Unique-character recall@5 is 70.75% versus the reference's 67.01%
+and Gemini's 79.10%. Precision is 8.07% versus 7.88% and 8.47% respectively.
+Complete gold coverage is 84/140 versus 82/140 for non-LLM and 95/140 for
+Gemini. Both LLMs still have 0/23 correct negative abstentions and 0/140
+answerable false abstentions.
+
+Estimated local first-use median/p95 is 0.68/3.74 seconds; replay p95 is about
+15.20 ms. Gemini's corresponding median/p95 is 1.46/2.58 seconds and replay
+p95 15.95 ms. Local median was lower, but its tail was slower. The first local
+call took 52.08 seconds including 36.84 seconds loading; other calls reused
+the resident model. The runtime snapshot reports about 3 GB VRAM allocation
+on a machine with about 16 GB RAM. No hosted fee applies to local execution,
+but hardware/electricity costs are not estimated. Token counts from different
+tokenizers should not be treated as equal units of useful work.
+
+Both LLMs pass quality/replay checks and fail the unchanged operational
+first-use latency ceiling. Gemini is the stronger train-quality candidate;
+Phi-3 provides local execution with lower transfer exposure but more invalid
+outputs. This does not establish an overall winner before held-out evaluation
+and deployment-budget decisions. The accepted stemmed BM25 stays default.
+
+All 106 unique model-output records are cached. Both LLM interface options
+were checked with network and credential access disabled. Notebook 11 reviews
+the hosted/local comparison. Ten distinct iterations are complete; further
+proposal work is outside the current budget. Final configuration freeze,
+held-out evaluation/run counting, final error analysis, and reproduction
+remain required. Test evaluation count is still zero.

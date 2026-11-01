@@ -125,3 +125,9 @@ def test_gemini_demo_requires_neither_network_nor_api_key(monkeypatch):
     app.button[0].click().run()
     assert not app.exception
     assert len(app.expander)>0
+    local=build_model('llm_local_phi3_rewrite')
+    assert search(local,EXAMPLE_QUERY,3)['hits']
+    app.selectbox[0].select('llm_local_phi3_rewrite').run()
+    app.button[0].click().run()
+    assert not app.exception
+    assert len(app.expander)>0

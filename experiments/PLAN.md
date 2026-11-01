@@ -14,9 +14,10 @@ iterations and requested two accepted non-LLM improvements before LLM trials.
 | 7 | Focused tokens with zero-match fallback | Accepted |
 | 8 | Combined accepted pipeline plus English stemming | Accepted |
 | 9 | Gemini query expansion + best BM25 | Retrieval gain; fails first-use latency |
+| 10 | Local Phi-3 query expansion + best BM25 | Retrieval gain; fails first-use latency |
 
-The two requested improvements and one further combined improvement are complete. One iteration slot
-remains, including possible LLM work. Choose the next proposal from evidence,
+The two requested improvements and one further combined improvement are complete. No iteration slots
+remain, including possible LLM work. Choose the next proposal from evidence,
 not to fill a table; never loosen rules after observing a result. Replays do
 not count as distinct iterations. Minimum core iteration count is satisfied.
 
@@ -34,3 +35,6 @@ must justify added dependencies, compute, privacy implications, and latency.
 Before LLM trials, select and justify model/provider, read keys from environment
 variables, cache request-keyed outputs, support cache-only evaluation, and log
 cost/latency/settings. Preserve every rejected and accepted configuration.
+
+All ten trials are complete. Next steps are result review, final configuration
+freeze, held-out evaluation and reporting, not new proposal generation.
