@@ -3,6 +3,7 @@ import json
 
 import streamlit as st
 
+from llm_rewrite import CacheMissError
 from search_service import DEFAULT_CONFIG, EXAMPLE_QUERY, ROOT, available_configs, build_model, config_label, search
 
 
@@ -18,6 +19,8 @@ if not configs:
 names = list(configs)
 selected = st.selectbox('Retrieval configuration', names, index=names.index(DEFAULT_CONFIG) if DEFAULT_CONFIG in names else 0, format_func=config_label)
 st.caption('“Better than baseline” marks accepted train improvements. Held-out test performance is not yet measured.')
+if selected.startswith('llm_'):
+    st.info('This LLM comparison replays cached rewrites only. An uncached question produces an error and makes no API call.')
 with st.form('search_form'):
     question = st.text_area('Question', value=EXAMPLE_QUERY, height=110,
                             help='For a named contract, use: Consider contract description; your question. Plain questions search the whole corpus.')
@@ -41,6 +44,8 @@ if submitted:
             with st.spinner('Searching contracts…'):
                 model = cached_model(selected, fingerprint)
                 st.session_state['search_result'] = search(model, question, k)
+        except CacheMissError as error:
+            st.error(str(error))
         except (ValueError, OSError, KeyError) as error:
             st.error(f'Unable to search: {error}. Run data preparation notebook 01 if needed.')
 

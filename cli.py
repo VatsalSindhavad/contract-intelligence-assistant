@@ -2,6 +2,7 @@ import argparse
 import json
 import sys
 
+from llm_rewrite import CacheMissError
 from search_service import DEFAULT_CONFIG, available_configs, build_model, config_label, search
 
 
@@ -20,6 +21,8 @@ def main(argv=None):
         parser.error('Provide a quoted question or use --list-configs.')
     try:
         result = search(build_model(args.config), args.question, args.k)
+    except CacheMissError as error:
+        parser.exit(2, f'Error: {error}\nPrepare the approved rewrite cache separately. This CLI makes no model calls.\n')
     except (ValueError, OSError, KeyError) as error:
         parser.exit(2, f'Error: {error}\nRun notebook 01 first if prepared data is missing.\n')
     if args.as_json:

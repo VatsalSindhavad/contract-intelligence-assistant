@@ -12,6 +12,8 @@ BETTER_CONFIGS = frozenset({'bm25_document_then_clause', 'bm25_focused_clause_fa
 
 
 def config_label(name):
+    if name.startswith('llm_'):
+        return f'{name} — LLM comparison · Cache only'
     if name in BETTER_CONFIGS:
         return f'{name} — Better than baseline' + (' · Current best' if name == DEFAULT_CONFIG else '')
     if name == 'bm25_baseline':
@@ -24,7 +26,13 @@ def config_label(name):
 
 
 def available_configs(root=ROOT):
-    return {p.stem: p for p in sorted((Path(root) / 'configs').glob('*.json'))}
+    root = Path(root)
+    configs = {p.stem: p for p in sorted((root / 'configs').glob('*.json'))}
+    for path in sorted((root / 'llm_configs').glob('*.json')):
+        config = json.loads(path.read_text(encoding='utf-8'))
+        if config.get('expose_in_demo', False):
+            configs[config['name']] = path
+    return configs
 
 
 def build_model(config_name=DEFAULT_CONFIG, root=ROOT):
@@ -33,6 +41,10 @@ def build_model(config_name=DEFAULT_CONFIG, root=ROOT):
         raise ValueError(f'Unknown configuration: {config_name}')
     config = json.loads(configs[config_name].read_text(encoding='utf-8'))
     documents, _ = load_corpus(root)
+    if config.get('provider'):
+        from llm_rewrite import RewriteRetriever
+        base_config = json.loads((Path(root) / config['baseline_config']).read_text(encoding='utf-8'))
+        return RewriteRetriever(BM25Retriever(documents, base_config), root, config)
     return BM25Retriever(documents, config)
 
 

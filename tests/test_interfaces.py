@@ -72,6 +72,23 @@ def test_cli_handles_bad_config(monkeypatch):
     assert error.value.code == 2
 
 
+def test_saved_llm_choice_uses_cache_only(small_project):
+    from llm_rewrite import CacheMissError, get_rewrite
+    from search_service import available_configs
+    (small_project / 'llm_configs').mkdir()
+    (small_project / 'prompt.txt').write_text('Return legal keywords.', encoding='utf-8')
+    config = dict(name='llm_demo', provider='test', model='fixed', prompt_file='prompt.txt',
+                  temperature=0,max_output_tokens=128,baseline_config='configs/demo.json',expose_in_demo=True)
+    (small_project / 'llm_configs/demo.json').write_text(json.dumps(config),encoding='utf-8')
+    get_rewrite(small_project,config,'sublicensing',cache_only=False,
+                caller=lambda request:dict(text='{"search_terms":"license permission"}'))
+    assert 'llm_demo' in available_configs(small_project)
+    model=build_model('llm_demo',small_project)
+    assert search(model,'sublicensing')['hits'][0]['file_path']=='a.txt'
+    with pytest.raises(CacheMissError):
+        search(model,'uncached question')
+
+
 @pytest.mark.skipif(not (ROOT / 'data/prepared/manifest.json').exists(), reason='Prepare corpus first.')
 def test_web_search_and_empty_state():
     from streamlit.testing.v1 import AppTest
