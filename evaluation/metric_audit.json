@@ -1,0 +1,133 @@
+{
+  "split": "train",
+  "test_evaluation_runs": 0,
+  "source": "Previously saved predictions; no new model execution.",
+  "results": [
+    {
+      "approach": "baseline",
+      "prediction_source": "results/bm25_baseline/20261101T020109139330Z/predictions.json",
+      "metrics": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005642857142857143,
+          "recall": 0.017213463111394562,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005642857142857143,
+          "benchmark_recall": 0.017213463111394562
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.013628578665409043,
+          "recall": 0.07426194589360334,
+          "hit": 0.12142857142857143,
+          "benchmark_precision": 0.01445713717719324,
+          "benchmark_recall": 0.08504172882126715
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.017433113661637845,
+          "recall": 0.18164706021184368,
+          "hit": 0.2642857142857143,
+          "benchmark_precision": 0.01759363785646437,
+          "benchmark_recall": 0.1924268431395075
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.018139540102769674,
+          "recall": 0.3215982088425699,
+          "hit": 0.4357142857142857,
+          "benchmark_precision": 0.018651677246298463,
+          "benchmark_recall": 0.3551538517325359
+        }
+      ]
+    },
+    {
+      "approach": "stopwords",
+      "prediction_source": "results/iteration_01/20261101T021505909651Z/candidate.json",
+      "metrics": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.005664285714285715,
+          "recall": 0.015777818311713966,
+          "hit": 0.03571428571428571,
+          "benchmark_precision": 0.005664285714285715,
+          "benchmark_recall": 0.015777818311713966
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.01465743128767938,
+          "recall": 0.08137190011562652,
+          "hit": 0.12857142857142856,
+          "benchmark_precision": 0.015114749845318378,
+          "benchmark_recall": 0.08535604812265542
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.016146065784987156,
+          "recall": 0.15890680894673265,
+          "hit": 0.2357142857142857,
+          "benchmark_precision": 0.016555997499266905,
+          "benchmark_recall": 0.17365484584265042
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.017826201564423032,
+          "recall": 0.3187335429209051,
+          "hit": 0.4357142857142857,
+          "benchmark_precision": 0.018253590245254737,
+          "benchmark_recall": 0.3476758647796696
+        }
+      ]
+    },
+    {
+      "approach": "smaller_chunks",
+      "prediction_source": "results/iteration_02/20261101T022215499585Z/candidate.json",
+      "metrics": [
+        {
+          "k": 1,
+          "n_queries": 140,
+          "precision": 0.004257142857142857,
+          "recall": 0.0027046650934833905,
+          "hit": 0.007142857142857143,
+          "benchmark_precision": 0.004257142857142857,
+          "benchmark_recall": 0.0027046650934833905
+        },
+        {
+          "k": 3,
+          "n_queries": 140,
+          "precision": 0.003075990818909274,
+          "recall": 0.009565078068962972,
+          "hit": 0.02142857142857143,
+          "benchmark_precision": 0.0030342325771510322,
+          "benchmark_recall": 0.009565078068962972
+        },
+        {
+          "k": 5,
+          "n_queries": 140,
+          "precision": 0.00781677617040076,
+          "recall": 0.04089485213271646,
+          "hit": 0.08571428571428572,
+          "benchmark_precision": 0.007097889442199878,
+          "benchmark_recall": 0.04089485213271646
+        },
+        {
+          "k": 10,
+          "n_queries": 140,
+          "precision": 0.01067482116753132,
+          "recall": 0.08601367938365935,
+          "hit": 0.18571428571428572,
+          "benchmark_precision": 0.01005278930237856,
+          "benchmark_recall": 0.09358868965962372
+        }
+      ]
+    }
+  ]
+}

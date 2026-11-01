@@ -25,8 +25,10 @@ from version control.
 
 ## AI tool usage
 
-Codex read the supplied brief and helped prepare the data validation notebook
-and project setup. Review and understand each cell before proceeding.
+Codex helped inspect requirements, write and run notebooks, implement retrieval
+and evaluation, create synthetic negative questions, build the rule-based
+experiment loop, write tests, and maintain documentation. No LLM API is part
+of retrieval yet. Review and understand each component before presenting it.
 
 ## BM25 baseline
 
@@ -39,8 +41,9 @@ files and names, preserving the baseline.
 Each execution writes a new directory under `results/bm25_baseline/` with
 configuration and environment metadata, per-query scores, retrieved passages,
 and aggregate train metrics. No external model or API is required.
-Unanswerable evaluation and threshold calibration are pending; this checkpoint
-uses only a positive-score rule. The development evaluator rejects test data.
+Train unanswerable evaluation is available in notebook 03; threshold calibration
+remains pending. The baseline uses only a positive-score rule. The development
+evaluator rejects test data.
 
 Run core checks from the project root with `python -m pytest -q`.
 Notebook outputs and result files contain measured results; the eventual
@@ -72,8 +75,8 @@ The notebook also provides a question cell to try either approach.
 Candidate settings live in `configs/bm25_stopwords.json`. The baseline defaults
 remain unchanged. `experiments/log.jsonl` records accepted and rejected runs;
 `results/iteration_01/` contains predictions, metrics, decisions, and code hashes.
-Only one distinct proposal is implemented in this checkpoint. Rerunning it
-does not count as a new improvement iteration.
+This notebook replays the historical first proposal. Rerunning it does not
+count as a new improvement iteration; use the loop below to advance.
 
 ## Diagnostic-driven improvement loop
 
@@ -91,3 +94,44 @@ the loop: that script replays only the historical first proposal.
 Recorded configurations under each result folder can be loaded into
 `BM25Retriever` to rerun accepted or rejected approaches. Notebook 05 reviews
 saved loop results without starting another experiment when run again.
+
+## Setup commands
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m ipykernel install --user --name contract-retrieval --display-name "Contract retrieval"
+```
+
+Select that kernel in VS Code or your Jupyter installation. The project was
+checked with Python 3.12.4. Direct dependencies match the installed evaluation
+environment; a clean-environment reproduction is still a release check.
+Run notebooks 01, 02, and 03 in order to prepare and measure the baseline.
+Notebook 04 replays the first experiment; notebook 05 reviews saved loop runs.
+Recorded timings belong to the report, and will be refreshed for final runs.
+
+## Architecture and assumptions
+
+Notebook 01 downloads and validates the selected data. `retrieval.py` chunks,
+indexes, searches, and scores passages. `negative_validation.py` validates the
+frozen negative set. `improve.py` diagnoses train failures and proposes settings
+from `experiments/proposals.json`. Settings live in JSON; runs retain snapshots.
+Both future interfaces will call the same retrieval implementation.
+
+We search all selected contracts rather than using gold document IDs as filters.
+Offsets are Python string indices in half-open intervals `[start, end)` after
+UTF-8 text-mode newline conversion. Queries are equally weighted. Synthetic
+negative labels mean the requested fact is not established by the corpus.
+Definitions, external schedules, and cross-references are not resolved; record
+these as limitations rather than treating an incomplete clause as legal advice.
+
+Experiment decisions use unique-character precision/recall to avoid counting
+overlapping chunks twice. Additional `benchmark_precision`/`benchmark_recall`
+fields reproduce the authors' pairwise passage-overlap convention. That recall
+can exceed 1 with overlapping retrieved passages. Report both conventions
+explicitly; do not label them interchangeably. See `evaluation/metrics.md`.
+
+See `CORE_CHECKLIST.md` for delivery status and `REPORT.md` for measured results.
+Web/search CLI commands and final test reproduction instructions will be added
+when those interfaces and the final evaluator exist.

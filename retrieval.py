@@ -98,6 +98,15 @@ def character_metrics(predicted, gold):
     }
 
 
+def benchmark_character_metrics(predicted, gold):
+    retrieved_length = sum(p['end'] - p['start'] for p in predicted)
+    gold_length = sum(g['span'][1] - g['span'][0] for g in gold)
+    overlap = sum(max(0, min(p['end'], g['span'][1]) - max(p['start'], g['span'][0]))
+                  for p in predicted for g in gold if p['file_path'] == g['file_path'])
+    return dict(benchmark_precision=overlap / retrieved_length if retrieved_length else 0.0,
+                benchmark_recall=overlap / gold_length if gold_length else 0.0)
+
+
 def evaluate_train(retriever, records, k_values):
     if not records or any(r['split'] != 'train' for r in records):
         raise ValueError('This development evaluator accepts train records only.')
@@ -111,13 +120,14 @@ def evaluate_train(retriever, records, k_values):
                                 latency_ms=elapsed, hits=hits))
         for k in k_values:
             rows.append(dict(query_id=record['query_id'], k=k,
-                             **character_metrics(hits[:k], record['snippets'])))
+                             **character_metrics(hits[:k], record['snippets']),
+                             **benchmark_character_metrics(hits[:k], record['snippets'])))
     summary = []
     for k in k_values:
         subset = [r for r in rows if r['k'] == k]
         summary.append(dict(k=k, n_queries=len(records),
                             **{metric: float(np.mean([r[metric] for r in subset]))
-                               for metric in ['precision', 'recall', 'hit']}))
+                               for metric in ['precision', 'recall', 'hit', 'benchmark_precision', 'benchmark_recall']}))
     return dict(metrics=summary, predictions=predictions, per_query=rows,
                 latency_ms={'median': float(np.median(timings)),
                             'p95': float(np.percentile(timings, 95))},

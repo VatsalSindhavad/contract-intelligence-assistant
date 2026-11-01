@@ -1,4 +1,5 @@
 import hashlib
+import importlib.metadata
 import json
 import platform
 from collections import Counter
@@ -81,6 +82,8 @@ def run_iteration(root):
                n_answerable_train=len(train), n_unanswerable_train=len(negatives),
                test_evaluation_runs=0, dataset_revision=manifest['revision'],
                frozen_question_sha256=frozen['query_set_sha256'], python=platform.python_version(),
+               packages={p: importlib.metadata.version(p) for p in ['rank-bm25', 'numpy', 'pandas']},
+               metric_convention='unique-character objective; benchmark pairwise scores also reported',
                metrics={label: dict(retrieval=result['answerable']['metrics'],
                                     false_abstention=result['answerable']['answerable_false_abstention_rate'],
                                     correct_abstention=result['negative']['correct_abstention_rate'],

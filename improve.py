@@ -1,6 +1,8 @@
 import argparse
 import hashlib
+import importlib.metadata
 import json
+import platform
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -107,6 +109,10 @@ def run_step(root):
                metrics={label: compact(value) for label, value in [('baseline', baseline), ('reference', reference), ('candidate', candidate)]},
                n_answerable_train=len(train), n_unanswerable_train=len(negatives), test_evaluation_runs=0,
                dataset_revision=manifest['revision'], frozen_question_sha256=frozen['query_set_sha256'],
+               metric_convention='unique-character objective; benchmark pairwise scores also reported',
+               python=platform.python_version(), platform=platform.platform(),
+               packages={p: importlib.metadata.version(p) for p in ['rank-bm25', 'numpy', 'pandas']},
+               prepared_manifest_sha256=hashlib.sha256((root / 'data/prepared/manifest.json').read_bytes()).hexdigest(),
                source_commit=subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD']).decode().strip(),
                code_sha256={p: hashlib.sha256((root / p).read_bytes()).hexdigest()
                             for p in ['improve.py', 'run_experiment.py', 'retrieval.py', 'negative_validation.py', 'experiments/proposals.json']},
