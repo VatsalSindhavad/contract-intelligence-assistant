@@ -5,7 +5,7 @@
 Gemini 3.5 Flash-Lite was called through the Gemini API using a locally stored
 Google AI Studio key. All 53 unique train-clause outputs are cached and scored
 in iteration 9. Cache-only presentations need no API key or network. See
-LLM_PRESENTATION.md for the exact CLI/web/notebook walkthrough.
+README.md for CLI/web commands and notebooks 10–11 for the cached comparison.
 
 The original key remains in ignored secrets/gemini_api_key.txt or the
 GEMINI_API_KEY environment variable. Never paste it into chat, notebooks,

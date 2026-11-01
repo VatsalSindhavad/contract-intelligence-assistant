@@ -1,6 +1,6 @@
 # Hosted query expansion declared before iteration 9 scoring
 
-Gemini receives only the clause questions approved in LLM_REQUESTS.md and the
+Gemini receives only the reviewed train clause questions (preserved in cache request records) and the
 fixed shared prompt. Generated terms supplement the original clause query;
 original full-query document routing remains unchanged. Numeric facts, output
 schema, and length are validated; invalid output uses the original query.

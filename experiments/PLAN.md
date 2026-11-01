@@ -1,7 +1,7 @@
 # Iteration plan and current status
 
 The user has now authorized a separate semantic phase after the completed
-BM25 study. APPROACH.md is the current plan: trial 11 local dense baseline,
+BM25 study. The current plan is: trial 11 local dense baseline,
 12 Kanon dense baseline, and 13 selected dense retrieval with Gemini. The
 global limit is now 13. The ten-trial limit below describes the earlier phase;
 its historical results and decisions remain unchanged. Hybrid is deferred

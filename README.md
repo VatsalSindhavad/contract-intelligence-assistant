@@ -1,6 +1,6 @@
 # Contract retrieval experiments
 
-See `APPROACH.md` for the current study structure: completed BM25 experiments,
+See `experiments/PLAN.md` for the current study structure: completed BM25 experiments,
 three planned dense comparisons, final submission checks, then deferred hybrid
 extensions. The semantic phase extends the former ten-trial cap to thirteen;
 it does not erase the completed history. No semantic results are claimed yet.
@@ -140,7 +140,7 @@ fields reproduce the authors' pairwise passage-overlap convention. That recall
 can exceed 1 with overlapping retrieved passages. Report both conventions
 explicitly; do not label them interchangeably. See `evaluation/metrics.md`.
 
-See `CORE_CHECKLIST.md` for delivery status and `REPORT.md` for measured results.
+See `REPORT.md` for measured results, limitations, and remaining evaluation work.
 Web/search CLI commands are below; final test reproduction instructions will
 be added when the final evaluator exists.
 
@@ -176,8 +176,8 @@ text and saved configuration only, never train/test question labels. Select
 any preserved configuration; the CLI supports `--config NAME`, `--k N`, and
 `--json`. Results include exact passage text, source, offsets, score, and timing.
 
-See `DEMO.md` for the walkthrough, expected example, no-match check, and known
-limitations. Model loading/index building occurs before displayed search timing.
+Use the example commands above to compare versions. The app displays exact
+evidence and a no-match state; reliable negative abstention remains a limitation. Model loading/index building occurs before displayed search timing.
 Streamlit caches each model until the config/manifest fingerprint changes or
 the server restarts. Restart after changing corpus files or retrieval code.
 
@@ -235,7 +235,8 @@ The adapter retains the original question for routing and supplements only the
 clause query. Hosted iteration 9 and local Phi-3 iteration 10 are scored.
 
 `llm_gemini_rewrite` is available in the CLI and web selector in cache-only mode.
-See `LLM_PRESENTATION.md` for exact offline demo commands and supported inputs.
+Use `--config llm_gemini_rewrite` or `--config llm_local_phi3_rewrite` with the
+example question above for offline cached searches.
 The API key is not needed for those cached examples. Missing cache entries fail
 clearly without calling a provider. The non-LLM model remains the default.
 

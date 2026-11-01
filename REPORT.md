@@ -174,7 +174,7 @@ Privacy benefits are limited to local inference: queries and text are not sent t
 
 ## Limitations and remaining work
 
-- Web app and user search CLI are implemented using the same inference service; 46 tests pass and all nine saved configurations passed a source-offset smoke check. See DEMO.md for the user walkthrough.
+- Web app and user search CLI are implemented using the same inference service; 46 tests pass and all nine saved configurations passed a source-offset smoke check. Run commands are documented in README.md.
 - Improve or clearly disclose weak answerability; current selected model returns text for every train negative.
 - Structured-query parsing and single inferred-document routing can fail on other phrasing or an incorrect source match.
 - Freeze comparison configurations before final test evaluation and persist a real test-run counter. Report train/test gaps and counts.
@@ -235,7 +235,7 @@ python cli.py $question --config bm25_focused_stemmed --k 5 --json
 
 Substitute any configuration name from the table. For the web interface, run
 `python -m streamlit run app.py`, select the same configuration/question/k, and
-click Search. Full setup and command options are in README.md and DEMO.md.
+click Search. Full setup and command options are in README.md.
 The nine-configuration source-offset smoke check is recorded in
 `results/interface_smoke.json`. Single-question inspection is a walkthrough,
 not a replacement for the aggregate evaluation above and not a new iteration.
@@ -270,7 +270,7 @@ proof of generalization or legal answer quality.
 
 `notebooks/10_gemini_bm25.ipynb` and the `llm_gemini_rewrite` interface option
 are cache-only. The presentation path was checked with network and credential
-access disabled. See `LLM_PRESENTATION.md` and `CACHED_QUESTIONS.md`.
+access disabled. See README.md and the question inputs in the cache records.
 Complete results: `results/iteration_09/`; decisions and latency modes:
 `experiments/llm_log.jsonl`. Replays remain the same proposal, not new iterations.
 At the end of the hosted checkpoint Phi-3 had not run; its completed comparison is documented below. Test evaluation count remains zero.
