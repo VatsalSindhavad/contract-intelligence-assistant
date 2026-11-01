@@ -2,7 +2,7 @@
 
 ## Current status
 
-The current system is a local BM25 passage retriever. Three attempted improvements were rejected; the original baseline remains selected. This report contains train results only. Final model selection, required interfaces, final test evaluation, and the final case-study comparison are not complete. Test evaluation runs so far: **0**. No headline test result is available.
+The current system is a local BM25 passage retriever. Four attempted improvements were rejected; the original baseline remains selected. This report contains train results only. Final model selection, required interfaces, final test evaluation, and the final case-study comparison are not complete. Test evaluation runs so far: **0**. No headline test result is available.
 
 ## System design
 
@@ -28,8 +28,9 @@ All rows below use the same 140 answerable train questions. Precision and recall
 | stopwords | 1.61% | 15.89% | 1.66% | 17.37% | Rejected |
 | smaller_chunks | 0.78% | 4.09% | 0.71% | 4.09% | Rejected |
 | lower_length_normalization | 1.79% | 18.82% | 1.80% | 19.90% | Rejected: gain below minimum |
+| lower_term_saturation | 1.57% | 16.16% | 1.60% | 17.24% | Rejected |
 
-All four configurations falsely returned passages for all 23 train negatives (0/23 correct abstentions). All returned passages for all 140 answerable train questions (0/140 false abstentions). Returning something therefore cannot be interpreted as knowing an answer exists.
+All five configurations falsely returned passages for all 23 train negatives (0/23 correct abstentions). All returned passages for all 140 answerable train questions (0/140 false abstentions). Returning something therefore cannot be interpreted as knowing an answer exists.
 
 ## Iteration history
 
@@ -38,9 +39,11 @@ The primary objective is at least a 1 percentage-point gain in unique-character 
 1. **Common-word filtering:** Codex proposed removing a fixed function-word list after observing wrong-section retrieval. Recall@5 fell from 18.16% to 15.89%; precision also fell. Rejected.
 2. **Smaller chunks:** the diagnostic rule selected 500-character windows, retaining 200 overlap and other baseline parameters. Recall@5 fell to 4.09%; precision also fell. Rejected.
 
-`python improve.py` evaluates the current configuration, diagnoses errors, chooses an untried catalog proposal based on failure counts, evaluates it, accepts/rejects it, and persists the selection for the next command. It runs one step by default. The full history spans `experiments/log.jsonl` and `experiments/loop_log.jsonl`. At least two more distinct iterations are required.
+`python improve.py` evaluates the current configuration, diagnoses errors, chooses an untried catalog proposal based on failure counts, evaluates it, accepts/rejects it, and persists the selection for the next command. It runs one step by default. The full history spans `experiments/log.jsonl` and `experiments/loop_log.jsonl`. One further iteration meets the required minimum. The working user target is seven including later LLM trials, subject to a sound core first.
 
 3. **Less length normalization:** the loop selected b=0.30 with all other baseline settings unchanged. Unique recall@5 improved to 18.82% and precision@5 to 1.79%. The 0.66-point recall gain missed the predeclared 1-point minimum, so the candidate was rejected despite the small gain.
+
+4. **Lower term-frequency saturation:** k1=0.8 reduced recall@5 to 16.16% and precision@5 to 1.57%. Rejected. Four parameter/chunking proposals have not yielded a qualifying gain; investigate the underlying wrong-section ranking problem before LLM work.
 
 ## Ten concrete train failures
 
@@ -148,11 +151,11 @@ Diagnosis: the named contract exists but does not establish the technology-speci
 
 ## Business interpretation
 
-The first two changes reduced clause coverage. The third improved it modestly but failed the declared minimum gain. None met the adoption criteria, so the baseline remains selected. All current approaches run locally without per-query model API fees; compute and maintenance are still costs. Local retrieval avoids sending query/contract text to a hosted inference provider, but that alone does not establish enterprise privacy compliance. Current false returns and low recall make this a development prototype, unsuitable for autonomous legal decisions. A final comparison must include measured quality, abstention, representative latency, deployment/privacy implications, and cost assumptions.
+The first two changes reduced clause coverage. The third improved it modestly but failed the declared minimum gain. The fourth change also reduced coverage. None met the adoption criteria, so the baseline remains selected. All current approaches run locally without per-query model API fees; compute and maintenance are still costs. Local retrieval avoids sending query/contract text to a hosted inference provider, but that alone does not establish enterprise privacy compliance. Current false returns and low recall make this a development prototype, unsuitable for autonomous legal decisions. A final comparison must include measured quality, abstention, representative latency, deployment/privacy implications, and cost assumptions.
 
 ## Limitations and remaining work
 
-- Complete at least two further distinct improvement iterations and improve answerability.
+- Complete at least one further distinct improvement iteration for the minimum; target seven total including later LLM trials, with additional core work if quality remains weak and improve answerability.
 - Add and verify the shared web app and user-facing search CLI.
 - Freeze final configurations before test evaluation; append an actual run record for every test execution and report the count.
 - Report baseline versus final train/test results with query counts and discuss the gap.
@@ -166,7 +169,7 @@ The first two changes reduced clause coverage. The third improved it modestly bu
 
 - Baseline: `results/bm25_baseline/20261101T020109139330Z`.
 - Abstention: `results/bm25_abstention/20261101T020853204883Z`.
-- Iteration outputs: `results/iteration_01/`, `results/iteration_02/`, and `results/iteration_03/`.
+- Iteration outputs: `results/iteration_01/`, `results/iteration_02/`, `results/iteration_03/`, and `results/iteration_04/`.
 - Reference-metric supplement: `evaluation/metric_audit.json` (scores saved train predictions; no model calls).
 - Tests: `python -m pytest -q`. Setup and notebook order are in README.
 - Final test reproduction commands and measured final-run timings: pending; no test execution has occurred.

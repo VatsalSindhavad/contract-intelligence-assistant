@@ -7,6 +7,10 @@ and metrics. At least five improvement iterations will be logged, including
 rejected changes. The eventual 4–5 approach comparison will explain retrieval
 quality, abstention, latency, cost, privacy, and operational tradeoffs.
 
+The current target is seven distinct improvement iterations beyond baseline,
+including later LLM experiments. See `experiments/PLAN.md`. Core quality takes
+priority over the planned count; LLMs remain deferred until the core works.
+
 ## First step
 
 Use Python 3.12. Install `requirements.txt` in a virtual environment and open
