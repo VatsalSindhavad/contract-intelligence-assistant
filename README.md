@@ -189,10 +189,10 @@ running data preparation notebook 01. Configuration names omit `.json`.
 | `bm25_chunks_500` | Smaller chunks | Rejected, iteration 2 |
 | `bm25_b_030` | Lower length normalization | Rejected, iteration 3 |
 | `bm25_k1_080` | Lower term saturation | Rejected, iteration 4 |
-| `bm25_document_then_clause` | Document identification then clause search | Accepted, iteration 5 |
+| **✓ `bm25_document_then_clause`** | Document identification then clause search | Accepted, iteration 5 |
 | `bm25_focused_clause` | Focused clause terms without fallback | Rejected, iteration 6 |
-| `bm25_focused_clause_fallback` | Focused terms with fallback | Accepted, iteration 7 |
-| `bm25_focused_stemmed` | Accepted pipeline plus stemming | Accepted, iteration 8; default |
+| **✓ `bm25_focused_clause_fallback`** | Focused terms with fallback | Accepted, iteration 7 |
+| **✓ `bm25_focused_stemmed`** | Accepted pipeline plus stemming | Accepted, iteration 8; default |
 
 ```powershell
 python cli.py --list-configs
@@ -212,3 +212,9 @@ experiment decisions, not whether a configuration can execute.
 
 The same versions are selectable in the web app. Start it using the command
 above, select a configuration, and click Search to apply that choice.
+
+**✓ Better than baseline** marks accepted train improvements that passed all
+acceptance checks; held-out test performance remains unmeasured. The CLI list
+and web selector use the same label. Small gains or candidates failing a
+guardrail retain explanatory labels instead. Configuration command names are
+unchanged; omit the display labels when passing `--config`.

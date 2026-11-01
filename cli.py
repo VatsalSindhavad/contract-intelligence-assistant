@@ -2,7 +2,7 @@ import argparse
 import json
 import sys
 
-from search_service import DEFAULT_CONFIG, available_configs, build_model, search
+from search_service import DEFAULT_CONFIG, available_configs, build_model, config_label, search
 
 
 def main(argv=None):
@@ -14,7 +14,7 @@ def main(argv=None):
     parser.add_argument('--list-configs', action='store_true')
     args = parser.parse_args(argv)
     if args.list_configs:
-        print('\n'.join(available_configs()))
+        print('\n'.join(config_label(name) for name in available_configs()))
         return 0
     if not args.question:
         parser.error('Provide a quoted question or use --list-configs.')

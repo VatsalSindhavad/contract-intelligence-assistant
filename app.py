@@ -3,7 +3,7 @@ import json
 
 import streamlit as st
 
-from search_service import DEFAULT_CONFIG, EXAMPLE_QUERY, ROOT, available_configs, build_model, search
+from search_service import DEFAULT_CONFIG, EXAMPLE_QUERY, ROOT, available_configs, build_model, config_label, search
 
 
 st.set_page_config(page_title='Contract clause search', page_icon='📄', layout='wide')
@@ -16,7 +16,8 @@ if not configs:
     st.error('No saved configurations found.')
     st.stop()
 names = list(configs)
-selected = st.selectbox('Retrieval configuration', names, index=names.index(DEFAULT_CONFIG) if DEFAULT_CONFIG in names else 0)
+selected = st.selectbox('Retrieval configuration', names, index=names.index(DEFAULT_CONFIG) if DEFAULT_CONFIG in names else 0, format_func=config_label)
+st.caption('“Better than baseline” marks accepted train improvements. Held-out test performance is not yet measured.')
 with st.form('search_form'):
     question = st.text_area('Question', value=EXAMPLE_QUERY, height=110,
                             help='For a named contract, use: Consider contract description; your question. Plain questions search the whole corpus.')

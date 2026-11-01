@@ -5,7 +5,14 @@ from pathlib import Path
 import pytest
 
 from cli import main
-from search_service import EXAMPLE_QUERY, ROOT, build_model, search
+from search_service import EXAMPLE_QUERY, ROOT, build_model, config_label, search
+
+
+def test_labels_distinguish_accepted_gains_from_rejected_candidates():
+    assert 'Better than baseline' in config_label('bm25_focused_stemmed')
+    assert 'Current best' in config_label('bm25_focused_stemmed')
+    assert 'Better than baseline' not in config_label('bm25_focused_clause')
+    assert 'below acceptance' in config_label('bm25_b_030')
 
 
 @pytest.fixture

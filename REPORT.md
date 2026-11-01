@@ -217,10 +217,10 @@ criteria; it does not mean the implementation is unavailable.
 | `bm25_chunks_500` | 2 | Rejected |
 | `bm25_b_030` | 3 | Rejected |
 | `bm25_k1_080` | 4 | Rejected |
-| `bm25_document_then_clause` | 5 | Accepted |
+| **✓ `bm25_document_then_clause`** | 5 | Accepted |
 | `bm25_focused_clause` | 6 | Rejected |
-| `bm25_focused_clause_fallback` | 7 | Accepted |
-| `bm25_focused_stemmed` | 8 | Accepted; current default |
+| **✓ `bm25_focused_clause_fallback`** | 7 | Accepted |
+| **✓ `bm25_focused_stemmed`** | 8 | Accepted; current default |
 
 From the project folder, use the same question and k to inspect versions:
 
@@ -237,3 +237,9 @@ click Search. Full setup and command options are in README.md and DEMO.md.
 The nine-configuration source-offset smoke check is recorded in
 `results/interface_smoke.json`. Single-question inspection is a walkthrough,
 not a replacement for the aggregate evaluation above and not a new iteration.
+
+**✓ Better than baseline** marks accepted train improvements that passed all
+acceptance checks; held-out test performance remains unmeasured. The CLI list
+and web selector use the same label. Small gains or candidates failing a
+guardrail retain explanatory labels instead. Configuration command names are
+unchanged; omit the display labels when passing `--config`.
