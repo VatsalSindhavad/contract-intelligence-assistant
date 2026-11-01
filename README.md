@@ -257,3 +257,33 @@ with `evaluate_llm.py` for the controlled LLM comparisons. The current ten-trial
 budget is complete, so the core command blocks new proposals in this phase.
 Running a review notebook does not start another proposal or make model calls.
 Final held-out evaluation and reproduction checks are still pending.
+
+## Pure semantic baseline
+
+Install the optional semantic dependencies with
+`python -m pip install -r requirements-semantic.txt`. Obtain the pinned public
+model once if it is not already cached:
+
+```powershell
+python -c "from huggingface_hub import snapshot_download; snapshot_download('sentence-transformers/all-MiniLM-L6-v2', revision='1110a243fdf4706b3f48f1d95db1a4f5529b4d41')"
+python cli.py "Consider the Wireless Content License Agreement between Fox Mobile Entertainment and Glu Mobile; What is the expiration date of this contract?" --config dense_minilm_faiss --k 5
+```
+
+The same choice is available in Streamlit. The runtime loads the pinned local
+snapshot with offline mode; it never sends document/query text to a provider.
+`dense_retrieval.py` uses normalized MiniLM vectors and exact FAISS search over
+all source chunks. It does not use BM25 routing. Existing chunking and source
+offsets are preserved. Default token limits/truncation are recorded in results.
+
+Notebook 12 reviews iteration 11. `python evaluate_dense.py` replays the declared
+train comparison and records the same proposal again, not a new iteration.
+Vector caches live under cache/dense/ and are keyed by model/config/library and
+text identities; a mismatched environment rebuilds vectors from the pinned
+local model. Model weights are not included in Git. Current measurements and
+limitations belong to REPORT.md. Kanon access and semantic+Gemini are future
+steps; semantic models are separate from the BM25 improvement history.
+
+On this Windows environment, notebook/web embedding of previously unseen
+queries uses an isolated local Python worker to avoid a PyTorch DLL loading
+issue in those runtimes. The model/settings are unchanged; known vectors load
+without the worker. Diagnostic worker logs are ignored by Git.

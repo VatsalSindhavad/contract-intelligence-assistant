@@ -2,7 +2,7 @@
 
 ## Current status
 
-All ten iterations are complete: eight non-LLM trials and two LLM comparisons. Three non-LLM improvements are accepted; Both Gemini and Phi-3 improve retrieval but fail the first-use latency guardrail. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. The shared CLI and Streamlit app are implemented and verified. Final test evaluation and the complete case-study report remain pending. Test evaluation runs so far: **0**.
+The ten-trial BM25/LLM phase and pure-semantic iteration 11 are complete. Three non-LLM improvements are accepted; Both Gemini and Phi-3 improve retrieval but fail the first-use latency guardrail. The selected model combines document routing, focused clause search with fallback, and English Snowball stemming. The shared CLI and Streamlit app are implemented and verified. Final test evaluation and the complete case-study report remain pending. Test evaluation runs so far: **0**.
 
 ## System design
 
@@ -39,6 +39,7 @@ All quality rows use 140 answerable train questions. The following are BM25 pipe
 | Combined pipeline plus stemming | 7.88% | 67.01% | 8.38% | 76.60% | Accepted |
 | Gemini query expansion + best BM25 | 8.47% | 79.10% | 8.93% | 89.58% | Quality/replay checks pass; first-use latency fails |
 | Local Phi-3 query expansion + best BM25 | 8.07% | 70.75% | 8.51% | 80.07% | Quality/replay checks pass; first-use latency fails |
+| Pure MiniLM + FAISS | 4.03% | 35.75% | 4.19% | 38.90% | Rejected against best BM25; beats original baseline |
 
 ## Abstention and speed
 
@@ -312,3 +313,46 @@ the hosted/local comparison. Ten distinct iterations are complete; further
 proposal work is outside the current budget. Final configuration freeze,
 held-out evaluation/run counting, final error analysis, and reproduction
 remain required. Test evaluation count is still zero.
+
+## Pure semantic iteration 11
+
+The first dense-only comparison uses the locally available Apache-2.0
+all-MiniLM-L6-v2 model at revision 1110a243fdf4706b3f48f1d95db1a4f5529b4d41.
+Normalized 384-dimensional vectors are searched by exact FAISS IndexFlatIP.
+The original full query searches globally across all 1,522 chunks. No BM25
+routing/candidates/fusion, LLM, or gold document filter is used. Original
+1,000-character chunks with 200 overlap and source offsets are unchanged.
+This compares complete pipelines: the tuned BM25 route and global dense
+baseline have different document-selection policies, not just different scores.
+
+On 140 answerable train questions, unique-character recall@5 is 35.75% and
+precision@5 4.03%. This exceeds the original BM25 baseline (18.16%/1.74%) but
+not the accepted tuned BM25 pipeline (67.01%/7.88%). Both the recall-gain and
+precision guardrails fail against that reference, so the dense baseline is
+not selected as a replacement. Complete coverage is 33/140, partial 32/140,
+and zero overlap 75/140. Correct negative abstention is 0/23 and false
+answerable abstention is 0/140. The initial positive-cosine threshold is untuned.
+
+The model's default 256-wordpiece limit truncates 105/1,522 source chunks;
+no train queries exceed the limit. Returned text/offsets still cover the
+original full chunks, including tails that may not have been encoded. This
+can limit relevance, but its causal contribution is not isolated here. Do
+not generalize this one basic, general-purpose model to all semantic retrieval.
+
+Initial model/vector/index build took about 76.51 seconds on CPU (four PyTorch
+threads). Estimated first-use query median/p95 is 10.17/12.97 ms. Document/query
+vectors are cached with exact model/config/library identities and checksums.
+No hosted API or model download was used; the model was already present and
+runtime loading is explicitly offline. Model weights remain an external setup
+dependency, not a Git artifact.
+
+See notebook 12, semantic_configs/minilm.json, dense_retrieval.py,
+evaluate_dense.py, results/iteration_11/, and experiments/semantic_log.jsonl.
+The CLI/web choice is dense_minilm_faiss. Kanon and dense+Gemini trials remain
+planned; final test performance is still unmeasured. Hybrid is still deferred.
+
+The notebook/web runtime required an isolated local embedding worker to avoid
+a Windows PyTorch DLL initialization issue; the standalone train benchmark
+used the same pinned CPU encoder directly. The verified presentation query
+replays saved vectors with no model loading or external calls. This runtime
+fix does not constitute another model experiment.

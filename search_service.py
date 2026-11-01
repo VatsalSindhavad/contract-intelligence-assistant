@@ -12,6 +12,8 @@ BETTER_CONFIGS = frozenset({'bm25_document_then_clause', 'bm25_focused_clause_fa
 
 
 def config_label(name):
+    if name.startswith('dense_'):
+        return f'{name} — Pure semantic comparison'
     if name.startswith('llm_'):
         return f'{name} — LLM comparison · Cache only'
     if name in BETTER_CONFIGS:
@@ -41,6 +43,9 @@ def build_model(config_name=DEFAULT_CONFIG, root=ROOT):
         raise ValueError(f'Unknown configuration: {config_name}')
     config = json.loads(configs[config_name].read_text(encoding='utf-8'))
     documents, _ = load_corpus(root)
+    if config.get('retriever_type')=='dense':
+        from dense_retrieval import DenseRetriever
+        return DenseRetriever(documents,config,root)
     if config.get('provider'):
         from llm_rewrite import RewriteRetriever
         base_config = json.loads((Path(root) / config['baseline_config']).read_text(encoding='utf-8'))

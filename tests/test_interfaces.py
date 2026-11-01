@@ -131,3 +131,20 @@ def test_gemini_demo_requires_neither_network_nor_api_key(monkeypatch):
     app.button[0].click().run()
     assert not app.exception
     assert len(app.expander)>0
+
+
+@pytest.mark.skipif(not (ROOT/'cache/dense').exists(), reason='Build local dense cache first.')
+def test_dense_web_and_cli_service_share_cached_evidence(monkeypatch):
+    import requests
+    def deny(*args,**kwargs):
+        raise AssertionError('Cached dense presentation must not call a provider.')
+    monkeypatch.setattr(requests,'post',deny)
+    model=build_model('dense_minilm_faiss')
+    expected=search(model,EXAMPLE_QUERY,5)
+    from streamlit.testing.v1 import AppTest
+    app=AppTest.from_file(ROOT/'app.py',default_timeout=60).run()
+    app.selectbox[0].select('dense_minilm_faiss').run()
+    app.button[0].click().run()
+    assert not app.exception
+    assert len(app.expander)==len(expected['hits'])
+    assert app.text[0].value==expected['hits'][0]['text']

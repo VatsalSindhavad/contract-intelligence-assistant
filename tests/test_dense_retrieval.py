@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+pytest.importorskip('faiss')
 from dense_retrieval import DenseRetriever,normalized
 
 

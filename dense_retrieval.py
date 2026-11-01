@@ -3,7 +3,11 @@ import importlib.metadata
 import json
 import os
 from pathlib import Path
+import subprocess
+import sys
 from time import perf_counter
+import uuid
+import atexit
 
 import faiss
 import numpy as np
@@ -23,6 +27,10 @@ def normalized(vectors):
 
 class LocalEncoder:
     def __init__(self, config):
+        self.worker = None
+        if 'ipykernel' in sys.modules or 'streamlit' in sys.modules:
+            self.worker = EncoderWorker(config)
+            return
         os.environ['HF_HUB_OFFLINE'] = '1'
         os.environ['TRANSFORMERS_OFFLINE'] = '1'
         from huggingface_hub import snapshot_download
@@ -35,11 +43,46 @@ class LocalEncoder:
         self.config = config
 
     def encode(self, texts):
+        if self.worker:
+            return np.asarray(self.worker.request('encode',texts),dtype=np.float32)
         return self.model.encode(texts, batch_size=self.config['batch_size'],
                                  normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False)
 
     def token_lengths(self, texts):
-        return [len(ids) for ids in self.model.tokenizer(texts, truncation=False, padding=False)['input_ids']]
+        if self.worker:
+            return self.worker.request('lengths',texts)
+        return [len(ids) for ids in self.model.tokenizer(texts, truncation=False, padding=False, verbose=False)['input_ids']]
+
+
+class EncoderWorker:
+    def __init__(self,config):
+        folder=Path(__file__).resolve().parent/'cache/worker_logs'
+        folder.mkdir(parents=True,exist_ok=True)
+        self.log=(folder/f'{uuid.uuid4().hex}.log').open('w',encoding='utf-8')
+        self.process=subprocess.Popen([sys.executable,str(Path(__file__).with_name('embedding_worker.py')),json.dumps(config)],
+                                      stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.log,text=True,encoding='utf-8')
+        atexit.register(self.close)
+        reply=self.process.stdout.readline()
+        if not reply or not json.loads(reply).get('ready'):
+            self.close()
+            raise RuntimeError('Local embedding worker could not start; inspect cache/worker_logs/.')
+
+    def request(self,operation,texts):
+        self.process.stdin.write(json.dumps(dict(operation=operation,texts=texts),ensure_ascii=False)+'\n')
+        self.process.stdin.flush()
+        line=self.process.stdout.readline()
+        if not line:
+            raise RuntimeError('Local embedding worker stopped unexpectedly.')
+        reply=json.loads(line)
+        if 'error' in reply:
+            raise RuntimeError(reply['error'])
+        return reply['result']
+
+    def close(self):
+        if self.process.poll() is None:
+            self.process.terminate()
+            self.process.wait(timeout=10)
+        self.log.close()
 
 
 class DenseRetriever:

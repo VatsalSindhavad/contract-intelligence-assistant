@@ -45,3 +45,7 @@ cost/latency/settings. Preserve every rejected and accepted configuration.
 
 All ten trials are complete. Next steps are result review, final configuration
 freeze, held-out evaluation and reporting, not new proposal generation.
+
+Semantic iteration 11 is complete: pure MiniLM + exact FAISS, retained as a
+comparison but rejected against tuned BM25. Iterations 12 (Kanon) and 13
+(selected dense + Gemini) remain planned. See REPORT.md for measured outcomes.
