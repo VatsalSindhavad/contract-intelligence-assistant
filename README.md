@@ -135,3 +135,7 @@ explicitly; do not label them interchangeably. See `evaluation/metrics.md`.
 See `CORE_CHECKLIST.md` for delivery status and `REPORT.md` for measured results.
 Web/search CLI commands and final test reproduction instructions will be added
 when those interfaces and the final evaluator exist.
+
+Notebook 06 reviews the saved third iteration (BM25 length normalization) and
+provides an editable question cell for either configuration without advancing
+the loop. Its measured findings are recorded in REPORT.md.
