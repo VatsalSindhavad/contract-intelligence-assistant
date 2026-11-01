@@ -9,7 +9,16 @@ including unsuccessful ones, remain documented and reproducible.
 
 ## Setup
 
-Use Python 3.12 and Git. From the repository root:
+Install Python 3.12 and Git. Internet access is required for the initial
+dependency, dataset and model downloads. Authenticate Git with a GitHub account
+that has access to this private repository, then clone it into a new folder:
+
+```powershell
+git clone https://github.com/VatsalSindhavad/contract-intelligence-assistant.git jiostar-repo-check
+cd jiostar-repo-check
+```
+
+From the repository root, create and activate the environment:
 
 ```powershell
 py -3.12 -m venv .venv
@@ -18,6 +27,11 @@ python -m pip install -r requirements-semantic.txt
 python manage.py prepare_data
 python manage.py prepare_semantic --download
 ```
+
+If PowerShell blocks activation, run
+`Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` and retry
+`.\.venv\Scripts\Activate.ps1`. This setting applies only to the current
+PowerShell session. Activate the environment again in each new terminal.
 
 The data command downloads the pinned public CUAD benchmark, selects the
 prescribed 194-query subset, verifies source offsets, and prepares the fixed
@@ -37,6 +51,9 @@ notebooks/experiments/. All relative paths are resolved from the project root.
 python -m streamlit run app.py --server.address 127.0.0.1 --server.port 8501
 python cli.py --list-configs
 ```
+
+If port 8501 is already occupied, use `--server.port 8502` and open
+http://127.0.0.1:8502/ instead. Press Ctrl+C in the terminal to stop the app.
 
 Open http://127.0.0.1:8501/. The web app shows exactly three choices:
 
