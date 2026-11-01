@@ -64,15 +64,23 @@ class BM25Retriever:
         if not self.chunks:
             raise ValueError('The corpus is empty.')
         self.remove_stopwords = config.get('remove_stopwords', False)
-        tokens = [tokenize(c['text'], self.remove_stopwords) for c in self.chunks]
+        self.stemmer = None
+        if config.get('stemming') == 'english':
+            from nltk.stem.snowball import SnowballStemmer
+            self.stemmer = SnowballStemmer('english')
+        tokens = [self.normalize(tokenize(c['text'], self.remove_stopwords)) for c in self.chunks]
         if not any(tokens):
             raise ValueError('The corpus has no searchable tokens.')
         self.index = BM25Okapi(tokens, k1=config['k1'], b=config['b'])
 
+    def normalize(self, tokens):
+        stemmer = getattr(self, 'stemmer', None)
+        return [stemmer.stem(token) for token in tokens] if stemmer else tokens
+
     def search(self, query, k=5):
         if k < 1:
             raise ValueError('k must be positive.')
-        tokens = tokenize(query, self.remove_stopwords)
+        tokens = self.normalize(tokenize(query, self.remove_stopwords))
         if not tokens:
             return []
         scores = self.index.get_scores(tokens)
@@ -82,14 +90,14 @@ class BM25Retriever:
             if scores[best] <= 0:
                 return []
             source = self.chunks[best]['file_path']
-            question_tokens = clause_tokens(question, self.config.get('clause_query_cleanup', False), self.remove_stopwords)
+            question_tokens = self.normalize(clause_tokens(question, self.config.get('clause_query_cleanup', False), self.remove_stopwords))
             if not question_tokens:
                 return []
             scores = self.index.get_scores(question_tokens)
             scores = np.array([score if chunk['file_path'] == source else -np.inf
                                for score, chunk in zip(scores, self.chunks)])
             if self.config.get('clause_cleanup_fallback', False) and not np.any(scores > self.config['min_score']):
-                fallback = self.index.get_scores(tokenize(question, self.remove_stopwords))
+                fallback = self.index.get_scores(self.normalize(tokenize(question, self.remove_stopwords)))
                 scores = np.array([score if chunk['file_path'] == source else -np.inf
                                    for score, chunk in zip(fallback, self.chunks)])
         order = np.argsort(-scores, kind='stable')[:k]

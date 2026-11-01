@@ -1,5 +1,13 @@
 [
   {
+    "id": "english_stemming_on_focused_pipeline",
+    "name": "bm25_focused_stemmed",
+    "trigger": "right_document_wrong_section",
+    "requires": {"query_mode": "document_then_clause", "clause_query_cleanup": true, "clause_cleanup_fallback": true},
+    "changes": {"stemming": "english"},
+    "reason": "Normalize word inflections in indexed text and search tokens, building on both accepted query policies without changing source text or offsets."
+  },
+  {
     "id": "focused_clause_with_fallback",
     "name": "bm25_focused_clause_fallback",
     "trigger": "right_document_wrong_section",

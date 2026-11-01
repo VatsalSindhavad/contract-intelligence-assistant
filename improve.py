@@ -116,7 +116,7 @@ def run_step(root):
                dataset_revision=manifest['revision'], frozen_question_sha256=frozen['query_set_sha256'],
                metric_convention='unique-character objective; benchmark pairwise scores also reported',
                python=platform.python_version(), platform=platform.platform(),
-               packages={p: importlib.metadata.version(p) for p in ['rank-bm25', 'numpy', 'pandas']},
+               packages={p: importlib.metadata.version(p) for p in ['rank-bm25', 'numpy', 'pandas', 'nltk']},
                prepared_manifest_sha256=hashlib.sha256((root / 'data/prepared/manifest.json').read_bytes()).hexdigest(),
                source_commit=subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD']).decode().strip(),
                code_sha256={p: hashlib.sha256((root / p).read_bytes()).hexdigest()
